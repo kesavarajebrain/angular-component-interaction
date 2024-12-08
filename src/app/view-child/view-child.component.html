@@ -1,0 +1,110 @@
+<div class="container mt-3">
+  <p class="btn btn-success" routerLink="home">Back</p>
+  <h4>Viewchild</h4>
+  <p>
+    In Angular,
+    <strong class="text-primary">&#64;ViewChild is a decorator</strong> used to
+    access a child component, directive, or DOM element from a parent
+    component's class. It allows you to interact with child elements
+    programmatically, enabling actions like retrieving data, calling methods, or
+    setting properties.
+  </p>
+  <p><strong>Example 1:</strong></p>
+  <div class="input-group input-group-sm mb-3">
+    <span class="input-group-text">Input</span>
+    <input #myInput type="text" class="form-control" />
+  </div>
+  <span class="text-primary fw-bold">Technical Breakup:</span>
+  <p>Implementing Viewchild</p>
+  <div class="card">
+    <div class="card-body">
+      <ol class="list-group list-group-numbered mt-2 fw-bold">
+        <li class="list-group-item fw-bold mb-3">
+          Add a reference variable (i.e)<strong class="text-danger">
+            #myInput</strong
+          >
+          - in input element.
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          Import ViewChild and ElementRef from angular/core in ts file
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          Declare like this in ts file - &#64;ViewChild('myInput')
+          myInputElementRef!: ElementRef;<br />
+          <strong class="text-danger">myInput</strong> - is the reference
+          variable of input element (HTML)<br />
+          <strong class="text-danger">myInputElementRef</strong> - is the
+          reference variable of input element(TS)<br />
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          Access the <strong class="text-danger">DOM Element</strong> in the
+          <strong class="text-danger">ngAfterViewInit</strong> life cycle hook
+          only.
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          example ():
+          <pre>
+                ngAfterViewInit(): void 
+                this.myInputElementRef.nativeElement.focus(); // <strong class="text-primary">this is the function to DOM element get focus on after page load</strong>
+                console.log(this.myInputElementRef); // <strong class="text-primary">we can see list of DOM properties and suitable methods of the element</strong>
+            </pre>
+        </li>
+      </ol>
+    </div>
+  </div>
+  <div class="mt-3">
+    <h4>Communicating with Parent and Child Components using Viewchild</h4>
+    <p><strong>Example 2:</strong></p>
+    <button class="btn btn-success" (click)="callChildComponent()"> 
+      Button placed in the Parent Component</button 
+    > <span><- click button to trigger function in child component</span><br />
+    <span>
+      <pre>
+
+        [app-view-child] <strong class="text-primary"> Parent component</strong>
+           [app-child][/app-child] <strong class="text-primary"> Child component</strong>
+        [/app-view-child]
+      </pre>
+      Here we render the child component
+      <strong class="text-primary"><app-child></app-child></strong>
+    </span>
+    <span class="text-primary fw-bold">Technical Breakup:</span>
+    <div class="card">
+      <div class="card-body">
+        <ol class="list-group list-group-numbered mt-2 fw-bold">
+          <li class="list-group-item fw-bold mb-3">
+            Render child component tag inside the parent component <strong class="text-danger">app-child>/app-child></strong>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            Write a method in parent component <strong class="text-danger">(click)="callChildComponent()"</strong> in Parent component HTML
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            Import child component in parent component <br><strong class="text-danger">import [ChildComponent] from './child/child.component';
+            </strong>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+           Configure child component in the parent component using ViewChild <br>
+           <strong class="text-danger">  &#64;ViewChild(ChildComponent) childRef!: ChildComponent;
+          </strong>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            Write the code for the method <strong class="text-danger">(Parent)</strong> 
+            <pre>
+              callChildComponent() [ // <strong class="text-primary"> this method in parent component</strong>
+                this.childRef.childMethod(); // <strong class="text-primary">Here we are calling the method which in child component</strong>
+              ]
+            </pre>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            In child compoenent we handle like; <strong class="text-danger">(Child)</strong>
+            <pre>
+              childMethod() [
+                alert("This is a alert from the Child component via childMethod()"); 
+              ]
+            </pre>            
+           </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>

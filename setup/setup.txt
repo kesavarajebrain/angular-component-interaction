@@ -1,0 +1,10 @@
+angular version 17
+install bootstrap 5 => npm i bootstrap
+after install edit the angular.json file -> projects->architect
+ "styles": [
+          "node_modules/bootstrap/dist/css/bootstrap.min.css", //<--add this line
+          "src/styles.css"
+        ],
+        "scripts": [
+          "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" //<--and this line
+        ]
