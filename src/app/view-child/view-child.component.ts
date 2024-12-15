@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ChildComponent } from './child/child.component';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-view-child',
   standalone: true,
-  imports: [ChildComponent],
+  imports: [ChildComponent,RouterModule],
   templateUrl: './view-child.component.html',
   styleUrl: './view-child.component.scss',
 })

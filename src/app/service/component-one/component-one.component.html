@@ -1,0 +1,19 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <strong class="text-danger">Component ONE</strong>
+        <div class="input-group input-group-sm mb-3 mt-3">
+            <span class="input-group-text text-danger fw-bold"
+              >This Input element in Component One</span
+            >
+            <input
+              type="text"
+              class="form-control"
+              name="message"
+              [(ngModel)]="message"
+            />
+            <button class="btn btn-sm btn-success" (click)="send()">
+              Send
+            </button>
+          </div>
+    </div>
+</div>

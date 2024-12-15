@@ -1,0 +1,123 @@
+<div class="container mt-3">
+  <p routerLink="/">
+    <a class="pe-auto text-secondary text-decoration-none"><-Back</a>
+  </p>
+  <h4>Output</h4>
+  <p>
+    In Angular,
+    <strong class="text-primary">&#64;Output() decorator</strong> used to pass
+    data from a
+    <strong class="text-danger text-uppercase"
+      >CHILD component to PARENT component.</strong
+    >
+    It allows child components to notify their parents about changes or
+    actions.This is achieved using an <strong>EventEmitter.</strong>
+  </p>
+  <p>
+    This is parent component (Output component is
+    <strong class="text-danger">PARENT</strong>)
+  </p>
+  <p>Here we created child component!</p>
+  <pre>
+      &#11164;app-daughter&#11166;&#11164;/app-daughter&#11166;
+    </pre
+  >
+  <p><strong>Example 1:</strong></p>
+  <strong class="text-danger">DAUGHTER Component</strong>
+  <!-- CHILD COMPONENT -->
+  <app-daughter (sendEventToParent)="receiveMsgFrmChild($event)"></app-daughter>
+  <!-- CHILD COMPONENT -->
+  <div class="card">
+    <strong class="text-danger p-2">PARENT Component</strong>
+    <div class="card-body">
+      <p>
+        Receive below message from
+        <strong class="text-danger">CHILD / Daughter Component</strong>
+      </p>
+      <h5 class="text-danger">*{{ childMessage }}*</h5>
+    </div>
+  </div>
+  <div class="mt-2 mb-4">
+    <p class="text-primary fw-bold">Technical Breakup:</p>
+    <p>Implementing &#64;Output() Decorator</p>
+    <div class="card">
+      <div class="card-body">
+        <ol class="list-group list-group-numbered mt-2 fw-bold">
+          <li class="list-group-item fw-bold mb-3">
+            <strong class="text-danger"
+              >import [ Output ] from '&#64;angular/core';</strong
+            >
+            in <strong>CHILD Component</strong>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            <strong class="text-danger"
+              >import [ EventEmitter ] from '&#64;angular/core';</strong
+            >
+            in <strong>CHILD Component</strong>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            Add this decorator in
+            <strong class="text-danger">CHILD Component </strong><br />
+            <strong class="text-danger">SYNTAX:</strong><br />
+            <strong class="text-danger"
+              >&#64;Output() sendEventToParent = new EventEmitter();</strong
+            >
+            <pre>
+  
+                  &#64;Output() <strong class="text-primary"> \\ this is decorator</strong>
+                  sendEventToParent<strong class="text-primary"> \\ this is we emit from CHILD</strong>
+                  new EventEmitter()<strong class="text-primary"> \\ this is we utilize for emit data</strong>
+              </pre>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            Here we passing input value from <strong>CHILD to PARENT</strong
+            ><br />
+            <strong class="text-danger">CHILD Component</strong>
+            <pre>
+
+                child_message: any;
+
+                sendToParent() [
+                    this.sendEventToParent.emit(this.child_message); <strong class="text-primary"> // here we emit child message to parent</strong>
+                  ]
+            </pre>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            PARENT Component <br />
+            Sending data to PARENT from CHILD Component <br />
+            <strong class="text-danger"
+              >SYNTAX: <br />&#11164;parent-component-div&#11166;<br />
+              &#11164;app-daughter
+              (sendEventToParent)="receiveMsgFrmChild($event)"
+              &#11166;&#11164;/app-daughter&#11166;<br />
+              &#11164;/parent-component-div&#11166;
+            </strong>
+            <pre>
+  
+                (sendEventToParent) <strong class="text-primary"> // this is emit from Child - Used in (CHILD Component) </strong>
+                receiveMsgFrmChild <strong class="text-primary"> // this is we receive data in Parent - Used in (PARENT Component)</strong>
+                ($event) <strong class="text-primary"> // this also we receive data in Parent if any parameter comes - Used in (PARENT Component)</strong>
+  
+              </pre>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            For above example we are sending value from
+            <strong>CHILD component</strong> via clicking the
+            <strong class="text-success">Send to parent</strong> button. <br />
+            <strong class="text-danger">SYNTAX:</strong><br />
+            <pre>
+
+                childMessage: string | undefined;
+
+                receiveMsgFrmChild(value: string) [
+                  this.childMessage = value; <strong class="text-primary">// here we get the value from CHILD and Interpolate in PARENT HTML</strong>
+                  console.log(value);
+                ]
+              </pre
+            >
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>

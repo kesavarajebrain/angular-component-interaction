@@ -1,0 +1,114 @@
+<div class="container mt-3">
+  <p routerLink="/">
+    <a class="pe-auto text-secondary text-decoration-none"><-Back</a>
+  </p>
+  <h4>Input</h4>
+  <p>
+    In Angular,
+    <strong class="text-primary">&#64;Input() decorator</strong> used to pass
+    data from a
+    <strong class="text-danger text-uppercase"
+      >parent component to child component.</strong
+    >It allows a child component to receive data from its parent through
+    <strong>property binding.</strong>
+  </p>
+  <p>
+    This is parent component (Input component is
+    <strong class="text-danger">PARENT</strong>)
+  </p>
+  <p>Here we created child component!</p>
+  <pre>
+    &#11164;app-son&#11166;&#11164;/app-son&#11166;
+  </pre>
+  <p><strong>Example 1:</strong></p>
+  <strong class="text-danger">FATHER Component</strong>
+  <form>
+    <div class="card">
+      <div class="card-body">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text text-danger fw-bold"
+            >This Input element in FATHER Component</span
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="parent_message"
+            [(ngModel)]="parent_message"
+          />
+          <button class="btn btn-sm btn-success" (click)="sendToChild()">
+            Send to Child
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- CHILD COMPONENT -->
+  <app-son [message]="messageToChild"></app-son>
+  <!-- CHILD COMPONENT -->
+
+  <div class="mt-2 mb-4">
+    <p class="text-primary fw-bold">Technical Breakup:</p>
+    <p>Implementing &#64;Input() Decorator</p>
+    <div class="card">
+      <div class="card-body">
+        <ol class="list-group list-group-numbered mt-2 fw-bold">
+          <li class="list-group-item fw-bold mb-3">
+            <strong class="text-danger"
+              >import [ Input ] from '&#64;angular/core';</strong
+            >
+            in <strong>CHILD Component</strong>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            Add this decorator in
+            <strong class="text-danger"
+              >CHILD Component - &#64;Input() message: string |
+              undefined;</strong
+            >
+            <pre>
+
+                &#64;Input() <strong class="text-primary"> \\ this is decorator</strong>
+                message<strong class="text-primary"> \\ this is we getting from PARENT Component</strong>
+                string | undefined<strong class="text-primary"> \\ this the data type</strong>
+            </pre>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            Add this interpolation
+            <strong class="text-danger"
+              >[[message]] - in CHILD Component HTML</strong
+            >
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            PARENT Component <br />
+            Sending data to CHILD from PARENT Component <br />
+            <strong class="text-danger"
+              >SYNTAX: <br />&#11164;parent-component-div&#11166;<br />
+              &#11164;app-son [message]="messageToChild"
+              &#11166;&#11164;/app-son&#11166;<br />
+              &#11164;/parent-component-div&#11166;
+            </strong>
+            <pre>
+
+                [message] <strong class="text-primary"> //Passing to Child component - Used in (CHILD Component) </strong>
+                messageToChild <strong class="text-primary"> //Input to Child component from PARENT Component - Used in (PARENT Component)</strong>
+
+            </pre>
+          </li>
+          <li class="list-group-item fw-bold mb-3">
+            For above example we are sending value from
+            <strong>PARENT component</strong> via clicking the
+            <strong class="text-success">Send to child</strong> button. <br>
+            <strong class="text-danger">SYNTAX:</strong><br>
+            <pre>
+                messageToChild: string | undefined;
+
+                sendToChild() [
+                    this.messageToChild = this.parent_message; <strong class="text-primary"> // here we get the value from input box and assign.</strong>
+                  ]
+            </pre>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>

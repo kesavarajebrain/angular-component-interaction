@@ -1,0 +1,21 @@
+<p>daughter works!</p>
+<form>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text text-danger fw-bold"
+            >This Input element in DAUGHTER Component</span
+          >
+          <input
+              type="text"
+              class="form-control"
+              name="child_message"
+              [(ngModel)]="child_message"
+            />
+            <button class="btn btn-sm btn-success" (click)="sendToParent()">
+              Send to Parent
+            </button>
+        </div>
+      </div>
+    </div>
+  </form>

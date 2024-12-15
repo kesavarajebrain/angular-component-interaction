@@ -1,0 +1,101 @@
+<div class="container mt-4">
+  <p routerLink="/">
+    <a class="pe-auto text-secondary text-decoration-none"><-Back</a>
+  </p>
+  <h4>Communicating components using Service with <strong>Rxjs</strong></h4>
+  <p>
+    Passing data through services in Angular is a common and effective way to
+    share information between components.
+  </p>
+  <p>
+    This is common component (Service component is
+    <strong class="text-danger">COMMON Component</strong>)
+  </p>
+  <p>Here we created un-related components!</p>
+  <pre>
+    &#11164;app-component-one&#11166;&#11164;/app-component-one&#11166;
+    &#11164;app-component-two&#11166;&#11164;/app-component-two&#11166;
+  </pre>
+  <strong>Example 1:</strong>
+  <app-component-one></app-component-one>
+  <app-component-two></app-component-two>
+
+  <p class="text-primary fw-bold mt-3">Technical Breakup:</p>
+  <div class="card mb-3">
+    <div class="card-body">
+      <ol class="list-group list-group-numbered mt-2 fw-bold">
+        <li class="list-group-item fw-bold mb-3">
+          Create service -
+          <strong class="text-danger">ng g s shared-service</strong>
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          import [ BehaviorSubject ] from 'rxjs';
+          <strong class="text-danger">in SERVICE file</strong>
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          Configure BehaviorSubject -
+          <strong class="text-danger">SERVICE file</strong><br />
+          <strong class="text-danger"
+            >private dataSource = new
+            BehaviorSubject&#11164;any&#11166;(null);</strong
+          >
+          <pre>
+                private dataSource <strong class="text-primary">// this have the source data</strong>
+                new BehaviorSubject&#11164;any&#11166;(null); <strong class="text-primary">// intialize the behaviour subject here</strong>
+            </pre>
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          <strong class="text-danger">SERVICE file</strong><br />
+          <pre>
+                <strong class="text-primary">Store the data in currentData variable</strong>
+                currentData = this.dataSource.asObservable();
+
+            </pre>
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          Below method is used to set data in
+          <strong class="text-danger">BehaviorSubject - in SERVICE File</strong>
+          <pre>
+                setData(data: any) [ <strong class="text-primary">// set data function </strong>
+                    this.dataSource.next(data); <strong class="text-primary">// here we set the data to service data source </strong>
+                  ]
+            </pre>
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          <strong class="text-danger">Component ONE</strong><br />
+          <pre>
+
+                import [ SharedService ] from '../shared-service.service'; <strong class="text-primary">// here import service </strong>
+
+                constructor(private sharedService: SharedService) [] <strong class="text-primary">// add service in constructor </strong>
+
+                <strong class="text-primary">Below method we passing the input box value to service through this method </strong>
+
+                send()[
+                    this.sharedService.setData(this.message)
+                  ]
+            </pre>
+        </li>
+        <li class="list-group-item fw-bold mb-3">
+          <strong class="text-danger">Component TWO</strong><br />
+          <pre>
+
+                import [ SharedService ] from '../shared-service.service'; <strong class="text-primary">// import service in COMPONENT Two </strong>
+
+                constructor(private sharedService: SharedService) [] <strong class="text-primary">// add service in constructor </strong>
+
+                <strong class="text-primary">// Receive message from COMPONENT One to COMPONENT Two through SERVICE </strong>
+                ngOnInit(): void [ 
+
+                <strong class="text-primary">// Below we subscribe the CURRENT DATA its have DATA from the COMPONENT ONE</strong>
+                    this.sharedService.currentData.subscribe(data => [ 
+                      this.receiveData = data; <strong class="text-primary">// this.receiveData have the value which is from the SERVICE </strong>
+
+                    )]
+                  ]
+            </pre>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>

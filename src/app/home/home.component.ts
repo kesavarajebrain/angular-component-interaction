@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { ViewChildComponent } from "../view-child/view-child.component";
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, ViewChildComponent,RouterModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
