@@ -39,4 +39,9 @@ export class HomeComponent {
     console.log("SEtting value -> ", value);
     this._customerName = value;
   }
+
+  // redirect git
+  redirect(){
+    window.open("https://github.com/kesavarajebrain/angular-component-interaction", "_blank");
+  }
 }
