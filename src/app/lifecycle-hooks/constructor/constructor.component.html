@@ -1,0 +1,91 @@
+<div class="container mt-3">
+    <p routerLink="/lifecycle-hooks">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4 class="text-primary">constructor()</h4>
+    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
+        It’s a <b>TypeScript/ES6 class feature</b>.</p>
+    <p>Angular simply uses it to create an instance of your component class.</p>
+    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
+    </p>
+    <div class="conatiner card mt-2">
+        <div class="card-body">
+            <ol>
+                <li> It creates a new instance of your component class → calls constructor()
+                </li>
+                <li>Then it sets up &#64;Input() bindings
+                </li>
+                <li>Then it calls ngOnInit()
+                </li>
+                <li>So constructor() runs before Angular touches any inputs or templates.
+                </li>
+            </ol>
+            <div class="jumbotron p-3 mt-3">
+                <div class="row">
+                    <div class="col">
+                        <h4>When the constructor Run?</h4>
+                        <p>The constructor runs <b>exactly once</b> when Angular creates the component instance. <br>
+                            This happens before any lifecycle hooks like ngOnInit() or ngOnChanges() are called. <br>
+                            So it’s always the first method executed in a component’s life.</p>
+                    </div>
+                    <div class="col">
+                        <h4>What to do in the constructor?</h4>
+                        <ul>
+                            <li>🔴 Injecting services via dependency injection</li>
+                            <li>🟢 Initializing class-level variables</li>
+                            <li>🔵 Initializing non-Angular libraries or utilities or core features</li>
+                        </ul>
+                        <p>Avoid complex logic, DOM access, or anything that relies on Angular features here.
+                            Those should go in ngOnInit() or other lifecycle hooks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="conatiner card mt-2 mb-3 p-3">
+        <div class="row">
+            <div class="col">
+                <b>🔴 Injecting services via dependency injection | 🟢 Initializing class-level variables | 🔵
+                    Initializing non-Angular libraries or utilities or core features</b>
+                <pre>
+
+{{tsCode}}
+                </pre>
+            </div>
+        </div>
+    </div>
+     <div class="conatiner card mt-2 mb-3 p-3">
+        <div class="row">
+            <div class="col">
+                <h4>Access modifier</h4>
+                <p>Explanation of using private / public / protected inside the constructor</p>
+                <p>When you declare a constructor parameter with an access modifier (private, public, or protected)</p>
+                <pre>
+                      constructor(<b>private</b> sharedService: SharedService, <b>private</b> http: HttpClient) 
+                </pre>
+                <h5>Private</h5> <b>private sharedService.getData() ❌ Error: userService is private</b> 
+                <p>Property is only accessible inside this class. Cannot be accessed in the HTML template or from child classes.</p>
+                <h5>Public</h5> <b>public sharedService.getData() ✅ Works </b> 
+                <p>Property is accessible from anywhere, including the HTML template and child classes.</p>
+                <h5>Protected</h5>
+                <p>Property is accessible within this class and its subclasses, but not from outside or the HTML template.</p>
+            </div>
+        </div>
+    </div>
+    <div class="conatiner card mt-2 mb-3 p-3">
+        <div class="row">
+            <div class="col">
+                <h4>NOT to Do in a Constructor </h4>
+                <ul>
+                    <li>Don’t perform HTTP or API calls - Why?
+                        Because Angular hasn’t finished initializing the component.
+                        Inputs (&#64;Input() values) or view references (&#64;ViewChild) may not exist yet.</li>
+                    <li>Avoid complex logic or heavy computations</li>
+                    <li>Don’t access the DOM or manipulate elements</li>
+                    <li>Avoid using Angular features like &#64;ViewChild, &#64;ContentChild, or &#64;Input()</li>
+                    <li>Don’t call methods that depend on Angular’s change detection or rendering</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

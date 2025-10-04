@@ -1,0 +1,96 @@
+<div class="container mt-3">
+  <p routerLink="/">
+    <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+  </p>
+  <h4>Life Cycle Hooks</h4>
+  <div class="container mt-2 mb-2">
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-sm btn-secondary" routerLink="constructor">
+        constructor()
+      </button>&nbsp;
+       <button class="btn btn-sm btn-secondary " routerLink="ngOnInit">
+        ngOnInit()
+      </button>&nbsp;
+        <button class="btn btn-sm btn-secondary" routerLink="ngOnChanges">
+        ngOnChanges()
+      </button>&nbsp;
+      <button class="btn btn-sm btn-secondary" routerLink="ngDoCheck">
+        ngDoCheck()
+      </button>&nbsp;
+       <button class="btn btn-sm btn-secondary" routerLink="ngAfterContentInit">
+        ngAfterContentInit()
+      </button>&nbsp;
+        <button class="btn btn-sm btn-secondary" routerLink="ngAfterContentChecked">
+        ngAfterContentChecked()
+      </button>&nbsp;
+        <button class="btn btn-sm btn-secondary" routerLink="ngAfterViewInit">
+        ngAfterViewInit()
+      </button>&nbsp;
+        <button class="btn btn-sm btn-secondary" routerLink="ngAfterViewChecked">
+        ngAfterViewChecked()
+      </button><br><br>
+         <button class="btn btn-sm btn-secondary" routerLink="ngOnDestroy">
+        ngOnDestroy()
+      </button>
+    </div>
+  </div>
+</div>
+  <div class="card p-3">
+    <h5>Why Life Cycle Hooks?</h5>
+    <p>
+      Angular components are not static HTML templates —
+      They are dynamic classes that Angular creates, updates, and destroys automatically.
+      So, as a developer, you often need to run logic at specific moments in that component’s “life”.
+    </p>
+    <ol>
+      <li>When a component is first created → maybe you want to fetch data.</li>
+      <li>When an &#64;Input() value changes → maybe you want to re-render something.</li>
+      <li>When Angular has rendered the view → maybe you want to interact with the DOM.
+      </li>
+      <li>When the component is about to be destroyed → maybe you want to unsubscribe or clean up.</li>
+    </ol>
+    <ol>
+      <li><b class="text-primary">constructor()</b> → Component instance created (class-level)</li>
+      <li><b class="text-primary">ngOnChanges()</b> → Runs when Input() changes (before init)
+      </li>
+      <li><b class="text-primary">ngOnInit()</b> → First initialization logic
+      </li>
+      <li><b class="text-primary">ngDoCheck()</b> → Custom change detection hook
+      </li>
+      <li><b class="text-primary">ngAfterContentInit()</b> → After projected content loaded (via ng-content)
+      </li>
+      <li><b class="text-primary">ngAfterContentChecked()</b> → After projected content checked
+      </li>
+      <li><b class="text-primary">ngAfterViewInit()</b> → After component's view + child views initialized
+      </li>
+      <li><b class="text-primary">ngAfterViewChecked()</b> → After component’s view checked again
+      </li>
+      <li><b class="text-primary">ngOnDestroy() </b>→ Cleanup logic (before removal)
+      </li>
+    </ol>
+  </div>
+  <div class="card mt-3 p-3">
+    <div class="row">
+      <div class="col-4">
+        <p><b>Why They’re So Important :</b> <br><br>
+          Think of Angular as a movie director, and your component as an actor.
+          The lifecycle hooks are like cues in the script — they tell your actor what to do and when.</p>
+      </div>
+      <div class="col-8">
+        <pre>
+
+| Hook                | When it runs                 | Why you use it                   |
+| ------------------- | ---------------------------- | -------------------------------- |
+| `ngOnInit()`        | After component creation     | Fetch API data, initialize state |
+| `ngOnChanges()`     | When `&#64;Input()` changes       | Respond to parent data changes   |
+| `ngAfterViewInit()` | After view renders           | Access DOM elements, ViewChild   |
+| `ngOnDestroy()`     | Before removal               | Unsubscribe, cleanup             |
+| `ngDoCheck()`       | Every change detection cycle | Custom state detection logic     |
+
+</pre>
+      </div>
+    </div>
+  </div>
+
+</div>

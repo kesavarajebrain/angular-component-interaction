@@ -8,3 +8,5 @@ after install edit the angular.json file -> projects->architect
         "scripts": [
           "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" //<--and this line
         ]
+
+angulardemoprjs@gmail.com
