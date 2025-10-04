@@ -3,10 +3,13 @@ import { RouterModule } from '@angular/router';
 // service imports here
 import { SharedService } from "../../service/shared-service.service";
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';@Component({
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+// import hook order
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
+@Component({
   selector: "app-constructor",
   standalone: true,
-  imports: [RouterModule,HttpClientModule],
+  imports: [RouterModule,HttpClientModule,HooksOrderComponent],
   templateUrl: "./constructor.component.html",
   styleUrls: ["./constructor.component.scss"]
 })
@@ -18,6 +21,7 @@ export class ConstructorComponent implements OnInit {
 
   // Inject the service in the constructor
   constructor(private sharedService: SharedService, private http: HttpClient) { 
+    console.warn('constructor component constructor')
     console.log('Constructor called');
   }
 

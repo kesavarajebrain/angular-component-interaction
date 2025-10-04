@@ -21,7 +21,7 @@ export class AppComponent {
         try {
           (adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {
-          console.error('AdSense reload error:', e);
+          console.log('AdSense reload error:', e);
         }
       });
   }

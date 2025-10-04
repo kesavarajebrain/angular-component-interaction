@@ -1,10 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from '@angular/router';
 import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
 @Component({
   selector: "app-ngoninit",
-  imports: [RouterModule, HooksOrderComponent,HttpClientModule],
+  imports: [RouterModule, HooksOrderComponent],
   standalone: true,
   templateUrl: "./ngoninit.component.html",
   styleUrls: ["./ngoninit.component.scss"]
@@ -13,9 +12,8 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 export class NgoninitComponent implements OnInit {
 
   message: string = '';
-  tsCode: string = '';
   
-  constructor( private http: HttpClient) {
+  constructor() {
     console.warn('ngOnInit component constructor')
     console.log('✅ Constructor called');
   }
@@ -24,9 +22,5 @@ export class NgoninitComponent implements OnInit {
     console.warn('ngOnInit component ngOnInit')
     console.log('🚀 ngOnInit called');
     this.message = 'Hello from ngOnInit!';
-
-      this.http.get('../../../assets/txtfiles/ngoninit.txt', { responseType: 'text' })
-      .subscribe(code => this.tsCode = code);
-
   }
 }

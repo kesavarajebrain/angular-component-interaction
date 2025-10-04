@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from '@angular/router';
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 
 @Component({
   selector: "app-ngdocheck",
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule,HooksOrderComponent],
   templateUrl: "./ngdocheck.component.html",
   styleUrls: ["./ngdocheck.component.scss"]
 })

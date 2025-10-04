@@ -3,9 +3,15 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngOnInit()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
-    </p>
+    <p>👉 <b>ngOnInit()</b> is one of Angular’s lifecycle hooks that <b> runs once </b>after the component is
+        initialized — specifically after Angular has set all the input properties ( &#64;Input) of the component. <br>
+    It is a good place to put initialization logic, such as fetching data from a server or setting up default values
+        for properties. <br>
+    It is called only once during the component's lifecycle, making it ideal for tasks that need to be performed only
+        once when the component is created.</p>
+       <app-hooks-order></app-hooks-order>
+       <div class="conatiner card mt-3 p-3">
+        <pre>{{tsCode}}</pre>
+         <p class="text-success">Output : </p>{{message}}
+       </div>
 </div>
