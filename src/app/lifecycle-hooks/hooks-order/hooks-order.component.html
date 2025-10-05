@@ -1,6 +1,6 @@
-<div class="card">
+<div class="conatiner card alert alert-secondary" >
     <div class="row">
-        <div class="card-body">
+        <div class="col p-1">
             <h5>Recall the order</h5>
             <p *ngFor="let hook of lifeCyclehooksList">
                 <b *ngIf="activeHook === hook.hookName.replace('()', '')" style="font-size: larger;">

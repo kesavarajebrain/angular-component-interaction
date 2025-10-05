@@ -1,0 +1,77 @@
+<------------- Parent Component --------->
+
+// html file //
+
+<app-child [count]="parentCount"></app-child><br>
+<button class="btn btn-primary btn-sm" (click)="increase()">Button is placed on parent component- Increase</button>
+
+// ts file //
+
+import { Component } from "@angular/core";
+import { RouterModule } from '@angular/router';
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
+// import child component 
+import { ChildComponent } from "./child/child.component";
+
+@Component({
+  selector: "app-ngonchanges",
+  standalone: true,
+  imports: [RouterModule,HooksOrderComponent,ChildComponent,HttpClientModule],
+  templateUrl: "./ngonchanges.component.html",
+  styleUrls: ["./ngonchanges.component.scss"]
+})
+
+export class NgonchangesComponent  {
+  
+  parentCount = 0;
+  tsCode: string = '';
+
+
+  constructor( private http: HttpClient) { 
+  this.http.get('../../../assets/txtfiles/ngonchanges.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  increase() {
+    this.parentCount++;
+  }
+}
+
+
+<------------- Child Component --------->
+
+// html //
+
+<div class="container card">
+    <b>This is child component</b>
+    <h4>Child component works!</h4>
+    <h3>Count: {{ count }}</h3>
+</div>
+
+// ts //
+
+import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+
+@Component({
+  selector: "app-child",
+  standalone:true,
+  templateUrl: "./child.component.html",
+  styleUrls: ["./child.component.scss"]
+})
+
+export class ChildComponent implements OnChanges {
+  
+   @Input() count!: number;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('ngOnChanges fired:', changes);
+    if (changes['count']) {
+      const prev = changes['count'].previousValue;
+      const curr = changes['count'].currentValue;
+      console.log(`Count changed from ${prev} to ${curr}`);
+    }
+  }
+}
+

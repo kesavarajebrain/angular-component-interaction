@@ -5,13 +5,78 @@
     <h4 class="text-primary">ngOnInit()</h4>
     <p>👉 <b>ngOnInit()</b> is one of Angular’s lifecycle hooks that <b> runs once </b>after the component is
         initialized — specifically after Angular has set all the input properties ( &#64;Input) of the component. <br>
-    It is a good place to put initialization logic, such as fetching data from a server or setting up default values
+        It is a good place to put initialization logic, such as fetching data from a server or setting up default values
         for properties. <br>
-    It is called only once during the component's lifecycle, making it ideal for tasks that need to be performed only
+        It is called only once during the component's lifecycle, making it ideal for tasks that need to be performed
+        only
         once when the component is created.</p>
-       <app-hooks-order></app-hooks-order>
-       <div class="conatiner card mt-3 p-3">
+    <app-hooks-order></app-hooks-order>
+    <div class="conatiner card mt-3 p-2">
         <pre>{{tsCode}}</pre>
-         <p class="text-success">Output : </p>{{message}}
-       </div>
+        <p class="alert alert-success">Output : <b>{{message}}</b> </p>
+    </div>
+    <div class="container mt-2 card p-2">
+        <p>Suppose you have a parent component passing a value via &#64;Input():</p>
+        <div class="row">
+            <div class="col">
+                <b>In Parent component</b> <br>
+                &#11164;app-child [data]="'Hello Angular'" &#11166;&#11164;/app-child&#11166;
+
+                <p class="alert alert-success mt-4"> <b>Output :</b> <br>
+                    Constructor: data = undefined ❌ <br>
+                    ngOnInit: data = Hello Angular ✅
+                </p>
+                <p>💡 That’s because &#64;Input() bindings are not ready inside the constructor, but they’re available
+                    inside ngOnInit().</p>
+                <p class="alert alert-warning">
+                    &#64;Input() data!: string; <b>👉 👉 🔴 Definite Assignment Assertion operator.</b> <br>
+                    &#64;Input() data: string; // ❌ Error: Property 'data' has no initializer (without !) <br> <br>
+                    <span>
+                        By adding the exclamation mark (!),
+                        you’re saying to TypeScript: <br>
+
+                        “Trust me — this property will definitely be initialized before it’s used.”
+                    </span>
+                </p>
+                <p class="alert alert-danger">
+                    <b>What happens if you forget ! </b> <br>
+                    If you use strict mode ("strictPropertyInitialization": true in tsconfig.json): <br>
+                    &#64;Input() data: string; // ❌ TS2564: Property 'data' has no initializer
+                </p>
+                <p class="alert alert-primary">
+                    <b> Other ways to avoid the compilation Error</b> <br>
+                    Either initialize it directly: &#64;Input() data: string = ''; <br>
+                    Or make it optional: &#64;Input() data?: string;
+                </p>
+            </div>
+            <div class="col">
+                <b>In Child component</b> <br>
+                <img src="../../../assets/img/screenshots/ngonini1.png" class="img-fluid" alt="ngOnInit Example"> <br> <br>
+                <p class="alert alert-info">
+                    <b>This 🔴 Definite Assignment Assertion operator is applicable for Both &#64;Input() &#64;Output() <br> <br>
+                    &#64;Output() dataChange!: EventEmitter<>;</b>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="conatiner card mt-2 mb-3 p-2">
+        <p><b>Difference Between using <b>(!) NOT </b> in variables(before single/ before double/ after single) like this - !variable / !!variable / variable! </b></p>
+        <p class="alert alert-info">
+            <b>1. ! before a variable (JavaScript logical NOT)</b> <br>
+            let isLoggedIn = true; <br>
+            console.log(!isLoggedIn);
+        </p>
+        <p class="alert alert-secondary">
+            <b>2. !! (double NOT) → convert any value to boolean</b><br>
+            let isLoggedIn = true; <br>
+            console.log(!!isLoggedIn); // false <br>
+            console.log(!!"Hello"); // true <br>
+            console.log(!!0); // false <br>
+            console.log(!!undefined); // false
+        </p>
+        <p class="alert alert-warning">
+            <b>3. ! after a variable → TypeScript “Definite Assignment Assertion”</b><br>
+             &#64;Input() data!: string;
+        </p>
+    </div>
 </div>

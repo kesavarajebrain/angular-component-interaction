@@ -3,10 +3,106 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngOnChanges()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
+    <p>ngOnChanges() is the first lifecycle hook that runs in an Angular component or directive that has
+        <b>&#64;Input()</b>
+        properties.
     </p>
-        <app-hooks-order></app-hooks-order>
+    <p>It runs every time an input value changes — even before ngOnInit() the first time.</p>
+    <app-hooks-order></app-hooks-order>
+    <div class="container card mt-2 p-2 mb-3">
+        <div class="alert alert-info">
+            <b>When we use?</b> <br>
+            <p>When a parent component passes data to a child component using &#64;Input(), Angular calls
+                ngOnChanges() inside the child component to let you react to those changes immediately.</p>
+            <p>Example use cases:</p>
+            <ul>
+                <li>Update local variables when an input changes
+                </li>
+                <li>Run logic whenever input values change dynamically
+                </li>
+                <li>Compare old vs new values
+                </li>
+                <li>Fetch new data from the server when input changes
+                </li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="row p-2">
+                <div class="col">
+                    <img src="../../../assets/img/screenshots/ngonchanges1.png" class="img-fluid"
+                        alt="ngon changes Example"> <br>
+                    Each SimpleChange has:
+                    <ul>
+                        <li>previousValue
+                        </li>
+                        <li>currentValue
+                        </li>
+                        <li>firstChange()
+                        </li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <img src="../../../assets/img/screenshots/ngonchanges2.png" class="img-fluid"
+                        alt="ngon changes Example">
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3 p-3">
+            <div class="row">
+                <p>Example :</p>
+                <div class="col-3">
+                    <app-child [count]="parentCount"></app-child><br>
+                    <button class="btn btn-primary btn-sm" (click)="increase()">Button is placed on parent component-
+                        Increase</button>
+<br>
+<b>check console logs!</b>
+                </div>
+                <div class="col-9">
+                    <pre>{{tsCode}}</pre>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-2 p-3">
+            <pre>
+<b>⚠️ Restrictions & Key Points</b>
+Works only with &#64;Input() properties
+If you update a normal variable, ngOnChanges() will not fire.
+Triggers before ngOnInit()
+When component loads, ngOnChanges() fires first, then ngOnInit().
+Runs on reference changes
+If an input is an object or array, ngOnChanges() triggers only when its reference changes, not just when an element inside changes.
+
+<p class="alert alert-info"><b>✅ Use ngOnChanges when:</b>
+You depend on changes from the parent
+You need to compare old and new input values
+You want to trigger logic each time data updates from outside</p>
+<b>🚫 Don’t use it when: </b>
+You’re handling only internal logic inside the component
+You don’t have any &#64;Input()s — it won’t be called at all
+            </pre>
+            <div class="row">
+            <div class="col-4 alert alert-primary">
+                <p>ngOnChanges() is only called if the component has one or more  &#64;Input() properties. <br>
+If there are no  &#64;Input()s → Angular will never call ngOnChanges() for that component. <br>
+So you don’t need to include it at all in such components.</p>
+            </div>    
+            <div class="col-4 alert alert-secondary">
+                <p><b>
+✅ After ngOnInit() : </b><br>
+Once the component is already initialized: <br>
+Every time a parent changes the value of an  &#64;Input() property, Angular calls ngOnChanges() again. <br>
+ngOnInit() will not run again — it runs only once in the component’s lifetime.
+                </p>
+            </div>    
+            <div class="col-4 alert alert-success">
+                <p>
+                    <b>Have &#64;Input() without ngOnChanges : </b> <br>
+                    If you have  &#64;Input() but don’t care about changes: <br>
+<b>That’s totally fine.</b> You can just omit ngOnChanges() — Angular won’t complain. <br>
+The  &#64;Input() itself will still receive data automatically; you just won’t react to the changes manually.
+                </p>
+            </div>    
+            </div>
+        </div>
+    </div>
 </div>
