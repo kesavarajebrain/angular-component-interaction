@@ -3,6 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
+declare global {
+  interface Window {
+    adsbygoogle: any;
+  }
+}
 declare var adsbygoogle: any;
 
 @Component({
