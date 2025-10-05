@@ -1,0 +1,99 @@
+<---- Parent Component ------>
+
+// Html file
+ 
+ * Child component *
+<app-child [user]="user"></app-child><br>
+
+// input and change button 
+
+<input type="text" [(ngModel)]="formValue.name" class="form-control" placeholder="Enter name" /> <br>
+<button (click)="changeName()" class="btn btn-sm btn-primary">Change Name</button>
+<button (click)="replaceUser()"  class="btn btn-sm btn-info">Replace User</button>
+
+
+// TS file
+
+import { Component } from "@angular/core";
+import { RouterModule } from '@angular/router';
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
+// import child compoenent
+import { ChildComponent } from "./child/child.component";
+
+import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
+
+@Component({
+  selector: "app-ngdocheck",
+  standalone: true,
+  imports: [RouterModule, HooksOrderComponent, ChildComponent, FormsModule, HttpClientModule],
+  templateUrl: "./ngdocheck.component.html",
+  styleUrls: ["./ngdocheck.component.scss"]
+})
+
+export class NgdocheckComponent {
+
+  user = { name: 'Kesava', age: 30 };
+  formValue = { name: '' }
+  tsCode = ''
+
+  constructor(private http:HttpClient) {
+    this.http.get('../../../assets/txtfiles/ngonchanges.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  changeName() {
+    this.user.name = this.formValue.name; // same object, new name - ngDoCheck triggers
+  }
+
+  replaceUser() {
+    this.user = { name: 'Ravi', age: 30 }; // New object - OnChanges triggers
+  }
+}
+
+<------ Child Component ------->
+
+// Html file
+
+<h3>Child component works!</h3>
+<p>Senf from Parent initially ➡️  Kesava</p>
+<p>Previous Name ➡️ <b>{{previousName}}</b></p>
+
+// TS file
+
+import { Component, DoCheck, Input, OnChanges } from "@angular/core";
+
+@Component({
+  selector: "app-child",
+  standalone: true,
+  templateUrl: "./child.component.html",
+  styleUrls: ["./child.component.scss"]
+})
+
+export class ChildComponent implements DoCheck, OnChanges {
+
+  @Input() user!: { name: string; age: number };
+
+  public previousName = '';
+
+  constructor() { }
+
+  ngDoCheck() {
+    console.warn('ngDoCheck')
+    // it will trigger every changes like input detection and button clicks
+    if (this.user.name !== this.previousName) {
+      console.log(`Name changed from ${this.previousName} → ${this.user.name}`);
+      this.previousName = this.user.name;
+    }
+  }
+
+  ngOnChanges() {
+    console.warn('ngOnChanges')
+    // for the first time load only ngOnChanges will trigger / next time won't trigger
+    if (this.user.name !== this.previousName) {
+      console.log(`Name changed from ${this.previousName} → ${this.user.name}`);
+      this.previousName = this.user.name;
+    }
+  }
+}

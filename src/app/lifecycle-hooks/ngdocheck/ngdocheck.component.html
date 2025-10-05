@@ -3,10 +3,124 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngDoCheck()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
+    <p>👉 ngDoCheck() <b>(the “custom change detector” of Angular)</b> is a lifecycle hook that runs during every change
+        detection cycle — after Angular runs its own internal checks (for &#64;Input, event updates, etc.). <br>
+        It’s like Angular giving you a chance to “manually check or react” to something that Angular’s default change
+        detection might not detect automatically.
     </p>
-           <app-hooks-order></app-hooks-order>
+    <app-hooks-order></app-hooks-order>
+    <div class="container card mt-3 p-3 mb-3">
+        <div class="alert alert-info">
+            <p><b>When is it called?</b></p>
+            <p>It runs every time change detection happens. That means it runs when:</p>
+            <ul>
+                <li>An input property changes
+                </li>
+                <li>A user types in a textbox
+                </li>
+                <li>An event like (click) happens
+                </li>
+                <li>A timer (setTimeout, setInterval) changes data
+                </li>
+                <li>Even when you call detectChanges() manually
+                </li>
+                <li>So, it’s called very often — even more than ngOnChanges()
+                </li>
+            </ul>
+        </div>
+        <div class="alert alert-primary">
+            <p><b>Why do we need ngDoCheck?</b></p>
+            <p>Sometimes, Angular can’t detect deep changes inside complex objects or arrays.</p>
+            <pre>
+                // in parent component we are passing the data to child
+                &#64;Input() user = [name: 'Kesava', age: 30 ];
+
+                // we change the name in parent like below
+                this.user.name = 'Raj';
+
+Angular won’t detect this, because the object reference hasn’t changed — only its internal property.
+➡️ In such cases, ngOnChanges() won’t trigger.
+✅ But ngDoCheck() will, so you can manually compare the new and old values and react.
+            </pre>
+        </div>
+        <div class="container">
+            <p><b>Example :</b></p>
+            <div class="row alert alert-info">
+                <div class="col-4">
+                    <div class="card p-2">
+                        <b>Child Component</b>
+                        <app-child [user]="user"></app-child><br>
+                    </div>
+                    <div class="alert alert-secondary mt-3 p-2">
+                        <b>Parent Component</b> <br> <br>
+                        <input type="text" [(ngModel)]="formValue.name" class="form-control" placeholder="Enter name" />
+                        <br>
+                        <button (click)="changeName()" class="btn btn-sm btn-primary">Change Name</button> <br> <br>
+                        <button (click)="replaceUser()" class="btn btn-sm btn-info">Replace User</button>
+                    </div>
+                    <p>Check console logs!</p>
+                </div>
+                <div class="col-8">
+                    <pre>
+                        {{tsCode}}
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="card p-2">
+            <div>
+                <pre>
+<b>🚫 Restrictions / Things to Watch</b>
+
+❌ Don’t do heavy computations or HTTP calls inside ngDoCheck() — it runs a lot, so that would slow the app down.
+❌ Don’t mutate state inside it (that can cause an infinite loop).
+✅ Use it only for custom change detection — comparing old vs new values manually.
+
+🧩 Simple Analogy
+
+Think of Angular change detection as a teacher checking homework (ngOnChanges).
+But if you don’t change your notebook (just change a page inside it), the teacher won’t notice.
+So you (developer) can open the notebook yourself and check inside manually — that’s ngDoCheck() 😄
+
+இந்த மாதிரி நினைச்சா easy-ஆ புரியும் 👉
+ngOnChanges() → வெளியே object மாறும்போது
+ngDoCheck() → உள்ளே value மாறும்போது
+                </pre>
+            </div>
+        </div>
+        <div class="card">
+            <pre>
+🔹 Component Creation Phase 🔹
+┌─────────────────────────────────────────────---
+│                                                │
+│   1️⃣ constructor()                            │
+│       ⤷ Class created, dependencies injected   │
+│                                                │
+│   2️⃣ ngOnChanges()                             │
+│       ⤷ Called ONLY if &#64;Input() exists         │
+│       ⤷ Runs before ngOnInit                   │
+│                                                │
+│   3️⃣ ngOnInit()                               │
+│       ⤷ Runs once after first ngOnChanges      │
+│       ⤷ Good place for initialization logic    │
+│                                               │
+│   4️⃣ ngDoCheck()                              │
+│       ⤷ Runs on every change detection cycle  │
+│       ⤷ Detects manual / deep changes         │
+│                                               │
+└─────────────────────────────────────────────┘--
+                🔽
+          🔹 Content Projection Phase 🔹
+                ⤷ ngAfterContentInit()
+                ⤷ ngAfterContentChecked()
+                🔽
+          🔹 View Initialization Phase 🔹
+                ⤷ ngAfterViewInit()
+                ⤷ ngAfterViewChecked()
+                🔽
+          🔹 Destruction Phase 🔹
+                ⤷ ngOnDestroy()
+            </pre>
+        </div>
+    </div>
 </div>
