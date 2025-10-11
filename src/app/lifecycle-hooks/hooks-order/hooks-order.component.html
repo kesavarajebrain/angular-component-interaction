@@ -1,4 +1,4 @@
-<div class="conatiner card alert alert-secondary" >
+<div class="conatiner card alert alert-secondary">
     <div class="row">
         <div class="col p-1">
             <h5>Recall the order</h5>
@@ -10,6 +10,34 @@
                     ⚪ {{hook.hookName}} → {{hook.content}}
                 </span>
             </p>
+        </div>
+        <div class="col">
+            <div class="border border-secondary p-2 border-3 rounded">
+                <h5>🔹 Component Creation Phase 🔹</h5>
+                <p><b> 1️⃣ constructor()</b> <br>
+                    <span> ⤷ Class created, dependencies injected </span>
+                </p>
+                <p><b> 2️⃣ ngOnChanges()</b> <br>
+                    <span> ⤷ Called ONLY if &#64;Input() exists </span>
+                    <span> ⤷ Runs before ngOnInit </span>
+                </p>
+                <p><b> 3️⃣ ngOnInit() ()</b> <br>
+                    <span> ⤷ Runs once after first ngOnChanges </span> <br>
+                    <span> ⤷ Good place for initialization logic </span>
+                </p>
+                <p><b> 4️⃣ ngDoCheck() </b> <br>
+                    <span> ⤷ Runs on every change detection cycle </span><br>
+                    <span> ⤷ Detects manual / deep changes </span>
+                </p>
+                <h5>🔹 Content Projection Phase 🔹</h5>
+                <p> ⤷ ngAfterContentInit() <br></p>
+                <p>⤷ ngAfterContentChecked()<br></p>
+                <h5>🔹 View Initialization Phase 🔹</h5>
+                <p> ⤷ ngAfterViewInit() <br></p>
+                <p>⤷ ngAfterViewChecked() <br></p>
+                <h5> 🔹 Destruction Phase 🔹</h5>
+                <p> ⤷ ngOnDestroy() <br></p>
+            </div>
         </div>
     </div>
 </div>

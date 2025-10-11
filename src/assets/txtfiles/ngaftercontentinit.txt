@@ -1,0 +1,89 @@
+<----- ---- Parent Component --------->
+
+// HTML 
+
+ <div class="container card mt-2 p-2">
+        <div class="row">
+            <div class="col-4">
+                <app-child>
+                    <div #htmlContent class="p-3 alert alert-info">
+                        <html>
+                            <h6>HTML content - (h6 tag)</h6>
+                            <p>This is html content from parent component - (Paragraph tag)</p>
+                            <span>Sub heading - (span tag)</span>
+                            <div class="alert alert-warning">Alert Banner</div> <br>
+                            <img src="../../../assets/img/favicon_io/favicon-32x32.png" alt="img">
+                        </html>
+                    </div>
+                </app-child>
+            </div>
+            <div class="col-8"></div>
+        </div>
+    </div>
+
+ // TS 
+
+import { Component, OnInit } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
+// import child component
+import { ChildComponent } from "./child/child.component";
+// 
+import { HttpClient,HttpClientModule } from "@angular/common/http";
+
+@Component({
+  selector: "app-ngaftercontentinit",
+  standalone: true,
+  imports: [RouterModule,HooksOrderComponent,ChildComponent,HttpClient,HttpClientModule],
+  templateUrl: "./ngaftercontentinit.component.html",
+  styleUrls: ["./ngaftercontentinit.component.scss"]
+})
+
+export class NgaftercontentinitComponent implements OnInit {
+  
+  public tsCode = '';
+
+  constructor(private http: HttpClient) { 
+      this.http.get('../../../assets/txtfiles/ngaftercontentinit.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  ngOnInit() {
+
+  }
+}
+
+
+< ---------------- Child Component --------------->
+
+// HTML 
+
+<div class="child-box card p-2">
+  <h3>Child Component works!</h3>
+  <p>Below content is projected from Parent 👇</p>
+  <ng-content></ng-content>
+</div>
+
+// TS
+
+import { AfterContentInit, Component, ContentChild, ElementRef } from '@angular/core';
+
+@Component({
+  selector: "app-child",
+  templateUrl: "./child.component.html",
+  standalone:true,
+  styleUrls: ["./child.component.scss"]
+})
+
+export class ChildComponent implements AfterContentInit {
+
+   @ContentChild('htmlContent') htmlContentRef!: ElementRef;
+
+
+  ngAfterContentInit() {
+    console.log('✅ ngAfterContentInit triggered');
+    console.log('Projected content:', this.htmlContentRef.nativeElement.textContent);
+  }
+}
+
+   

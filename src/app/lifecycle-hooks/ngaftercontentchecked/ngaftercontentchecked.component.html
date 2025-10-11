@@ -3,10 +3,75 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngAfterContentChecked()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
-    </p>
+    <p>🔹After every change detection cycle, after it has projected external content into the component.</p>
+    <p>🔹It runs every time Angular checks the content projected via &#11164;ng-content&#11166;
+        for updates.</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-6 alert alert-info">
+                <p><b>⚙️ When Does It Run?</b></p>
+                <span>1️⃣ It runs after ngAfterContentInit() — always.
+                </span><br>
+                <span>2️⃣ It runs again every time any bound data inside projected content changes.
+                </span>
+                <p>💡 So if the parent updates the content that was projected, this hook fires automatically.</p>
+            </div>
+            <div class="col-6 alert alert-primary">
+                <div>
+                    <p><b>ngAfterContentInit</b> → Runs once, when the projected content is first rendered. <br>
+                        “The content just arrived; I can access it now.”</p>
+                    <p> <b>ngAfterContentChecked</b> → Runs after every change detection that may alter projected
+                        content. <br>
+                        “The content might have changed; I’ll check and react if needed.”</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <app-hooks-order></app-hooks-order>
+    <div class="container card mt-2 alert alert-danger">
+        <div class="row">
+            <div class="col">
+                <p><b>Will it Works (Even Without ngAfterContentChecked) ?</b></p>
+                <p><b>YES</b>, This happens because of <b>Angular’s Change Detection mechanism</b> — not because of
+                    lifecycle hooks
+                    directly.</p>
+                <p><b> When ngAfterContentChecked() actually matters ?
+                    </b></p>
+                <p> ngAfterContentChecked() runs after each change detection cycle, and it’s only needed if the child
+                    wants to:
+                </p>
+                <p> Detect changes inside the projected content (not owned by the child)
+                </p>
+                <p> React programmatically (e.g., compare old vs new values using ElementRef)
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container card mb-2 alert alert-warning">
+        <div class="row ">
+            <div class="col-4 p-2">
+                <div class="alert alert-info p-1">
+                    <p>Parent Component : Passing messages to child component</p>
+                    <button class="btn btn-sm btn-info" (click)="changeMessage('info')">Info</button>&nbsp;
+                    <button class="btn btn-sm btn-warning" (click)="changeMessage('warning')">Warning</button>&nbsp;
+                    <button class="btn btn-sm btn-danger" (click)="changeMessage('error')">Error</button>&nbsp;
+                    <button class="btn btn-sm btn-success" (click)="changeMessage('success')">Success</button>&nbsp;
+                    <button class="btn btn-sm btn-secondary" (click)="changeMessage('secondary')">Back up</button>&nbsp;
+                </div>
+                <div class="alert alert-primary p-1">
+                    <p>Child Component : Displaying messages </p>
+                    <app-child>
+                        <div #alertBlock [attr.data-type]="alertData.type">
+                            {{ alertData.msg }}
+                        </div>
+                    </app-child>
+                </div>
+            </div>
+            <div class="col-8">
+                <pre>
+                    {{tsCode}}
+                </pre>
+            </div>
+        </div>
+    </div>
 </div>

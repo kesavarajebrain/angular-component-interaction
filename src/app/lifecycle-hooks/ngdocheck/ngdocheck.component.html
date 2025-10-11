@@ -88,39 +88,5 @@ ngDoCheck() → உள்ளே value மாறும்போது
                 </pre>
             </div>
         </div>
-        <div class="card">
-            <pre>
-🔹 Component Creation Phase 🔹
-┌─────────────────────────────────────────────---
-│                                                │
-│   1️⃣ constructor()                            │
-│       ⤷ Class created, dependencies injected   │
-│                                                │
-│   2️⃣ ngOnChanges()                             │
-│       ⤷ Called ONLY if &#64;Input() exists         │
-│       ⤷ Runs before ngOnInit                   │
-│                                                │
-│   3️⃣ ngOnInit()                               │
-│       ⤷ Runs once after first ngOnChanges      │
-│       ⤷ Good place for initialization logic    │
-│                                               │
-│   4️⃣ ngDoCheck()                              │
-│       ⤷ Runs on every change detection cycle  │
-│       ⤷ Detects manual / deep changes         │
-│                                               │
-└─────────────────────────────────────────────┘--
-                🔽
-          🔹 Content Projection Phase 🔹
-                ⤷ ngAfterContentInit()
-                ⤷ ngAfterContentChecked()
-                🔽
-          🔹 View Initialization Phase 🔹
-                ⤷ ngAfterViewInit()
-                ⤷ ngAfterViewChecked()
-                🔽
-          🔹 Destruction Phase 🔹
-                ⤷ ngOnDestroy()
-            </pre>
-        </div>
     </div>
 </div>

@@ -3,10 +3,30 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngAfterViewInit()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
+    <p>ngAfterViewInit is a lifecycle hook in Angular that <b>runs once,</b> after the component’s own template (HTML)
+        and all its child components have been created and loaded in the DOM.
     </p>
+    <p>We can interact to child component in ngAfterViewInit and modify child component DOM from parent component</p>
     <app-hooks-order></app-hooks-order>
+    <div class="container card p-3 mt-2 mb-2">
+        <div class="row">
+            <div class="col-4">
+                <div class="alert alert-info">
+                    <b>Child component : </b>
+                    <app-child></app-child>
+                </div>
+                <div class="alert alert-primary">
+                    <b>Parent component : Access child's DOM from parent</b> <br>
+                    <button class="btn btn-sm btn-warning" (click)="update()">Click</button>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="alert alert-success">
+                    <pre>
+                        {{tsCode}}
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

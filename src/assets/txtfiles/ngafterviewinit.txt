@@ -1,0 +1,125 @@
+<---------Parent component ----------->
+
+// HTML
+
+ <div class="container card p-3 mt-2">
+        <div class="row">
+            <div class="col-4">
+                <div class="alert alert-info">
+                    <b>Child component :</b>
+                    <app-child></app-child>
+                </div>
+                <div class="alert alert-primary">
+                    <b>Parent component :</b> <br>
+                    <button class="btn btn-sm btn-warning" (click)="update()">Click</button>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="alert alert-success">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+// TS
+
+import { AfterViewInit, Component, ViewChild, ChangeDetectorRef } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
+// import child
+import { ChildComponent } from "./child/child.component";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+
+@Component({
+  selector: "app-ngafterviewinit",
+  standalone: true,
+  imports: [RouterModule, HooksOrderComponent, ChildComponent, HttpClientModule],
+  templateUrl: "./ngafterviewinit.component.html",
+  styleUrls: ["./ngafterviewinit.component.scss"]
+})
+
+export class NgafterviewinitComponent implements AfterViewInit {
+  @ViewChild(ChildComponent) childComp!: ChildComponent;
+
+  public tsCode = '';
+
+  constructor(private cd: ChangeDetectorRef, private http: HttpClient) {
+    this.http.get('../../../assets/txtfiles/ngafterviewinit.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  ngAfterViewInit() {
+    console.log('✅ Parent ngAfterViewInit called');
+    console.log('Child Component is accessible here:', !!this.childComp);
+
+    // ✅ The child is fully ready — we can change its value
+    // for testing purpose added settimeout
+    setTimeout(() => {
+      console.log('⏳ Updating child after 3 seconds...');
+      this.childComp.updateStatus('✅ Updated by Parent after 3 seconds!');
+    }, 3000);
+
+    // ⚠️ But if we change bound data, Angular may warn "ExpressionChangedAfterItHasBeenCheckedError"
+    // So fix with detectChanges()
+    this.cd.detectChanges();
+  }
+
+  update() {
+    this.childComp.update('✅ Updated by Parent by btn click!');
+  }
+}
+
+
+
+<---------- Child component ----------->
+
+// HTML
+
+<div class="container card p-2">
+    <div #childDiv style="border:1px solid black;padding:5px;width:200px;">
+        <span>Waiting for ngAfterViewInit...</span>
+    </div> <br>
+    <p #childStatusDiv class="alert alert-primary"> {{ status }}</p>
+</div>
+
+// TS
+
+import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+
+@Component({
+  selector: "app-child",
+  standalone: true,
+  templateUrl: "./child.component.html",
+  styleUrls: ["./child.component.scss"]
+})
+
+export class ChildComponent implements AfterViewInit {
+
+  public status = '🕐 Waiting for parent...';
+
+  @ViewChild('childDiv') divRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('childStatusDiv') childStatusDivRef!: ElementRef<HTMLDivElement>;
+
+  ngAfterViewInit() {
+    console.log('✅ Child ngAfterViewInit called');
+    setTimeout(() => {
+      // Now DOM is ready, we can modify safely
+      this.divRef.nativeElement.style.background = 'lightgreen';
+      this.divRef.nativeElement.innerText = 'DOM is Ready ✅';
+    }, 2000)
+  }
+
+  updateStatus(newStatus: string) {
+    this.status = newStatus;
+  }
+
+   update(newStatus: string) {
+    this.status = newStatus;
+    this.childStatusDivRef.nativeElement.style.fontStyle = 'italic';
+    this.childStatusDivRef.nativeElement.style.background = 'pink';
+     // changing another one also here
+    this.divRef.nativeElement.style.background = '#c9d2f4d0';
+    this.divRef.nativeElement.style.fontWeight = 'bold';
+  }
+}

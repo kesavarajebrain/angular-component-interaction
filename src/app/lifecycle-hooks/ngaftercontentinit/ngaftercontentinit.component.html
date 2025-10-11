@@ -3,10 +3,126 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngAfterContentInit()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
+    <p><b>ngAfterContentInit</b> is a lifecycle hook that executes once —
+        after Angular projects external content (from the parent) into the child component’s template.</p>
+    <p>It runs when Angular finishes inserting <b>&#11164;ng-content&#11166;
+        </b> projected content inside your component.</p>
+    <p>So — it runs after the content from the parent <b>(&#11164;ng-content&#11166;)</b> has been added into the child.
     </p>
     <app-hooks-order></app-hooks-order>
+    <div class="container card p-2">
+        <div class="row">
+            <div class="col">
+                <p>Usage :</p>
+                <table class="table table-bordered table-striped table-primary table-hover">
+                    <thead>
+                        <tr>
+                            <th>Rule</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                🧱 Runs only once
+                            </td>
+                            <td>Triggered only the first time content is projected.</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                ⚙️ No DOM access before it
+                            </td>
+                            <td>You can’t access &#64;ContentChild in ngOnInit() — it’ll be undefined until
+                                ngAfterContentInit() runs.</td>
+                        </tr>
+                        <tr>
+                            <td>🔁 If content changes</td>
+                            <td>Use ngAfterContentChecked() to handle dynamic updates.</td>
+                        </tr>
+                        <tr>
+                            <td>⚡ Performance caution</td>
+                            <td>Avoid heavy DOM operations — called after projection, not during rendering.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert alert-warning">
+                    <p>&#64;Input() → “Hey child, here’s some data. You decide how to display it.”</p>
+                    <p>&#11164;ng-content&#11166; → “Hey child, I’ll send you actual HTML content — just render it as-is.”</p>
+                </div>
+            </div>
+            <div class="col"> 
+                <p>Difference between &#11164;ng-content&#11166; and &#64;Input()</p>
+                   <table class="table table-bordered table-info table-hover">
+                    <thead>
+                        <tr>
+                            <th>&#11164;ng-content&#11166;</th>
+                            <th>&#64;Input()</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                               Passes DOM content (HTML elements, templates) 
+                            </td>
+                            <td>Passes data (values, objects)</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Parent → Child (content projection)
+                            </td>
+                            <td>Parent → Child (data binding)</td>
+                        </tr>
+                        <tr>
+                            <td>After template rendering (handled in ngAfterContentInit())</td>
+                            <td>Before ngOnChanges() / ngOnInit()</td>
+                        </tr>
+                        <tr>
+                            <td>&#64;ContentChild() or &#64;ContentChildren() decorators</td>
+                            <td>&#64;Input() decorator in TypeScript</td>
+                        </tr>
+                         <tr>
+                            <td>For injecting or embedding actual HTML content inside child</td>
+                            <td>For sending values or objects</td>
+                        </tr>
+                         <tr>
+                            <td>Child projects parent’s HTML directly via &#11164;ng-content&#11166;</td>
+                            <td>Child displays data in its own template</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+               <div class="alert alert-success">
+                <p>ngAfterContentInit() <b> makes sense only when your component uses </b>&#11164;ng-content&#11166; (or &#64;ContentChild / &#64;ContentChildren).</p>
+                <pre>
+🔹 &#64;ContentChild → gives you one item
+🔹 &#64;ContentChildren → gives you multiple items
+                </pre>
+               </div>
+            </div>
+        </div>
+    </div>
+    <div class="container card mt-2 p-2">
+        <div class="row">
+            <div class="col-3">
+                <app-child>
+                    <div #htmlContent class="p-3 alert alert-info">
+                        <html>
+                        <h6>HTML content - (h6 tag)</h6>
+                        <p>This is html content from parent component - (Paragraph tag)</p>
+                        <span>Sub heading - (span tag)</span>
+                        <div class="alert alert-warning">Alert Banner</div> <br>
+                        <img src="../../../assets/img/favicon_io/favicon-32x32.png" alt="img">
+
+                        </html>
+                    </div>
+                </app-child>
+            </div>
+            <div class="col-9 alert alert-primary">
+                <pre>{{tsCode}}</pre>
+            </div>
+        </div>
+    </div>
 </div>

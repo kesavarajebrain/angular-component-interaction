@@ -1,0 +1,161 @@
+<-------------- Parent Component ----------->
+
+// HTML
+
+<div class="row alert alert-warning">
+            <div class="col-4 p-2">
+                <div class="alert alert-info p-1">
+                    <p>Parent Component : Passing messages to child component</p>
+                    <button class="btn btn-sm btn-info" (click)="changeMessage('info')">Info</button>&nbsp;
+                    <button class="btn btn-sm btn-warning" (click)="changeMessage('warning')">Warning</button>&nbsp;
+                    <button class="btn btn-sm btn-danger" (click)="changeMessage('error')">Error</button>&nbsp;
+                    <button class="btn btn-sm btn-success" (click)="changeMessage('success')">Success</button>&nbsp;
+                </div>
+                <div class="alert alert-primary p-1">
+                    <p>Child Component : </p>
+                    <app-child>
+                        <div #alertBlock [attr.data-type]="alertData.type">
+                            {{ alertData.msg }}
+                        </div>
+                    </app-child>
+                </div>
+            </div>
+            <div class="col-8">
+                <pre>
+                    {{tsCode}}
+                </pre>
+            </div>
+</div>
+
+// TS
+
+import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
+// import child
+import { ChildComponent } from "./child/child.component";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+
+@Component({
+  selector: "app-ngaftercontentchecked",
+  standalone: true,
+  imports: [RouterModule, HooksOrderComponent, ChildComponent,HttpClientModule],
+  templateUrl: "./ngaftercontentchecked.component.html",
+  styleUrls: ["./ngaftercontentchecked.component.scss"]
+})
+
+export class NgaftercontentcheckedComponent {
+
+  public tsCode = '';
+
+  alertData = {
+    msg: 'Welcome! All systems normal ✅',
+    type: 'info'
+  }
+
+
+  constructor(private http: HttpClient) {
+    this.http.get('../../../assets/txtfiles/ngaftercontentchecked.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  changeMessage(type: string) {
+    console.log(type)
+    switch (type) {
+      case 'info':
+        this.alertData = { msg: 'ℹ️ Information: Server running smoothly!', type };
+        break;
+      case 'warning':
+        this.alertData = { msg: '⚠️ Warning: Memory usage high!!', type };
+        break;
+      case 'success':
+        this.alertData = { msg: '✅ Success : Good Condition!', type };
+        break;
+      case 'error':
+        this.alertData = { msg: '❌ Failed : Server Down!', type };
+        break;
+      default:
+        this.alertData = { msg: '', type: 'info' };
+        break;
+    }
+    console.log(this.alertData)
+  }
+}
+
+
+< ------------------- Child Component ------------------>
+
+// HTML
+
+<div class="container p-1">
+<h4>Child component works!</h4>
+   <ng-content></ng-content>
+</div>
+
+// TS 
+
+import { Component, AfterContentChecked, ContentChild, ElementRef,AfterContentInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-child',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './child.component.html',
+  styleUrls: ['./child.component.scss']
+})
+export class ChildComponent implements AfterContentChecked, AfterContentInit {
+
+  @ContentChild('alertBlock', { read: ElementRef }) alertEl!: ElementRef;
+
+  private previousType = '';
+  private previousMessage = '';
+
+  ngAfterContentInit(): void {
+    // alert('ngAfterContentInit')
+    const el = this.alertEl?.nativeElement;
+    if (!el) return;
+
+    const currentType = el.getAttribute('data-type');
+    if(currentType =='error'){
+      alert('SERVER DOWN!!')
+    }
+  }
+
+  ngAfterContentChecked() {
+    // alert('ngAfterContentChecked')
+    const el = this.alertEl?.nativeElement;
+    if (!el) return;
+
+    const currentType = el.getAttribute('data-type');
+    const currentMessage = el.textContent.trim();
+    if(currentType =='error'){
+      alert('SERVER DOWN!!')
+    }
+
+    // Detect if something changed from parent
+    if (currentType !== this.previousType || currentMessage !== this.previousMessage) {
+      console.log('🔁 Projected content changed from parent!');
+      console.log('Type:', currentType, 'Message:', currentMessage);
+      console.log('element ->',el)
+      // Simulate manipulation (for example, color or transformation)
+      el.style.color = this.getColor(currentType);
+      el.style.fontWeight = 'bold';
+      el.style.transition = '0.3s';
+      
+      // Save previous state
+      this.previousType = currentType;
+      this.previousMessage = currentMessage;
+    }
+  }
+
+  private getColor(type: string) {
+    switch (type) {
+      case 'info': return 'dodgerblue';
+      case 'warning': return 'orange';
+      case 'success': return 'green';
+      case 'error': return 'red';
+      default: return 'black';
+    }
+  }
+}
