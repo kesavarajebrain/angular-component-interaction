@@ -3,10 +3,49 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngOnDestroy()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
+    <p>ngOnDestroy() is a lifecycle hook that Angular calls just before the component is removed from the DOM
+        (destroyed).
     </p>
+    <p></p>
     <app-hooks-order></app-hooks-order>
+    <div class="container card mt-3 mb-3 p-2">
+        <div class="row">
+            <div class="col-6">
+                <div class="alert alert-primary">
+                    <b>Parent Component</b> <br>
+                    <button class="btn btn-sm btn-info" (click)="toggle()">Toggle Counter</button>
+                </div>
+                <div class="alert alert-warning">
+                    <app-child *ngIf="showCounter"></app-child>
+                </div>
+            </div>
+            <div class="col-6">
+                <b>Why ngOnDestroy?</b>
+                <pre>
+✅ Counter stops immediately (because we cleared the interval).
+✅ No memory leaks.
+✅ Perfect cleanup.
+
+<b>⚠️ Why It’s Important?</b>
+If you don’t use ngOnDestroy properly:
+🔹Subscriptions keep running
+🔹Timers never stop
+🔹Components hold memory references
+🔹App becomes slow or crashes over time
+🔹So this hook is essential for performance and stability.
+
+<b>What needs to clean?</b>
+✅ Clean up Subscriptions
+✅ Clear Intervals or Timeouts
+✅ Remove Event Listeners
+✅ Destroy External Libraries
+                </pre>
+            </div>
+        </div>
+        <div class="container alert alert-info">
+            <pre>
+                {{tsCode}}
+            </pre>
+        </div>
+    </div>
 </div>
