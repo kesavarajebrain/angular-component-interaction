@@ -1,0 +1,95 @@
+<----------Parent Component ----------->
+
+// HTML
+
+  <div class="alert alert-success">
+    <h3>Parent component</h3>
+    <app-child [count]="count"></app-child> <br>
+    <button class="btn btn-sm btn-warning" (click)="increase()">Click</button>
+</div>
+
+//TS
+
+import { Component, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { RouterModule } from "@angular/router";
+import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
+// import child
+import { ChildComponent } from "./child/child.component";
+
+@Component({
+  selector: "app-ngafterviewchecked",
+  standalone: true,
+  imports: [RouterModule,HooksOrderComponent,ChildComponent],
+  templateUrl: "./ngafterviewchecked.component.html",
+  styleUrls: ["./ngafterviewchecked.component.scss"]
+})
+
+export class NgafterviewcheckedComponent implements AfterViewInit,AfterViewChecked {
+  
+  count = 0;
+
+  constructor() { 
+
+  }
+
+  ngAfterViewInit() {
+    console.log('✅ ngAfterViewInit - View Initialized',this.count); // we will get 0 only
+  }
+
+  ngAfterViewChecked() {
+    console.log('🔁 ngAfterViewChecked - View Checked, count:', this.count); // here will get updated value
+  }
+
+  increase() {
+    this.count++;
+  }
+}
+
+
+<--------- Child Component ------------>
+
+// HTML
+
+<div class="container card p-2">
+    <h4>Child component works!</h4>
+    <p class="mt-2">
+        <span style="height: 50px; width: 50px;border-radius: 50%;padding: 8px;" #counter> {{count}}
+        </span>
+    </p>
+</div>
+
+// TS
+
+import { Component, Input, ViewChild, ElementRef, AfterViewChecked } from "@angular/core";
+
+@Component({
+  selector: "app-child",
+  standalone: true,
+  templateUrl: "./child.component.html",
+  styleUrls: ["./child.component.scss"]
+})
+
+export class ChildComponent implements AfterViewChecked {
+  @ViewChild('counter') counterRef!: ElementRef<HTMLDivElement>;
+
+  @Input() count = 0;
+
+  constructor() {
+
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.counterRef) {
+      if (this.count % 2 === 0) {
+        this.counterRef.nativeElement.style.background = '#67f95aff'; // green shade
+        this.counterRef.nativeElement.style.color = 'black';
+        this.counterRef.nativeElement.style.fontWeight = '400';
+
+      } else {
+        this.counterRef.nativeElement.style.background = '#f77055ff'; // red shade
+        this.counterRef.nativeElement.style.color = 'white';
+        this.counterRef.nativeElement.style.fontWeight = 'bold';
+      }
+    }
+  }
+}

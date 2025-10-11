@@ -3,10 +3,78 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4 class="text-primary">ngAfterViewChecked()</h4>
-    <p>👉 The constructor in Angular is not actually part of Angular’s lifecycle hooks.
-        It’s a <b>TypeScript/ES6 class feature</b>.</p>
-    <p>Angular simply uses it to create an instance of your component class.</p>
-    <p>constructor() is a <b>JavaScript class mechanism</b> called before Angular starts running any lifecycle hooks.
+    <p>ngAfterViewChecked runs after every change detection cycle,
+        when Angular checks the component’s own view (template) and all of its child components’ views.
     </p>
+    <p>👉 Angular calls this every time your component (or any of its child views) updates or re-renders.</p>
     <app-hooks-order></app-hooks-order>
+    <div class="container card mt-2 p-2 mb-3">
+        <div class="row">
+            <div class="col">
+                <p>🔹 4️⃣ Difference — ngAfterViewInit vs ngAfterViewChecked</p>
+                <table class="table table-bordered table-striped table-info table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>ngAfterViewInit</th>
+                            <th>ngAfterViewChecked</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>
+                                Runs when
+                            </th>
+                            <td>View is first created</td>
+                            <td>After every change detection</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                How many times
+                            </th>
+                            <td>Once</td>
+                            <td>Many times</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Purpose
+                            </th>
+                            <td>Initialize logic after view creation</td>
+                            <td>React/check after view updates</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Typical use
+                            </th>
+                            <td>DOM access, one-time setup</td>
+                            <td>Debugging, checking data sync</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Safe for modifying view?
+                            </th>
+                            <td>✅ Yes</td>
+                            <td>⚠️ Not safe (can cause infinite loops)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <div class="alert alert-secondary">
+                    <p> <b>ngAfterViewInit </b> - runs once (after view is created) </p>
+                    <p><b>ngAfterViewChecked </b> - runs many times (after every change detection check)</p>
+                </div>
+                <div class="alert alert-success">
+                    <h3>Parent component</h3>
+                    <app-child [count]="count"></app-child> <br>
+                    <button class="btn btn-sm btn-warning" (click)="increase()">Click</button>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <pre>
+                {{tsCode}}
+            </pre>
+        </div>
+    </div>
 </div>
