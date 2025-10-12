@@ -68,6 +68,7 @@ you call it like a function — count().-->
                     you call it like a function — count().</p>
 
                 <pre>
+                    {{tsCode}}
 when we write like this - count = signal(0);
 This creates a reactive wrapper object — not just a number.
 That signal(0) returns an object that looks like this (internally):
@@ -84,6 +85,7 @@ So when you call count(), you’re reading the signal’s value.
 ✅ count() → means “give me the current value inside the signal”
 ✅ count.set(5) → means “replace it with 5”
 ✅ count.update(v => v + 1) → means “increment the current value”
+
                     </pre>
             </div>
             <div class="col-6">

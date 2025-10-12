@@ -1,3 +1,9 @@
+<----------HTML ----------->
+
+  Count : {{count()}} 
+
+<----------TS------------>
+
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { Component, signal } from "@angular/core";
 import { RouterModule } from "@angular/router";
@@ -23,3 +29,4 @@ export class SignalComponent {
     this.count.update((value) => value + 1); // ✅ Step 2: Update signal
   }
 }
+
