@@ -1,0 +1,36 @@
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+
+@Component({
+  selector: "app-sub-component",
+  standalone: true,
+  imports: [RouterModule, HttpClientModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: "./sub-component.component.html",
+  styleUrls: ["./sub-component.component.scss"]
+})
+
+export class SubComponentComponent implements OnInit {
+
+  public name = 'Kesava';
+  public status: any;
+  public tsCode = '';
+
+  constructor(private http: HttpClient, private cd: ChangeDetectorRef) {
+    this.http.get('../../../assets/txtfiles/change-detection-push.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  ngOnInit(): void {
+    this.update();
+  }
+
+  update() {
+    setTimeout(() => {
+      this.name = 'Raj';
+      this.status = '✅ manually trigger update using `this.cd.detectChanges();`';
+      this.cd.detectChanges();  // ✅ manually trigger update
+    }, 3000);
+  }
+}

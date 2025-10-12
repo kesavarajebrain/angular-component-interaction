@@ -1,0 +1,265 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Change Detection</h4>
+    <p>🧩 <b>Change Detection</b> is the mechanism Angular uses to keep your component’s data (TS variables) and view
+        (HTML) in sync.</p>
+    <div class="card">
+        <div class="row">
+            <div class="col-6">
+                <img src="../../assets/img/screenshots/change-detection.png" alt="cd">
+            </div>
+            <div class="col-6 mt-3">
+                <p>Angular must detect when count changes in TypeScript and update the UI automatically.
+                    That process — detecting the change and updating the view — is Change Detection. ✅</p>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3 card p-3 mb-2">
+        <div class="row">
+            <div class="col-6">
+                <h5>Why Do We Need Change Detection?</h5>
+                <img src="../../assets/img/screenshots/change-detection1.png" alt="cd">
+                <p>JS knows the value changed, but your HTML doesn’t magically update. <br>
+                    Angular solves this problem using Change Detection, which checks your component’s data and
+                    re-renders the HTML when it finds any change.</p>
+            </div>
+            <div class="col-6">
+                <h5>How Angular Detects Changes (Behind the Scenes)?</h5>
+                <p>Angular’s change detection system runs through something called <b>Zone.js.</b> </p>
+                <ol>
+                    <li>You click a button / input / event / API resolves.
+                    </li>
+                    <li>Zone.js catches that asynchronous event (e.g., click, setTimeout, promise).
+                    </li>
+                    <li>Angular’s Change Detection cycle starts.
+                    </li>
+                    <li>Angular checks each component’s data → re-renders HTML if needed.
+                    </li>
+                    <li>The screen updates automatically.
+                    </li>
+                </ol>
+                <p>This entire cycle happens many times per second — Angular ensures the view always reflects the latest
+                    state.
+                </p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <h5>🔍 Change Detection Strategies (2 Modes)</h5>
+                <table class="table table-striped table-hover table-info">
+                    <thead>
+                        <tr>
+                            <th>Strategy</th>
+                            <th>Mode</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-primary">
+                            <th>Default</th>
+                            <td>ChangeDetectionStrategy.Default</td>
+                            <td>Angular checks every component on every event</td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <th>OnPush</th>
+                            <td>ChangeDetectionStrategy.OnPush</td>
+                            <td>Angular checks only when inputs or signals change</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-6">
+                <h5>🧩 Default Strategy</h5>
+                <p>How it works: <br>
+                    Any event (click, input, timeout, promise, etc.) triggers change detection for the entire app tree.
+                    <br>
+                    Angular re-checks all components, even if their data hasn’t changed. <br>
+                    ✅ Easy to use <br>
+                    ❌ Can cause performance overhead in large apps
+                </p>
+
+                <h5>⚡ OnPush Strategy</h5>
+                <p>How it works: <br>
+                    If you mark a component as OnPush, Angular becomes smarter. <br>
+                    One of its &#64;Input() values changes (new reference) <br>
+                    An event originates from inside it (like a button click) <br>
+                    You manually trigger detection (markForCheck() / detectChanges()) <br>
+                    ✅ Super-fast <br>
+                    ✅ Used in production-level optimized apps <br>
+                    ❌ You must understand immutability (new object reference needed)
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-6 alert alert-primary">
+                    <b>Default Strategy</b>
+                    <p>Name will update here after few seconds...</p>
+                    {{name}} <br>
+                    {{status}} <br>
+                    <pre class="mt-5">
+                        {{tsCode}}
+                    </pre>
+                </div>
+                <div class="col-6 alert alert-info">
+                    <b>OnPush Strategy</b>
+                    <app-sub-component></app-sub-component>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <b>Summary</b>
+                <div class="col">
+                    <pre>
+
+| Strategy    | Description                           | Angular Checks      | Performance      |
+| ----------- | ------------------------------------- | ------------------- | ---------------- |
+| **Default** | Always re-checks everything           | All components      | Easy, but slower |
+| **OnPush**  | Checks only when inputs/events change | Selected components | Fast, efficient  |
+
+            </pre>
+                </div>
+                <div class="col">
+                    <pre>
+| Method            | From              | What It Does                                       |
+| ----------------- | ----------------- | -------------------------------------------------- |
+| `markForCheck()`  | ChangeDetectorRef | Marks component and ancestors for re-check         |
+| `detectChanges()` | ChangeDetectorRef | Immediately run change detection manually          |
+| `detach()`        | ChangeDetectorRef | Stop automatic change detection for this component |
+| `reattach()`      | ChangeDetectorRef | Re-enable detection                                |
+
+                    </pre>
+
+                    <div class="row">
+                        <div class="col">
+                            <pre>
+Imagine a security guard 👮‍♂️ checking rooms in a building 🏢
+
+<b>Default Mode:</b>
+Every time someone opens any door in the building,
+guard goes and checks all rooms, even if nothing changed.
+
+👉 நல்லது for small building,
+❌ waste of time for big one.
+
+<b>OnPush Mode:</b>
+Guard checks only rooms that got new guests (input changed)
+or rooms where someone pressed the bell (event triggered).
+
+👉 Much faster and efficient ⚡
+
+அதாவது 👇
+
+“Default” mode-ல எல்லா component-மும் check ஆகும்,
+“OnPush” mode-ல input change ஆன component மட்டும் check ஆகும்
+                        </pre>
+                        </div>
+                        <div class="col-6 card alert alert-warning">
+                            <b>how to identify when manual CD is needed?</b>
+                            <pre>
+| Symptom / Observation                                       | Reason                               | Fix                                           |
+| ----------------------------------------------------------- | ------------------------------------ | --------------------------------------------- |
+| ✅ Variable updates in console but ❌ UI doesn’t change    | Change happened outside Angular Zone | Use `ChangeDetectorRef.detectChanges()`       |
+|
+| &#64;Input object changed internally but UI didn’t update   | Mutated same reference               | Use immutable update OR `markForCheck()`      |
+|
+| Component uses OnPush but doesn’t refresh after API success | Async call finished outside Angular  | Use `markForCheck()` inside subscription      |
+|
+| Data arrives via WebSocket / external library callback      | External events not inside zone      | Wrap with `ngZone.run()` or `detectChanges()` |
+|
+| UI doesn’t reflect after 3rd-party SDK updates              | SDK runs outside Angular             | Wrap callback in `ngZone.run()`               |
+|
+| You detached change detection for performance               | You paused CD manually               | Use `detectChanges()` when needed             |
+
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row alert alert-warning">
+            <div class="col-6">
+                <img src="../../assets/img/screenshots/change-detection2.png" height="450px" width="450px" alt="test">
+                <br>
+                <p class="mt-2">Angular automatically updates your UI only for changes it knows about (inside its zone).
+                    <br>
+                    If a change happens outside that context — Angular doesn’t see it. <br>
+                    That’s when manual change detection becomes your best friend. 💪
+                </p>
+            </div>
+            <div class="col-6">
+                <img src="../../assets/img/screenshots/change-detection3.png" height="350px" width="450px" alt="test">
+                <br>
+                <p class="mt-2">“Angularக்கு தெரியாம data change ஆகுறதுனால UI update ஆகாதா? அப்போ நீங்கதான் சொல்லணும் —
+                    ‘இப்ப புதுசா check பண்ணு!’ — அதுதான் detectChanges() 😄”</p>
+            </div>
+        </div>
+        <div class="row alert alert-info">
+            <p><b>What Is NgZone (a.k.a. Angular Zone)?</b></p>
+            <p>NgZone is a service that helps Angular know when something asynchronous happens,
+                so that it can automatically trigger change detection and update your UI.</p>
+            <p>⚙️ So, you can think of NgZone as: <br>
+                A watchdog 🐶 that sits outside your component and watches for all async tasks in your app —
+                clicks, timeouts, HTTP calls, promises, WebSockets, etc.</p>
+            <p><b>When It Fails (Outside Angular Zone)?</b></p>
+            <p>Sometimes, code runs outside Angular’s zone — <br>
+                for example, inside certain 3rd-party libraries, heavy background tasks, or manual optimization. <br>
+                When that happens 👇 <br>
+                Angular doesn’t get notified → <b>UI won’t update.</b></p>
+        </div>
+        <div class="row alert alert-warning">
+            <div class="col">
+                <b>runOutsideAngular</b>
+                <img src="../../assets/img/screenshots/ng-zone.png" width="450px" alt="test">
+            </div>
+            <div class="col">
+                <b>Fix — Run Back Inside Angular Zone</b>
+                <img src="../../assets/img/screenshots/ng-zone1.png" width="450px" alt="test">
+            </div>
+        </div>
+        <div class="row alert alert-warning">
+            <div class="col">
+                <img src="../../assets/img/screenshots/ng-zone2.png" width="450px" alt="test">
+            </div>
+            <div class="col">
+                <pre>
+Think of Angular as a supervisor 🧑‍💼 sitting inside a room (Angular Zone).
+
+If your work happens inside the room, 
+the supervisor sees it and updates the status board (UI) immediately. ✅ 
+
+If you go outside the room and finish some work, 
+the supervisor doesn’t know anything changed. ❌ 
+
+So, when you come back inside the room, 
+you must say →
+“Hey, boss, I’m back! Update the board!”
+→ that’s this.ngZone.run() ✅
+                </pre>
+            </div>
+        </div>
+        <div class="row alert alert-primary">
+            <b>NgZone methods</b>
+            <pre>
+| Method                               | Description                                    | Use Case                                         |
+| ------------------------------------ | ---------------------------------------------- | ------------------------------------------------ |
+| `ngZone.run(callback)`               | Runs inside Angular’s zone                     | Ensures Angular detects and updates the UI       |
+| `ngZone.runOutsideAngular(callback)` | Runs code outside Angular’s zone               | Prevents unnecessary CD cycles (for performance) |
+| `ngZone.onStable`                    | Observable that fires when Angular finished CD | Useful for debugging or timing tasks             |
+| `ngZone.isStable`                    | Boolean, whether Angular is currently stable   | Performance/debug use                            |
+
+********* 
+🔹 Angular Zone (NgZone) = the area where Angular automatically listens for async operations and runs change detection.
+🔹 Anything done inside that zone → UI updates automatically.
+🔹 Anything done outside → you must tell Angular manually when to refresh.
+
+*********
+“Angular Zoneன்னா — Angular alert-ஆ இருக்கும் area.
+அந்த zone-க்கு வெளியே data change ஆச்சுன்னா Angular-க்கு தெரியாது.
+அதனால நீங்களே சொல்லணும் — ‘நா update பண்ணேன், UI refresh பண்ணு!’ — அதுதான் ngZone.run() 😄”
+            </pre>
+        </div>
+    </div>
+</div>

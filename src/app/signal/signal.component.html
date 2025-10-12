@@ -1,0 +1,189 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Signal</h4>
+    <p> <b>Signals</b> are a new, built-in way for Angular to track state changes and automatically update your UI —
+        without relying on Zone.js or the old change detection system.</p>
+    <div class="container card p-3 alert alert-info">
+        <div class="row">
+            <div class="col">
+                <p> 🧠 Simplified Explanation
+                </p>
+                <b> Before Signals:
+                </b>
+                <ul>
+                    <li>
+                        Angular had to walk the whole component tree (change detection) to see what changed.
+                    </li>
+                    <li>
+                        It relied on Zone.js to know when to start checking.
+                    </li>
+                    <li> This caused unnecessary checks — even when nothing really changed.
+                    </li>
+                    <b> With Signals:
+                    </b>
+                    <li> Each piece of data tells Angular directly when it changes.
+                    </li>
+                    <li> Angular doesn’t need to check everything — only what’s affected.
+                    </li>
+                    <li> No Zone.js required. No over-checking.
+                    </li>
+                </ul>
+                <p> So now, Angular becomes fine-grained reactive — like Reactivity in Solid.js or Vue 3.
+                </p>
+            </div>
+            <div class="col">
+                <b> Analogy — Think of It Like an Electric Wire
+                </b>
+                <ul>
+                    <li> Imagine every variable (like count) is connected to your UI via a signal wire ⚡
+                    </li>
+                    <li> When you update that signal, it sends an electrical pulse 💥 to Angular.
+                    </li>
+                    <li> Angular immediately knows: <br>
+                        “Hey, count changed — update only that part of the UI.”
+
+                    </li>
+                    <li> ✅ No need to run a full change detection cycle.
+                    </li>
+                    <li> ✅ No need for Zone.js.
+                    </li>
+                    <li> ✅ Lightning fast updates.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container card p-2 alert alert-success">
+        <div class="row">
+            <div class="col-6">
+                Count : {{count()}} <br>
+                <!---!here we used function as a interpolation, count is not a normal variable anymore —
+it’s a Signal object, and to get its current value,
+you call it like a function — count().-->
+                <button type="button" class="btn btn-sm btn-secondary" (click)="increase()">Increase count</button> <br>
+                <p>in signal we use function as interpolation because now count is not a normal variable anymore —
+                    it’s a Signal object, and to get its current value,
+                    you call it like a function — count().</p>
+
+                <pre>
+when we write like this - count = signal(0);
+This creates a reactive wrapper object — not just a number.
+That signal(0) returns an object that looks like this (internally):
+
+like below:
+  value: 0,
+  set(newVal) curly braces ... ,
+  update(fn) curly braces ... ,
+  mutate(fn) curly braces ... ,
+  // and a getter function (callable like count())
+
+So when you call count(), you’re reading the signal’s value.
+
+✅ count() → means “give me the current value inside the signal”
+✅ count.set(5) → means “replace it with 5”
+✅ count.update(v => v + 1) → means “increment the current value”
+                    </pre>
+            </div>
+            <div class="col-6">
+                <pre>
+| <b>Concept</b>  | <b>Old Angular</b> | <b>New with Signals </b>
+| --------------- | ------------------ | -------------------------
+| Declaring value | `count = 0;`       | `count = signal(0);` 
+| Reading value   | `{{ count }}`      | `{{ count() }}` 
+| Updating value  | `this.count++`     | `this.count.update(v => v + 1)` 
+                </pre>
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead class="table-info">
+                            <tr>
+                                <th>Concept</th>
+                                <th>Purpose</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th class="table-primary">signal()</th>
+                                <td>Reactive state</td>
+                                <td>count = signal(0)</td>
+                            </tr>
+                            <tr>
+                                <th class="table-warning">computed()</th>
+                                <td>Derived state</td>
+                                <td>double = computed(() => count() * 2)</td>
+                            </tr>
+                            <tr>
+                                <th class="table-secondary">effect()</th>
+                                <td>Reactive side effect</td>
+                                <td>effect(() => console.log(count()))</td>
+                            </tr>
+                            <tr>
+                                <th class="table-info">set()</th>
+                                <td>Replace value</td>
+                                <td>count.set(10)</td>
+                            </tr>
+                            <tr>
+                                <th class="table-primary">update()</th>
+                                <td>Modify current</td>
+                                <td>count.update(v => v + 1)</td>
+                            </tr>
+                            <tr>
+                                <th class="table-warning">mutate()</th>
+                                <td>Change object/array in place</td>
+                                <td>arr.mutate(a => a.push(x))</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container card alert alert-warning">
+        <div class="row">
+            <div class="col-6">
+                <h5>Signal is a replacement of the older change detection strategy?</h5>
+                <p><b>⚙️ 1️⃣ Before Signals: The “Old World” 🌍</b></p>
+                <p>Components + Zone.js + Change Detection</p>
+                <ul>
+                    <li>Angular uses Zone.js to know when async events happen (click, HTTP, etc.).</li>
+                    <li>Then it runs Change Detection over the entire component tree.</li>
+                    <li>Default mode → check everything</li>
+                    <li>OnPush mode → check only components with changed &#64;Input() or manually marked</li>
+                    <li>To force updates, we used detectChanges() or markForCheck()</li>
+                </ul>
+                <pre>
+✅ Works fine
+❌ But checks too much → can slow down large apps
+❌ Relies heavily on Zone.js (a global monkey patch)
+❌ Hard to optimize — too much auto-magic
+                </pre>
+            </div>
+            <div class="col-6">
+                <p><b>⚡ 2️⃣ With Signals: The “New World” 🚀</b></p>
+                <p>Instead of Angular checking everything, <br>
+                    Signals tell Angular directly when and what changed.</p>
+                <ul>
+                    <li>No Zone.js.</li>
+                    <li>No global change detection</li>
+                    <li>No need for detectChanges() in most cases</li>
+                    <li>No need for Default/OnPush configuration</li>
+                    <li>Everything happens automatically & precisely 🎯</li>
+                </ul>
+                <p><b>Signals are the modern replacement for
+                        the whole reactive + CD + Zone system</b></p>
+                <b>But... Angular still supports the old system (for now)</b>
+                <pre>
+
+| <b>Concept</b>               | <b>Analogy</b>                                                                          |
+| ---------------------------- | -------------------------------------------------------------------------------- |
+| **Default Change Detection** | “Check everyone, always” teacher                                                 |
+| **OnPush**                   | “Check only those who raised their hands” teacher                                |
+| **Signals**                  | “Students automatically notify teacher when they change” — no checking needed 🎯 |
+
+                </pre>
+            </div>
+        </div>
+    </div>
+</div>

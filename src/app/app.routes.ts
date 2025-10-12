@@ -14,6 +14,8 @@ import { NgaftercontentcheckedComponent } from './lifecycle-hooks/ngaftercontent
 import { NgafterviewinitComponent } from './lifecycle-hooks/ngafterviewinit/ngafterviewinit.component';
 import { NgafterviewcheckedComponent } from './lifecycle-hooks/ngafterviewchecked/ngafterviewchecked.component';
 import { NgondestroyComponent } from './lifecycle-hooks/ngondestroy/ngondestroy.component';
+import { ChangeDetectionComponent } from './change-detection/change-detection.component';
+import { SignalComponent } from './signal/signal.component';
 
 export const routes: Routes = [
   {
@@ -80,5 +82,13 @@ export const routes: Routes = [
    {
     path: 'lifecycle-hooks/ngOnDestroy',
     component: NgondestroyComponent
+  },
+  {
+    path:'change-detection',
+    component:ChangeDetectionComponent
+  },
+  {
+    path:'signal',
+    component:SignalComponent
   }
 ];
