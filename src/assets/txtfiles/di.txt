@@ -1,0 +1,69 @@
+<-------------------- TS FILE ------------------->
+
+import { Component, OnInit } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { HttpClient , HttpClientModule} from "@angular/common/http";
+
+// root level service
+import { SharedService } from "../service/shared-service.service";
+
+// local level service
+import { DependencyInjectionService } from "./dependency-injection.service";
+
+@Component({
+  selector: "app-dependency-injection",
+  templateUrl: "./dependency-injection.component.html",
+  imports: [RouterModule,HttpClientModule],
+  standalone: true,
+  providers: [DependencyInjectionService], // if not add inside the provider IT WILL THOROW NullInjectorError: No provider for _DependencyInjectionService!
+  styleUrls: ["./dependency-injection.component.scss"]
+})
+
+export class DependencyInjectionComponent implements OnInit {
+  public tsCode = '';
+
+  constructor(private http: HttpClient, private SharedService: SharedService, private dependencyService: DependencyInjectionService) {
+    this.http.get('../../../assets/txtfiles/di.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  ngOnInit() {
+    console.log(this.SharedService.currentData)
+    console.log(this.dependencyService.getMsg()) //OUTPUT : Msg from dependency injection service
+  }
+}
+
+<----------------- ROOT LEVEL SERVICE FILE -------------------->
+
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+@Injectable({
+  providedIn: 'root',              <------- Note here
+})
+export class SharedService {
+  private dataSource = new BehaviorSubject<any>(null); // Initial value
+  currentData = this.dataSource.asObservable();
+  constructor() {}
+
+  setData(data: any) {
+    this.dataSource.next(data); // Emit new data to all subscribers
+  }
+}
+
+
+<------------------LOCAL LEVEL SERVICE File----------------->
+
+import { Injectable } from "@angular/core";
+@Injectable()                           <------- Note here
+export class DependencyInjectionService {
+
+  constructor() {
+    
+  }
+
+  getMsg(){
+    return 'Msg from dependency injection service';
+  }
+
+}
+

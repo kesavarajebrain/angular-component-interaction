@@ -1,0 +1,67 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Dependency Injection</h4>
+    <p>🧩 <b>Dependency Injection</b> Dependency Injection means instead of creating dependencies (objects/services)
+        manually inside a class,
+        we ask Angular to create and give (inject) them automatically. <br>
+        So, Angular controls the creation and sharing of objects (services).</p>
+    <div class="card p-3">
+        <div class="row">
+            <div class="col-6">
+                <img src="../../assets/img/screenshots/dI-1.png" height="180px" width="500px" alt="di">
+                <p><b>Think of DI like a hotel room service 🍽️</b></p>
+                <ul>
+                    <li>You don’t cook your food inside the room (class).</li>
+                    <li> You just ask the hotel (Angular injector) — and it brings your food (service) ready.
+                    </li>
+                    <li> Hotel ensures everything (chef, ingredients) is managed efficiently.
+                    </li>
+                    <li> Angular does the same — it delivers dependencies to your class automatically.
+                    </li>
+                </ul>
+
+                <p><b>Service Injection with 2 kinds</b></p>
+                <pre>
+Root-level Service: <b>(No need of inject inside Providers[])</b>
+ஒரு Apartment-ல ஒரே Generator இருக்கு — எல்லாரும் share பண்ணுறாங்க.
+
+Local-level Service: <b>(Need to inject inside Providers, means it will throws NULLInjectError)</b>
+ஒவ்வொரு வீட்டுக்கும் தனி UPS இருக்கு — அது அந்த வீட்டுக்கே power supply பண்ணும்.
+
+So —
+Root service = shared generator
+Local service = personal UPS
+                </pre>
+            </div>
+            <div class="col-6">
+                <img src="../../assets/img/screenshots/dI-2.png" height="180px" width="500px" alt="di">
+                <p><b>When do we use &#64;Injectable( providedIn: 'root' )?</b></p>
+                <p>That providedIn: 'root' part is the magic —
+                    it automatically tells Angular to register this service in the root injector (global singleton).</p>
+                <ul>
+                    <b> When Angular compiles your app:</b>
+                    <li>It automatically adds your service to the root injector.
+                    </li>
+                    <li>That means you can inject it anywhere in the app.
+                    </li>
+                    <li>And Angular ensures there is only one instance (singleton).
+                    </li>
+                    <li>No need to list it inside providers: [] manually.
+                    </li>
+                    <li> The service should be shared across the entire app.
+                    </li>
+                    <li>It’s stateless (like a logger, HTTP service, config, utility).
+                    </li>
+                    <li>Or it holds shared state that multiple components need (like authentication).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card alert alert-info">
+        <pre>
+        {{tsCode}}
+        </pre>
+    </div>
+</div>

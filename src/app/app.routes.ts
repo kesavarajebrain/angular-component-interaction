@@ -16,6 +16,7 @@ import { NgafterviewcheckedComponent } from './lifecycle-hooks/ngafterviewchecke
 import { NgondestroyComponent } from './lifecycle-hooks/ngondestroy/ngondestroy.component';
 import { ChangeDetectionComponent } from './change-detection/change-detection.component';
 import { SignalComponent } from './signal/signal.component';
+import { DependencyInjectionComponent } from './dependency-injection/dependency-injection.component';
 
 export const routes: Routes = [
   {
@@ -90,5 +91,9 @@ export const routes: Routes = [
   {
     path:'signal',
     component:SignalComponent
+  },
+   {
+    path:'dependency-injection',
+    component:DependencyInjectionComponent
   }
 ];
