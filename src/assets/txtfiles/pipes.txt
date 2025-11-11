@@ -1,0 +1,192 @@
+                                <-----------------------Html (Search Filter Pipe Demo)------------------------->
+ <h4>Search Filter Pipe Demo</h4>
+
+    <input type="text" class="form-control" placeholder="Search users by name or role..."
+        [(ngModel)]="searchText" />
+    <ul class="list-group mt-2">
+        <li class="list-group-item" *ngFor="let user of users | search:searchText">
+            <strong>{{ user.name }}</strong> - {{ user.role }}
+        </li>
+    </ul>
+                                 <------------------------Ts code --------------------->
+
+  // Custom Search Filter Pipe
+  searchText = "";
+  users = [
+    { id: 1, name: 'Kesava', role: 'Frontend Developer' },
+    { id: 2, name: 'Mukesh', role: 'Backend Developer' },
+    { id: 3, name: 'Dinesh', role: 'Full Stack Developer' },
+    { id: 4, name: 'Arun', role: 'UI/UX Designer' },
+    { id: 5, name: 'Ravi', role: 'DevOps Engineer' },
+    { id: 6, name: 'Sita', role: 'Project Manager' },
+    { id: 7, name: 'Geeta', role: 'QA Engineer' }
+  ];
+                                <-------------------Search filter Pipe----------------->
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+    name: 'search',
+    standalone: true
+})
+export class SearchPipe implements PipeTransform {
+
+    transform(items: any[], searchText: string): any[] {
+        console.log('SearchPipe called with searchText:', searchText);
+        console.log('Items to filter:', items);
+        if (!items) return [];
+        if (!searchText) return items;
+
+        searchText = searchText.toLowerCase();
+
+        return items.filter(item => {
+            return Object.values(item)
+                .join(' ')
+                .toLowerCase()
+                .includes(searchText);
+        });
+    }
+}
+
+      *****************************************************************************************************
+                                        HTML (Truncate demo)
+
+<h4>Truncate Demo</h4>
+<p><b>Actual text :</b> {{longText}}</p>
+<p><b>After Truncate :</b>{{ longText | truncate:15 }}</p>
+
+                    <------------------------------------TS CODE----------------------------->
+ // Custom Truncate Pipe
+  longText = "This is a long text that needs to be truncated for better display.";
+
+                    <--------------------------------Truncate Pipe ---------------------------->
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+    name: 'truncate',
+    standalone: true
+})
+
+export class TruncatePipe implements PipeTransform {
+    transform(value: string, limit:any): string {
+    if (!value) return '';
+    return value.length > limit ? value.substring(0, limit) + '****' : value;
+  }
+}   
+
+ *****************************************************************************************************************
+            HTML (Clock pipe / Impure pipe demo)
+
+<h3>Impure Pipe Demo – Live Clock</h3>
+<p><b>Current Time:</b> {{ '' | clock }}</p>
+
+<--------------------------Clock pipe------------------------------->
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'clock',
+  pure: false,
+  standalone : true
+
+})
+export class ClockPipe implements PipeTransform {
+  transform(value: any): string {
+    return new Date().toLocaleTimeString();
+  }
+}
+
+***************************************************************************************************************
+
+                                             HTML (Time Ago pipe / Impure pipe)
+
+    <ul class="list-group mt-3">
+        <li class="list-group-item" *ngFor="let post of posts">
+            <strong>{{ post.user }}</strong> — posted {{ post.createdAt | timeAgo }}
+        </li>
+    </ul>
+
+                     <----------------------------------------------TS code------------------------------------->
+      // impure pipe
+  posts = [
+    { id: 1, user: 'Kesava', createdAt: new Date(Date.now() - 2 * 60 * 1000) },  // 2 min ago
+    { id: 2, user: 'Arun', createdAt: new Date(Date.now() - 20 * 60 * 1000) },  // 20 min ago
+    { id: 3, user: 'Dinesh', createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) }, // 2 hrs ago
+    { id: 4, user: 'Mukesh', createdAt: new Date(Date.now() - 25 * 60 * 60 * 1000) } // 1 day ago
+  ];
+
+                        <----------------------------------PIPE CODE--------------------------------------------->
+
+import { Pipe, PipeTransform, ChangeDetectorRef, NgZone } from '@angular/core';
+
+@Pipe({
+  name: 'timeAgo',
+  standalone: true,
+  pure: false // impure pipe - so Angular re-evaluates regularly
+})
+export class TimeAgoPipe implements PipeTransform {
+  private timer: any;
+  private lastValue!: string;
+  private lastTime!: number;
+
+  constructor(private changeDetectorRef: ChangeDetectorRef, private ngZone: NgZone) {}
+
+  transform(value: Date | string): string {
+    if (!value) return '';
+
+    const now = new Date().getTime();
+    const then = new Date(value).getTime();
+    const seconds = Math.round(Math.abs((now - then) / 1000));
+    const newValue = this.formatTime(seconds);
+
+    // Cache the computed value
+    if (this.lastValue !== newValue) {
+      this.lastValue = newValue;
+      this.lastTime = then;
+    }
+
+    this.removeTimer();
+    this.createTimer();
+
+    return this.lastValue;
+  }
+
+  private formatTime(seconds: number): string {
+    if (seconds < 60) return 'just now';
+    const intervals: { [key: string]: number } = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60
+    };
+
+    for (const key in intervals) {
+      const value = Math.floor(seconds / intervals[key]);
+      if (value >= 1) {
+        return value === 1
+          ? `${value} ${key} ago`
+          : `${value} ${key}s ago`;
+      }
+    }
+    return 'just now';
+  }
+
+  private removeTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+  }
+
+  private createTimer() {
+    // refresh every 60 seconds
+    this.ngZone.runOutsideAngular(() => {
+      this.timer = setTimeout(() => {
+        this.ngZone.run(() => this.changeDetectorRef.markForCheck());
+      }, 60000);
+    });
+  }
+}

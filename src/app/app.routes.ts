@@ -17,6 +17,7 @@ import { NgondestroyComponent } from './lifecycle-hooks/ngondestroy/ngondestroy.
 import { ChangeDetectionComponent } from './change-detection/change-detection.component';
 import { SignalComponent } from './signal/signal.component';
 import { DependencyInjectionComponent } from './dependency-injection/dependency-injection.component';
+import { PipesComponent } from './pipes/pipes.component';
 
 export const routes: Routes = [
   {
@@ -95,5 +96,9 @@ export const routes: Routes = [
    {
     path:'dependency-injection',
     component:DependencyInjectionComponent
+  },
+  {
+    path:'pipe',
+    component:PipesComponent
   }
 ];

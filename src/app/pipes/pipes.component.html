@@ -1,0 +1,182 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Pipe</h4>
+    <p>Pipe is a feature to transform data in the template, without touching the component logic.</p>
+    <p>💡 Pipes = UI transformation helpers.</p>
+</div>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-6 card alert alert-secondary">
+            <h5>Built-in Pipes</h5>
+            <ul>
+                <li><b>DatePipe</b>: Formats dates according to locale rules. </li>
+                <li><b>UpperCasePipe / LowerCasePipe</b>: Transforms text to uppercase or lowercase.</li>
+                <li><b>CurrencyPipe</b>: Formats numbers as currency values.</li>
+                <li><b>DecimalPipe</b>: Formats numbers with specified decimal places.</li>
+                <li><b>PercentPipe</b>: Formats numbers as percentages.</li>
+                <li><b>JsonPipe</b>: Converts objects to JSON strings for display.</li>
+                <li><b>SlicePipe</b>: Extracts a portion of an array or string.</li>
+                <li><b>AsyncPipe</b>: Handles asynchronous data streams like Observables and Promises.</li>
+            </ul>
+            <hr>
+            <h5>5. Decimal Pipes</h5>
+            <p><b>Decimal</b>: {{ amount | number:'1.2-2' }}
+            </p>
+            <h5>6. Json Pipes</h5>
+            <p><b>Json</b>: {{ user | json }}
+            </p>
+            <h5>7. Slice Pipes</h5>
+            <p><b>Slicing sentence</b>: {{ sentence | slice:0:8 }}
+            </p>
+            <b>Slicing in NgFor</b>
+            <ul *ngFor="let item of items | slice:0:3">
+                <li>{{item}}</li>
+            </ul>
+        </div>
+        <div class="col-6  card alert alert-info">
+            <h5>1. String Pipes</h5>
+            <p><b>Uppercase</b>: {{ name | uppercase }} <br>
+                <b> Lowercase:</b> {{ message | lowercase }} <br>
+                <b>Titlecase:</b> {{ sentence | titlecase }}
+            </p>
+            <h5>2. Date Pipes</h5>
+            <p><b>Default</b>: {{ today | date }} <br>
+                <b> FullDate:</b> {{ today | date:'fullDate' }} <br>
+                <b>Custom:</b> {{ today | date:'dd/MM/yyyy' }}
+            </p>
+            <h5>3. Currency Pipes</h5>
+            <p><b>INR</b>: {{ price | currency:'INR' }} <br>
+                <b> USD:</b> {{ price | currency:'USD' }} <br>
+                <b> EURO:</b> {{ price | currency:'EUR' }}
+            </p>
+            <h5>4. Percent Pipes</h5>
+            <p><b>Percent</b>: {{ score | percent }}
+            </p>
+            <h5>8. Async Pipes</h5>
+            Using async pipe will automatically subscribe to the observable and return the latest value it has emitted.
+            It also checks for changes and updates the view accordingly.
+            When the component is destroyed, it also automatically unsubscribes to prevent memory leaks.
+            <p><b>Async</b>: {{ data$ | async }}
+            </p>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-warning">
+    <h4>Custom Pipe (Pure Pipe)</h4>
+    <p>Custom pipes can be created to implement specific data transformations that are not covered by built-in pipes.
+    </p>
+    <div class="row">
+        <div class="col">
+            <div class="p-3">
+                <h4>Search Filter Pipe Demo</h4>
+                <input type="text" class="form-control" placeholder="Search users by name or role..."
+                    [(ngModel)]="searchText" />
+                <ul class="list-group mt-2">
+                    <li class="list-group-item" *ngFor="let user of users | search:searchText">
+                        <strong>{{ user.name }}</strong> - {{ user.role }}
+                    </li>
+                </ul>
+                <br>
+                <h4>Truncate Demo</h4>
+                <p><b>Actual text :</b> {{longText}}</p>
+                <p><b>After Truncate :</b>{{ longText | truncate:15 }}</p>
+            </div>
+        </div>
+        <div class="col alert alert-secondary">
+            <p>"In the pipe, how does items automatically get the data from component TS?
+                When I open the page itself, I see items already printed in pipe.
+                How? Who passed the data to the pipe?"</p>
+            <p>users → is the items passed into the pipe</p>
+            <p>searchText → is the second argument passed to the pipe</p>
+            <p>this is the internal DI + Change Detection mechanism.</p>
+            <p>You don’t manually call the pipe — Angular does it for you.</p>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-info">
+    <h4>Pure & Impure Pipes</h4>
+    <div class="row">
+        <div class="col">
+            <b>👉 By default, ALL custom pipes are PURE pipes.</b> <br>
+            <b>When you create a pipe like above : Search or Truncate custom pipes</b> <br>
+            <b>It is automatically interpreted by Angular as: </b><br> pure: true <br>
+            <b>❌ NOT an impure pipe (unless you manually tell Angular)</b>
+        </div>
+        <div class="col">
+            <pre>
+Pure Pipe:
+    “Input data reference change ஆனா மட்டும் run ஆகும்.”
+
+Impure Pipe:
+    “Page-ல எந்த ஒரு சின்ன change ஆனாலும் கூட மீண்டும் run ஆகும்.”
+
+Pure Pipe = fast
+Impure Pipe = slow
+
+| Pipe Type       | When It Runs                 | Default? | Good?                            |
+| --------------- | ---------------------------- | -------- | ---------------------------------|
+| **Pure Pipe**   | When input reference changes | ✅ Yes   | ✅ Fast, recommended            |
+| **Impure Pipe** | On every change detection    | ❌ No    | ⚠️ Slow, use only if required   |
+
+            </pre>
+        </div>
+        <div class="row">
+            <div class="container col mt-3 card p-3">
+                <h3>Impure Pipe Demo – Live Clock</h3>
+                <p><b>Current Time:</b> {{ '' | clock }}</p>
+                <p class="text-secondary">
+                    This updates automatically every second because the pipe is <b>impure (pure: false)</b>.
+                </p>
+                <p>When we will use impure pipes?</p>
+                <p>👉 Pure pipes for 99% cases <br>
+                    👉 Impure pipes only in rare, mutation-heavy, real-time dynamic cases</p>
+                <p class="text-danger fw-bold">Clock seconds not updating every second? <br>
+                    See here ====>>>>>></p>
+                <hr>
+                <div class="container mt-3">
+                    <h3>🕒 Real-time Auto-Refreshing "Time Ago" Pipe</h3>
+                    <p>This demo updates the “time ago” text every 1 minute automatically.</p>
+
+                    <ul class="list-group mt-3">
+                        <li class="list-group-item" *ngFor="let post of posts">
+                            <strong>{{ post.user }}</strong> — posted {{ post.createdAt | timeAgo }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <br>
+                <pre>
+<b>Why Your Clock Pipe Is Not Updating?</b>
+
+Impure pipe = runs on every change detection cycle, BUT…
+
+👉 If no event triggers change detection,
+👉 Angular will NOT rerun the pipe
+👉 So the time remains frozen
+
+Change detection runs when:
+    * user types
+    * user clicks
+    * input changes
+    * HTTP response comes
+    * setTimeout/setInterval fires
+    * events fire inside NgZone
+
+“Why second is not updating in impure pipe?”
+    Because:
+    Impure pipe runs only when Angular CD runs.
+    If your app has no events, CD does not run.
+    Therefore pipe does not re-evaluate.
+                </pre>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-primary">
+    <pre>
+        {{tsCode}}
+    </pre>
+</div>
