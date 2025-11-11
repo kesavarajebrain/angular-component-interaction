@@ -1,0 +1,200 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Directives</h4>
+    <p>A Directive is a class that can change the appearance, behavior, or layout of DOM elements in an Angular
+        application.</p>
+    <p>👉 You can think of directives as <b>instructions to the DOM.</b></p>
+    <div class="card alert alert-info">
+        <b>There are 3 main types:</b>
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <b>1.Component Directive</b>
+                    </td>
+                    <td>
+                        A directive with a **template**
+                    </td>
+                    <td>
+                        `&#64;Component( )`
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>2.Structural Directive</b>
+                    </td>
+                    <td>Changes the **structure** of the DOM (adds/removes elements)</td>
+                    <td>`*ngIf`, `*ngFor`, `*ngSwitch`</td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>3.Attribute Directive</b>
+                    </td>
+                    <td> Changes the **appearance or behavior** of an existing element</td>
+                    <td> `ngClass`, `ngStyle`, `ngModel`</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card alert alert-primary">
+        <h5>Component Directive</h5>
+        <p>In Angular’s core architecture, a component is just a special type of directive that:</p>
+        <p>✅ Controls a section of the screen (called a view)</p>
+        <p>✅ Has its own HTML template, styles, and logic</p>
+        <p>So internally, <b>&#64;Component is actually built on top of &#64;Directive.</b></p>
+        <p><b>&#64;Component() (extends &#64;Directive)</b> - means Controls a whole section of the page (HTML + CSS +
+            Logic)</p>
+        <p>👉 Every Component is a Directive with a Template, not every Directive is a Component.</p>
+        <p>Examples : &#11164;app-menu-items&#11166;, &#11164;app-user-profile&#11166; - means these are component
+            directives</p>
+    </div>
+    <div class="card alert alert-success">
+        <h5>Structural Directive - (changes DOM structure)</h5>
+        <p>Structural directives add or remove elements dynamically.</p>
+        <p>📦 Built-in Structural Directives: <b>*ngIf , *ngFor , *ngSwitch</b></p>
+        <div class="row">
+            <div class="col-4">
+                <div class="container mt-1 p-3 card">
+                    <p><b>1.*ngIf - Conditionally adds/removes an element.</b></p>
+                    <p>User Login Status Demo</p>
+                    <div class="mb-3">
+                        <input type="text" id="username" class="form-control" [(ngModel)]="username"
+                            placeholder="Enter your name" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>
+                            <input class="form-check-input" type="radio" name="status" value="login" [(ngModel)]="status" />
+                            Login
+                        </label>
+                        <label class="ms-3">
+                            <input class="form-check-input" type="radio" name="status" value="logout" [(ngModel)]="status" />
+                            Logout
+                        </label>
+                    </div>
+                    <div *ngIf="isLoggedIn; else loggedOutBlock" class="alert alert-success">
+                        👋 Welcome, {{ username || 'User' }}!
+                    </div>
+
+                    <ng-template #loggedOutBlock>
+                        <div class="alert alert-danger">
+                            ⚠️ Please log in to continue.
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="container mt-1 p-3 card">
+                    <p><b>2.*ngFor - Loops through a list.</b></p>
+                    <ul *ngFor="let item of items; index as i">
+                        <li>
+                            {{ i + 1 }}. {{ item }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="container mt-1 p-3 card">
+                    <p><b>3.*ngSwitch - Like a switch-case in templates.</b></p>
+                    <div [ngSwitch]="role">
+                        <p *ngSwitchCase="'admin'">Admin Dashboard</p>
+                        <p *ngSwitchCase="'user'">User Dashboard</p>
+                        <p *ngSwitchDefault>Guest (default)</p>
+                    </div>
+                    <div class="mb-3">
+                        <label>
+                            <input class="form-check-input" type="radio" name="role" value="admin" [(ngModel)]="role" />
+                            admin
+                        </label>
+                        <label class="ms-3">
+                            <input class="form-check-input" type="radio" name="role" value="user" [(ngModel)]="role" />
+                            user
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <h5>Custom Structural Directive</h5>
+            <div *appHasRole="'admin'">
+                <p>Only admin can see this section.</p>
+            </div>
+        </div>
+    </div>
+    <div class="card alert alert-warning">
+        <h5>Attribute Directives — (change element appearance/behavior)</h5>
+        <p>They don’t add/remove DOM — <b>they just modify it.</b></p>
+        <p>📦 Built-in Attribute Directives: <b>[ngClass] , [ngStyle] , [(ngModel)]</b></p>
+        <div class="row">
+            <div class="col-4">
+                <div class="container mt-1 p-3 card">
+                    <p><b>1.[ngClass] — for dynamically adding/removing CSS classes</b></p>
+                    <div class="container mt-4 p-3">
+                        <p [ngClass]="[
+    'fw-bold','p-3', 
+    isLoggedIn ? 'text-success border border-success border-dotted text-decoration-underline' : 'text-danger border border-danger border-dotted'
+  ]">
+                            {{ isLoggedIn ? '👋 Welcome, ' + (username || 'User') + '!' : '⚠️ Please log in to
+                            continue.' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="container mt-1 p-3 card">
+                    <p><b>2.[ngStyle] — for applying inline styles dynamically</b></p>
+                    <div class="container mt-4 p-3">
+                        <p [ngStyle]="{
+      'font-size': isLoggedIn ? '18px' : '16px',
+      'background-color': isLoggedIn ? '#d4edda' : '#f8d7da',
+      'padding': '15px',
+      'border-radius': isLoggedIn ? '0px' : '10px',
+      'border-style': isLoggedIn ? 'dotted' : 'double'
+    }">
+                            {{ isLoggedIn ? '👋 Welcome, ' + (username || 'User') + '!' : '⚠️ Please log in to
+                            continue.' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="container mt-1 p-3 card">
+                    <p><b>3.[(ngModel)] - For two-way binding in forms</b></p>
+                    <div class="mb-3">
+                        <input [(ngModel)]="text" class="form-control" placeholder="Enter something here">
+                        <br>
+                        <p>Entered value : {{ text }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <h5>Custom Attribute Directive</h5>
+            <div class="row">
+                <div class="col" appHighlight="lightgreen">
+                    Hover to highlight me!
+                </div>
+                <div class="col" appHighlight="skyblue">
+                    Hover to highlight me!
+                </div>
+                <div class="col" appHighlight="yellow">
+                    Hover to highlight me!
+                </div>
+                <div class="col" appHighlight="pink">
+                    Hover to highlight me!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,9 @@ import { Component, AfterViewInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+// menu items
+import {MenuItemsComponent} from "../shared/menu-items/menu-items.component"
+
 declare var adsbygoogle: any; // ✅ Declare this before @Component
 declare global {
   interface Window {
@@ -12,7 +15,7 @@ declare global {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule,MenuItemsComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

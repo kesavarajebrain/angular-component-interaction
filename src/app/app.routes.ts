@@ -18,6 +18,7 @@ import { ChangeDetectionComponent } from './change-detection/change-detection.co
 import { SignalComponent } from './signal/signal.component';
 import { DependencyInjectionComponent } from './dependency-injection/dependency-injection.component';
 import { PipesComponent } from './pipes/pipes.component';
+import { DirectivesComponent } from './directives/directives.component';
 
 export const routes: Routes = [
   {
@@ -100,5 +101,9 @@ export const routes: Routes = [
   {
     path:'pipe',
     component:PipesComponent
+  },
+   {
+    path:'directives',
+    component:DirectivesComponent
   }
 ];
