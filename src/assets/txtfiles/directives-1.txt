@@ -1,0 +1,96 @@
+<---------------------HTML FILE----------------------->
+
+                    ******************************ngClass**********************************
+
+ <div class="container mt-1 p-3 card">
+                    <p><b>1.[ngClass] — for dynamically adding/removing CSS classes</b></p>
+                    <div class="container mt-4 p-3">
+<p [ngClass]="[
+    'fw-bold','p-3', 
+    isLoggedIn ? 'text-success border border-success border-dotted text-decoration-underline' : 
+    'text-danger border border-danger border-dotted'
+  ]">
+                            {{ isLoggedIn ? '👋 Welcome, ' + (username || 'User') + '!' : '⚠️ Please log in to
+                            continue.' }}
+                        </p>
+                    </div>
+</div>
+
+                *************************************ngStyle**************************************
+
+   <div class="container mt-1 p-3 card">
+                    <p><b>2.[ngStyle] — for applying inline styles dynamically</b></p>
+                    <div class="container mt-4 p-3">
+
+                        <p [ngStyle]="{
+      'font-size': isLoggedIn ? '18px' : '16px',
+      'background-color': isLoggedIn ? '#d4edda' : '#f8d7da',
+      'padding': '15px',
+      'border-radius': isLoggedIn ? '0px' : '10px',
+      'border-style': isLoggedIn ? 'dotted' : 'double'
+    }">
+                            {{ isLoggedIn ? '👋 Welcome, ' + (username || 'User') + '!' : '⚠️ Please log in to
+                            continue.' }}
+                        </p>
+                    </div>
+</div>
+
+            **********************************ngModel***********************************
+
+  <div class="container mt-1 p-3 card">
+                    <p><b>3.[(ngModel)] - For two-way binding in forms</b></p>
+                    <div class="mb-3">
+                        <input [(ngModel)]="text" class="form-control" placeholder="Enter something here">
+                        <br>
+                        <p>Entered value : {{ text }}</p>
+                    </div>
+</div>
+
+            **********************************Custom Attribute Directive***********************************
+
+  <div class="row">
+            <h5>Custom Attribute Directive</h5>
+            <div class="row">
+                <div class="col" appHighlight="lightgreen">
+                    Hover to highlight me!
+                </div>
+                <div class="col" appHighlight="skyblue">
+                    Hover to highlight me!
+                </div>
+                <div class="col" appHighlight="yellow">
+                    Hover to highlight me!
+                </div>
+                <div class="col" appHighlight="pink">
+                    Hover to highlight me!
+                </div>
+            </div>
+        </div>
+
+<----------------------------------------- Custom-Attribute-directive FILE ---------------------------------->
+
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]',
+  standalone: true
+})
+export class HighlightDirective {
+
+  @Input('appHighlight') highlightColor = '';
+
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.highlight(this.highlightColor);
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.highlight('');
+  }
+
+  private highlight(color: string) {
+    this.el.nativeElement.style.backgroundColor = color;
+  }
+}
+
+
