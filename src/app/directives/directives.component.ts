@@ -9,11 +9,12 @@ import { HasRoleDirective } from './custom-directive/structural-directive/has-ro
 import { HighlightDirective } from './custom-directive/attribute-directive/highlight.directive';
 
 import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { AdsenseComponent } from "../adsense/adsense.component";
 
 @Component({
   selector: "app-directives",
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, HasRoleDirective, HighlightDirective, HttpClientModule],
+  imports: [RouterModule, CommonModule, FormsModule, HasRoleDirective, HighlightDirective, HttpClientModule,AdsenseComponent],
   templateUrl: "./directives.component.html",
   styleUrls: ["./directives.component.scss"]
 })

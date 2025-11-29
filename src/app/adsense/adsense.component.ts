@@ -4,6 +4,7 @@ declare var adsbygoogle: any;
 
 @Component({
   selector: 'app-adsense',
+  standalone:true,
   template: `
     <ins class="adsbygoogle"
       [attr.data-ad-client]="adClient"
@@ -20,6 +21,7 @@ declare var adsbygoogle: any;
   `]
 })
 export class AdsenseComponent implements AfterViewInit {
+  
   @Input() adClient!: string;
   @Input() adSlot!: string;
   @Input() adFormat: string = 'auto';

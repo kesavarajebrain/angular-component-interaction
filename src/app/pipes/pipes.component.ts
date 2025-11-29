@@ -12,12 +12,13 @@ import { TruncatePipe } from "./custom-pipe/truncate.pipe";
 // impure pipe
 import { ClockPipe } from "./impure-pipe/impure-clock.pipe"
 import { TimeAgoPipe } from "./impure-pipe/time-ago.pipe";
+import { AdsenseComponent } from "../adsense/adsense.component";
 
 @Component({
   selector: "app-pipes",
   standalone: true,
   templateUrl: "./pipes.component.html",
-  imports: [RouterModule, CommonModule, HttpClientModule, FormsModule, SearchPipe, TruncatePipe, ClockPipe, TimeAgoPipe],
+  imports: [RouterModule, CommonModule, HttpClientModule, FormsModule, SearchPipe, TruncatePipe, ClockPipe, TimeAgoPipe,AdsenseComponent],
   styleUrls: ["./pipes.component.scss"]
 })
 

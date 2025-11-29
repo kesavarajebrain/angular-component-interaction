@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SonComponent } from './son/son.component';
 import { FormsModule } from '@angular/forms';
+import { AdsenseComponent } from '../adsense/adsense.component';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [RouterModule, SonComponent, FormsModule],
+  imports: [RouterModule, SonComponent, FormsModule,AdsenseComponent],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })

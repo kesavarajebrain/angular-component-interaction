@@ -1,26 +1,20 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 // menu items
 import {MenuItemsComponent} from "../shared/menu-items/menu-items.component"
-
-declare var adsbygoogle: any; // ✅ Declare this before @Component
-declare global {
-  interface Window {
-    adsbygoogle: any;
-  }
-}
+import { AdsenseComponent } from '../adsense/adsense.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, RouterModule,MenuItemsComponent],
+  imports: [FormsModule, RouterModule,MenuItemsComponent,AdsenseComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 
-export class HomeComponent implements AfterViewInit{
+export class HomeComponent {
   title = 'angular-interaction';
   interpolation = `SYNTAX : {{ }} | string from the TS file and displayed in HTML`;
   proberty_binding = 'https://picsum.photos/100/100';
@@ -56,13 +50,4 @@ export class HomeComponent implements AfterViewInit{
     window.open("https://github.com/kesavarajebrain/angular-component-interaction", "_blank");
   }
   
-  ngAfterViewInit() {
-    // ✅ Trigger AdSense only after the view loads
-    try {
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error('AdSense error:', e);
-    }
-  }
-
 }
