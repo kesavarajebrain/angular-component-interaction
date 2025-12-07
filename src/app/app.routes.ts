@@ -19,6 +19,10 @@ import { SignalComponent } from './signal/signal.component';
 import { DependencyInjectionComponent } from './dependency-injection/dependency-injection.component';
 import { PipesComponent } from './pipes/pipes.component';
 import { DirectivesComponent } from './directives/directives.component';
+import { FormsComponent } from './forms/forms.component';
+import { TemplateDrivenComponent } from './forms/template-driven/template-driven.component';
+import { ReactiveComponent } from './forms/reactive/reactive.component';
+import { AdvancedReactiveComponent } from './forms/advanced-reactive/advanced-reactive.component';
 
 export const routes: Routes = [
   {
@@ -105,5 +109,21 @@ export const routes: Routes = [
    {
     path:'directives',
     component:DirectivesComponent
+  },
+   {
+    path:'forms',
+    component:FormsComponent
+  },
+   {
+    path:'forms/template-driven',
+    component:TemplateDrivenComponent
+  },
+  {
+    path:'forms/reactive',
+    component:ReactiveComponent
+  },
+  {
+    path:'forms/advanced-reactive',
+    component:AdvancedReactiveComponent
   }
 ];

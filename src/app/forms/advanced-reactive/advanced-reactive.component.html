@@ -1,0 +1,162 @@
+<div class="container mt-3">
+    <p routerLink="/forms">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Advanced Reactive forms</h4>
+    <div class="row">
+        <div class="col">
+            <ul>
+                <li>Where backend sends JSON → frontend builds the form automatically.</li>
+                <li>All validation, rules, logic live in TypeScript.</li>
+                <li>Reactive forms are best for real-world apps (Admin panels,CMS systems).</li>
+            </ul>
+        </div>
+        <div class="col">
+            🔴 Level 3 — Advanced Reactive Forms
+            <ul>
+                <li> ✅ JSON-based Dynamic Forms ✅
+                </li>
+                <li> ✅ Custom Validators ✅
+                </li>
+                <li> ✅ Conditional Validators ✅
+                </li>
+                <li> ✅ Async Validators ✅
+                </li>
+                <li> ✅ Dynamic validators ✅
+                </li>
+                <li> ✅ Auto-save using valueChanges ✅
+                </li>
+                <li> ✅ Dynamic enable/disable controls ✅
+                </li>
+                <li> ✅ Conditional fields ✅
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <h5>JSON-based Dynamic Forms</h5>
+        <ul>
+            <li>Form structure is NOT fixed in HTML</li>
+            <li>Form is generated from JSON (API Response)</li>
+        </ul>
+        <div class="col">
+          
+        </div>
+        <div class="col">
+              <div class="container alert alert-success card p-4 mt-4">
+                <h6>Dynamic JSON-Based Reactive Form</h6>
+
+                <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+                    <div *ngFor="let field of formConfig" class="mb-3">
+
+                        <!-- ✅ TEXT, EMAIL (NON-GROUP, NON-SELECT, NON-RADIO, NON-CHECKBOX) -->
+                        <ng-container *ngIf="field.type !== 'group' &&
+             field.type !== 'select' &&
+             field.type !== 'radio' &&
+             field.type !== 'checkbox'">
+                            <label class="form-label">{{ field.label }}</label>
+                            <input class="form-control" [type]="field.type" [formControlName]="field.name"
+                                [placeholder]="field.placeholder">
+
+                            <!-- ⏳ LOADING -->
+                            <small class="text-danger" *ngIf="dynamicForm.get(field.name)?.pending">
+                                Checking email availability...
+                            </small>
+
+                            <!-- ❌ EMAIL EXISTS -->
+                            <small class="text-danger" *ngIf="dynamicForm.get(field.name)?.errors?.['emailExists']">
+                                Email already registered
+                            </small>
+
+                            <small class="text-danger" *ngIf="
+          dynamicForm.get(field.name)?.invalid && !dynamicForm.get(field.name)?.errors?.['emailExists'] &&
+          (dynamicForm.get(field.name)?.touched || submitted)
+        ">
+                                {{ field.label }} is invalid
+                            </small>
+                        </ng-container>
+
+                        <!-- ✅ GROUP (Password + Confirm Password) -->
+                        <ng-container *ngIf="field.type === 'group'" [formGroupName]="field.name">
+                            <div *ngFor="let child of field.fields" class="mb-2">
+                                <label class="form-label">{{ child.label }}</label>
+                                <input class="form-control" [type]="child.type" [formControlName]="child.name"
+                                    [placeholder]="child.placeholder">
+                                <!-- ✅ Field-level error -->
+                                <small class="text-danger" *ngIf="
+            dynamicForm.get(field.name + '.' + child.name)?.invalid &&
+            (dynamicForm.get(field.name + '.' + child.name)?.touched || submitted)
+          ">
+                                    {{ child.label }} is invalid
+                                </small>
+                            </div>
+
+                            <!-- ✅ GROUP-LEVEL PASSWORD MISMATCH ERROR -->
+                            <small class="text-danger fw-bold" *ngIf="
+          dynamicForm.get(field.name)?.errors?.['passwordMismatch'] &&
+          (dynamicForm.get(field.name)?.touched || submitted)
+        ">
+                                Password and Confirm Password do not match
+                            </small>
+                        </ng-container>
+
+                        <!-- ✅ SELECT -->
+                        <ng-container *ngIf="field.type === 'select'">
+                            <label class="form-label">{{ field.label }}</label>
+                            <select class="form-control form-select" [formControlName]="field.name">
+                                <option value="">-- Select --</option>
+                                <option *ngFor="let opt of field.options" [value]="opt">
+                                    {{ opt }}
+                                </option>
+                            </select>
+                            <small class="text-danger" *ngIf="
+          dynamicForm.get(field.name)?.invalid &&
+          (dynamicForm.get(field.name)?.touched || submitted)
+        ">
+                                {{ field.label }} is required
+                            </small>
+                        </ng-container>
+
+                        <!-- ✅ RADIO -->
+                        <ng-container *ngIf="field.type === 'radio'">
+                            <label class="form-label d-block">{{ field.label }}</label>
+                            <label *ngFor="let opt of field.options" class="me-3">
+                                <input class="form-check-input" type="radio" [formControlName]="field.name"
+                                    [value]="opt">
+                                {{ opt }}
+                            </label>
+                            <br>
+                            <small class="text-danger" *ngIf="
+          dynamicForm.get(field.name)?.invalid &&
+          (dynamicForm.get(field.name)?.touched || submitted)
+        ">
+                                {{ field.label }} is required
+                            </small>
+                        </ng-container>
+
+                        <!-- ✅ CHECKBOX -->
+                        <ng-container *ngIf="field.type === 'checkbox'">
+                            <label>
+                                <input class="form-check-input" type="checkbox" [formControlName]="field.name">
+                                {{ field.label }}
+                            </label>
+                            <br>
+                            <small class="text-danger" *ngIf="
+          dynamicForm.get(field.name)?.invalid &&
+          (dynamicForm.get(field.name)?.touched || submitted)
+        ">
+                                You must accept the terms
+                            </small>
+                        </ng-container>
+
+                    </div>
+                    <button class="btn btn-primary">Submit</button>
+                </form>
+
+                <hr>
+                <h4>Live Form Value</h4>
+                <pre>{{ dynamicForm.value | json }}</pre>
+            </div>
+        </div>
+    </div>
+</div>

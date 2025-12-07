@@ -1,0 +1,266 @@
+<div class="container mt-3">
+    <p routerLink="/forms">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Template driven forms</h4>
+    <div class="row">
+        <div class="col">
+            <ul>
+                <li>Form logic written mostly in HTML</li>
+                <li>Angular automatically tracks form state</li>
+                <li>Uses ngModel for two-way data binding</li>
+                <li> Simple, easier to build </li>
+                <li> Best for small forms (2–5 fields)</li>
+            </ul>
+        </div>
+        <div class="col">
+            🟢 Level 1 — Template-Driven Forms
+            <ul> 
+                <li> ngModel
+                </li>
+                <li> name
+                </li>
+                <li> ngForm
+                </li>
+                <li> Small forms
+                </li>
+                <li> HTML-driven (driven - இயக்கப்படுகிறது)
+                </li>
+            </ul>
+        </div>
+    </div>
+    <p><b>Steps to use it</b></p>
+    <ul>
+        <li>Import FormsModule - <br><b> If standalone -> </b> imports: [FormsModule] in the corresponding
+            component. <br>
+            <b>If not -> </b> import it in app.module.ts
+        </li>
+    </ul>
+    <div class="row">
+        <div class="col-5">
+            <ul>
+                <li>✔ form #form="ngForm" ("ngForm" to get form instance)
+                </li> <br>
+                <li>✔ Every field must have:<br>
+                    <b>name="fieldName" (No name, no form control) <br>
+                        [(ngModel)]="user.fieldName"</b>
+                    <br>
+                    <u> ngModel does 3 things: </u><br>
+                    Connects HTML ↔ TS <br>
+                    Adds validation support <br>
+                    Tracks touched/dirty/pristine
+                </li> <br>
+                <li>✔ For validation:<br>
+                    <b> Use required, email, minlength, etc. <br>
+                        Use #field="ngModel" for error messages</b>
+                </li> <br>
+                <li> ✔ Use (ngSubmit)="onSubmit(form)"</li>
+            </ul>
+        </div>
+        <div class="col-7">
+            <div class="container mt-4 card alert alert-primary p-4">
+
+                <h2 class="mb-3">User Registration (Template-driven)</h2>
+
+                <form #regForm="ngForm" (ngSubmit)="onSubmit(regForm)">
+
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input class="form-control" type="text" name="fullName" [(ngModel)]="user.fullName" required
+                            minlength="3" #fullName="ngModel">
+
+                        <p class="text-danger" *ngIf="(fullName.touched || submitted) && fullName.invalid">
+                            <span *ngIf="fullName.errors?.['required']">Full Name is required</span>
+                            <span *ngIf="fullName.errors?.['minlength']">Minimum 3 characters</span>
+                        </p>
+                    </div>
+
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input class="form-control" type="email" name="email" [(ngModel)]="user.email" required email
+                            #email="ngModel">
+
+                        <p class="text-danger" *ngIf="(email.touched || submitted) && email.invalid">
+                            <span *ngIf="email.errors?.['required']">Email required</span>
+                            <span *ngIf="email.errors?.['email']">Enter a valid email</span>
+                        </p>
+                    </div>
+
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input class="form-control" type="password" name="password" [(ngModel)]="user.password" required
+                            minlength="6" #password="ngModel">
+
+                        <p class="text-danger" *ngIf="(password.touched || submitted) && password.invalid">
+                            <span *ngIf="password.errors?.['required']">Password required</span>
+                            <span *ngIf="password.errors?.['minlength']">Minimum 6 characters</span>
+                        </p>
+                    </div>
+
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label>Confirm Password</label>
+                        <input class="form-control" type="password" name="confirmPassword"
+                            [(ngModel)]="user.confirmPassword" required #confirmPassword="ngModel">
+
+                        <p class="text-danger"
+                            *ngIf="(confirmPassword.touched || submitted) && confirmPassword.invalid">
+                            Confirm password is required
+                        </p>
+
+                        <p class="text-danger" *ngIf="submitted && passwordsDoNotMatch(regForm)">
+                            Passwords do not match!
+                        </p>
+                    </div>
+
+
+                    <!-- Gender -->
+                    <div class="mb-3">
+                        <label>Gender:</label><br>
+
+                        <input type="radio" name="gender" [(ngModel)]="user.gender" value="male" required
+                            #gender="ngModel" class="form-check-input">
+                        Male
+
+                        <input type="radio" name="gender" class="ms-3" [(ngModel)]="user.gender" value="female" required
+                            class="form-check-input"> Female
+                        <input type="radio" name="gender" class="ms-3" [(ngModel)]="user.gender" value="transgender"
+                            required class="form-check-input"> Trans gender
+                        <p class="text-danger" *ngIf="(gender.touched || submitted) && gender.invalid">
+                            Gender is required
+                        </p>
+                    </div>
+
+
+
+                    <!-- Country -->
+                    <div class="mb-3">
+                        <label>Country</label>
+                        <select class="form-control form-select" name="country" [(ngModel)]="user.country" required
+                            #country="ngModel">
+
+                            <option value="">-- Select Country --</option>
+                            <option value="india">India</option>
+                            <option value="usa">USA</option>
+                            <option value="uk">UK</option>
+                        </select>
+
+                        <p class="text-danger" *ngIf="(country.touched || submitted) && country.invalid">
+                            Country is required
+                        </p>
+                    </div>
+
+
+                    <!-- Terms -->
+                    <div class="mb-3">
+                        <input type="checkbox" class="form-check-input" name="terms" [(ngModel)]="user.terms" required
+                            #terms="ngModel">
+                        <label> &nbsp; I agree to the terms</label>
+
+                        <p class="text-danger d-block" *ngIf="(terms.touched || submitted) && terms.invalid">
+                            You must agree before continue
+                        </p>
+                    </div>
+
+
+                    <!-- Submit always enabled -->
+                    <button class="btn btn-primary">Register</button>
+
+                </form>
+                <pre>
+                {{formData | json}}
+               </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="container card alert alert-primary">
+                <h2>Live Angular Form State Playground</h2>
+                <form #f="ngForm" (ngSubmit)="onSubmitUser(f)" class="mt-3">
+                    <!-- NAME FIELD -->
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+
+                        <input type="text" class="form-control" name="name" [(ngModel)]="demoUser.name" required
+                            minlength="3" #name="ngModel">
+
+                        <small class="text-danger" *ngIf="(name.touched || submitted1) && name.invalid">
+                            Name is required (min 3 chars)
+                        </small>
+                    </div>
+                    <!-- EMAIL FIELD -->
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="emailAddress" [(ngModel)]="demoUser.emailAddress"
+                            required email #emailAddress="ngModel">
+
+                        <p class="text-danger" *ngIf="(emailAddress.touched || submitted1) && emailAddress.invalid">
+                            <span *ngIf="emailAddress.errors?.['required']">Email required</span>
+                            <span *ngIf="emailAddress.errors?.['email']">Enter a valid email</span>
+                        </p>
+                    </div>
+                    <button class="btn btn-primary mt-3">Submit</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="container card p-4 mt-4">
+                <h4>📌 Live Form State</h4>
+                <pre class="bg-light p-3">
+<strong>Form Valid:</strong> {{ f.valid }}
+<strong>Form Invalid:</strong> {{ f.invalid }}
+<strong>Form Dirty:</strong> {{ f.dirty }}
+<strong>Form Pristine:</strong> {{ f.pristine }}
+<strong>Form Touched:</strong> {{ f.touched }}
+<strong>Form Untouched:</strong> {{ f.untouched }}
+<strong>Form Value:</strong> {{ f.value | json }}
+  </pre>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="container card p-4 mt-4 mb-2">
+                <!-- FIELD STATE PANEL -->
+                <h4 class="mt-2">📌 Field States (Live)</h4>
+                <h5>Name Field</h5>
+                <pre class="bg-light p-3">
+value: {{ name.value }}
+dirty: {{ name.dirty }}
+pristine: {{ name.pristine }}
+touched: {{ name.touched }}
+untouched: {{ name.untouched }}
+valid: {{ name.valid }}
+invalid: {{ name.invalid }}
+errors: {{ name.errors | json }}
+  </pre>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="container card p-4 mt-4">
+                <h5>Email Field</h5>
+                <pre class="bg-light p-3">
+value: {{ emailAddress.value }}
+dirty: {{ emailAddress.dirty }}
+pristine: {{ emailAddress.pristine }}
+touched: {{ emailAddress.touched }}
+untouched: {{ emailAddress.untouched }}
+valid: {{ emailAddress.valid }}
+invalid: {{ emailAddress.invalid }}
+errors: {{ emailAddress.errors | json }}
+  </pre>
+            </div>
+        </div>
+    </div>
+    <div class="container alert alert-info">
+        <pre>
+            {{tsCode}}
+        </pre>
+    </div>
+</div>

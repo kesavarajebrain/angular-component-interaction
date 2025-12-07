@@ -1,0 +1,340 @@
+<--------------------HTML--------------------->
+
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+        <!-- Full Name -->
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" formControlName="fullName">
+
+            <small class="text-danger" *ngIf="fullName?.invalid && (fullName?.touched || submitted)">
+                <span *ngIf="fullName?.errors?.['required']">Full Name is required</span>
+                <span *ngIf="fullName?.errors?.['minlength']">Minimum 3 characters</span>
+            </small>
+        </div>
+
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" formControlName="email">
+
+            <small class="text-danger" *ngIf="email?.invalid && (email?.touched || submitted)">
+                <span *ngIf="email?.errors?.['required']">Email is required</span>
+                <span *ngIf="email?.errors?.['email']">Enter a valid email</span>
+            </small>
+        </div>
+
+
+        <!-- Password Group -->
+        <div formGroupName="passwordGroup" class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control mb-2" formControlName="password">
+
+            <small class="text-danger" *ngIf="password?.invalid && (password?.touched || submitted)">
+                <span *ngIf="password?.errors?.['required']">Password is required</span>
+                <span *ngIf="password?.errors?.['minlength']">Minimum 6 characters</span>
+            </small>
+            <br>
+            <label class="form-label mt-2">Confirm Password</label>
+            <input type="password" class="form-control" formControlName="confirmPassword">
+
+            <small class="text-danger"
+                *ngIf="confirmPassword?.invalid && (confirmPassword?.touched || submitted)">
+                Confirm Password is required
+            </small>
+
+            <small class="text-danger d-block"
+                *ngIf="passwordGroup?.errors?.['mismatch'] && (passwordGroup?.touched || submitted)">
+                Passwords do not match
+            </small>
+        </div>
+
+
+        <!-- Gender -->
+        <div class="mb-3">
+            <label class="form-label">Gender</label><br>
+
+            <input type="radio" class="form-check-input" formControlName="gender" value="male"> Male
+            <input type="radio" class="form-check-input" formControlName="gender" value="female"> Female
+            <input type="radio" class="form-check-input" formControlName="gender" value="transgender">
+            Trans gender
+
+            <small class="text-danger d-block"
+                *ngIf="gender?.invalid && (gender?.touched || submitted)">
+                Gender is required
+            </small>
+        </div>
+
+
+        <!-- Country -->
+        <div class="mb-3">
+            <label class="form-label">Country</label>
+            <select class="form-control form-select" formControlName="country">
+                <option value="">-- Select Country --</option>
+                <option value="india">India</option>
+                <option value="usa">USA</option>
+                <option value="uk">UK</option>
+            </select>
+
+            <small class="text-danger" *ngIf="country?.invalid && (country?.touched || submitted)">
+                Country is required
+            </small>
+        </div>
+
+    🟢🟢🟢  <!-- ✅ PHONES FormArray --> 🟢🟢🟢🟢
+                        <label class="form-label">Phone Numbers</label>
+
+                        <div formArrayName="phones">
+
+                            <div *ngFor="let phoneGroup of phones.controls; let i = index" [formGroupName]="i">
+
+                                <input class="form-control mt-2" type="text" maxlength="10" formControlName="phone"
+                                    placeholder="Enter 10-digit Phone">
+
+                                <!-- ✅ Row-specific validation -->
+                                <!---✅ ALWAYS validate the individual FormGroup or FormControl inside the loop -->
+
+                                <small class="text-danger d-block" *ngIf="phoneGroup.get('phone')?.invalid &&
+             (phoneGroup.get('phone')?.touched || (submitted && phoneGroup.get('phone')?.dirty))">
+
+                                    <span *ngIf="phoneGroup.get('phone')?.errors?.['required']">
+                                        Phone number is required
+                                    </span>
+
+                                    <span *ngIf="phoneGroup.get('phone')?.errors?.['pattern']">
+                                        Enter valid 10-digit phone number
+                                    </span>
+
+                                </small>
+
+                                <button type="button" class="btn btn-danger btn-sm mt-1" *ngIf="phones.length > 1"
+                                    (click)="removePhone(i)">
+
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-info btn-sm mt-2" (click)="addPhone()">
+
+                            ➕ Add Phone
+                        </button>
+
+                        <br>
+                        <!-- ✅ ADDRESSES FormArray -->
+                        <label class="form-label mt-4">Addresses</label>
+
+                        <div formArrayName="addresses">
+
+                            <div *ngFor="let addressGroup of addresses.controls; let i = index" [formGroupName]="i"
+                                class="border p-2 mt-2">
+
+                                <!-- House -->
+                                <input class="form-control mt-1" placeholder="House" formControlName="house">
+
+                                <small class="text-danger d-block" *ngIf="addressGroup.get('house')?.invalid &&
+             (addressGroup.get('house')?.touched || (submitted && addressGroup.get('house')?.dirty))">
+                                    House is required
+                                </small>
+
+                                <!-- City -->
+                                <input class="form-control mt-1" placeholder="City" formControlName="city">
+
+                                <small class="text-danger d-block" *ngIf="addressGroup.get('city')?.invalid &&
+             (addressGroup.get('city')?.touched || (submitted && addressGroup.get('city')?.dirty))">
+                                    City is required
+                                </small>
+
+                                <!-- Pincode -->
+                                <input class="form-control mt-1" placeholder="Pincode" minlength="6" maxlength="6"
+                                    formControlName="pincode">
+
+                                <small class="text-danger d-block" *ngIf="addressGroup.get('pincode')?.invalid &&
+             (addressGroup.get('pincode')?.touched || (submitted && addressGroup.get('pincode')?.dirty))">
+
+                                    <span *ngIf="addressGroup.get('pincode')?.errors?.['required']">
+                                        Pincode is required
+                                    </span>
+
+                                    <span *ngIf="addressGroup.get('pincode')?.errors?.['pattern']">
+                                        Enter valid 6-digit pincode
+                                    </span>
+
+                                </small>
+
+                                <button type="button" class="btn btn-danger btn-sm mt-2" *ngIf="addresses.length > 1"
+                                    (click)="removeAddress(i)">
+
+                                    Remove Address
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-info btn-sm mt-2" (click)="addAddress()">
+
+                            ➕ Add Address
+                        </button>
+
+
+        <!-- Terms -->
+        <div class="mb-3">
+            <input class="form-check-input" type="checkbox" formControlName="terms">
+            <label> &nbsp; I agree to the terms & conditions</label>
+
+            <small class="text-danger d-block" *ngIf="terms?.invalid && (terms?.touched || submitted)">
+                You must agree before continuing
+            </small>
+        </div>
+
+
+        <!-- Submit (Always Enabled) -->
+        <button class="btn btn-primary">Register</button>
+
+</form>
+
+<--------------------TS CODE---------------------->
+
+import { Component, OnInit } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: "app-reactive",
+  templateUrl: "./reactive.component.html",
+  styleUrls: ["./reactive.component.scss"],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+})
+
+export class ReactiveComponent {
+
+  registrationForm: FormGroup;
+  submitted = false;
+
+  constructor(private fb: FormBuilder) {
+    this.registrationForm = this.fb.group({
+      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      passwordGroup: this.fb.group(
+        {
+          password: ['', [Validators.required, Validators.minLength(6)]],
+          confirmPassword: ['', [Validators.required]]
+        },
+        { validators: [this.passwordMatchValidator] } // cross-field validator 🔴🔴 NOTE : check below  
+      ),
+      gender: ['', Validators.required],
+      country: ['', Validators.required],
+      terms: [false, Validators.requiredTrue],
+
+      
+      // ✅ FormArray for multiple phone numbers 🟢🟢🟢🟢
+      phones: this.fb.array([
+        this.createPhone()
+      ]),
+
+      // ✅ FormArray for multiple addresses
+      addresses: this.fb.array([
+        this.createAddress()
+      ])
+    });
+  }
+
+   // ✅ Phone FormGroup  🟢🟢🟢🟢
+  createPhone(): FormGroup {
+    return this.fb.group({
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
+    });
+  }
+
+  // ✅ Address FormGroup
+  createAddress(): FormGroup {
+    return this.fb.group({
+      house: ['', Validators.required],
+      city: ['', Validators.required],
+      pincode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]]
+    });
+  }
+
+  // Easy getters for template
+  get fullName(): AbstractControl | null {
+    return this.registrationForm.get('fullName');
+  }
+
+  get email(): AbstractControl | null {
+    return this.registrationForm.get('email');
+  }
+
+  get passwordGroup(): AbstractControl | null {
+    return this.registrationForm.get('passwordGroup');
+  }
+
+  get password(): AbstractControl | null {
+    return this.registrationForm.get('passwordGroup.password');
+  }
+
+  get confirmPassword(): AbstractControl | null {
+    return this.registrationForm.get('passwordGroup.confirmPassword');
+  }
+
+  get gender(): AbstractControl | null {
+    return this.registrationForm.get('gender');
+  }
+
+  get country(): AbstractControl | null {
+    return this.registrationForm.get('country');
+  }
+
+  get terms(): AbstractControl | null {
+    return this.registrationForm.get('terms');
+  }
+
+  // ✅ Add / Remove Phone 🟢🟢🟢🟢
+  addPhone() {
+    this.phones.push(this.createPhone());
+  }
+
+  removePhone(index: number) {
+    this.phones.removeAt(index);
+  }
+
+  // ✅ Add / Remove Address
+  addAddress() {
+    this.addresses.push(this.createAddress());
+  }
+
+  removeAddress(index: number) {
+    this.addresses.removeAt(index);
+  }
+
+  // Custom validator for password match
+  passwordMatchValidator(group: AbstractControl | null) { 🔴 NOTE : check below
+    if (!group) return null;
+    const password = group.get('password')?.value;
+    const confirm = group.get('confirmPassword')?.value;
+    if (!password || !confirm) return null;
+    return password === confirm ? null : { mismatch: true };
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.registrationForm.markAllAsTouched();
+
+    if (this.registrationForm.invalid) {
+      console.warn('Form invalid, please check the errors.');
+      return;
+    }
+
+    console.log('✅ Reactive Form Submitted:', this.registrationForm.value);
+    alert('Registration successful (Reactive Form)!');
+
+    this.registrationForm.reset();
+    this.phones.clear();
+    this.addresses.clear();
+    this.addPhone();
+    this.addAddress();
+    this.submitted = false;
+  }
+}
+

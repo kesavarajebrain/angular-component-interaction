@@ -1,0 +1,403 @@
+<div class="container mt-3">
+    <p routerLink="/forms">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Reactive forms</h4>
+    <div class="row">
+        <div class="col">
+            <ul>
+                <li>Reactive Forms = Form in TypeScript first, then bind to HTML.</li>
+                <li>You create a FormGroup and FormControls in TS</li>
+                <li>You connect them to the template using: [formGroup] , formControlName</li>
+                <li>All validation, rules, logic live in TypeScript, not HTML.</li>
+                <li>Reactive forms are best for real-world apps (complex forms, validation, API, dynamic fields).</li>
+            </ul>
+        </div>
+        <div class="col">
+            🟡 Level 2 — Reactive Forms
+            <ul>
+                <li> FormGroup
+                </li>
+                <li> FormControl
+                </li>
+                <li> FormBuilder
+                </li>
+                <li> Static structure in TS
+                </li>
+                <li> Full control in TypeScript
+                </li>
+            </ul>
+        </div>
+    </div>
+    <p>Think of it like: <br>
+        “Template-driven → HTML is the boss. <br>
+        Reactive → TypeScript is the boss.”</p>
+    <p><b>Steps to use it</b></p>
+    <ul>
+        <li><b>Import ReactiveFormsModule </b>- <br><b> If standalone -> </b> imports: [ReactiveFormsModule] in the
+            corresponding
+            component. <br>
+            <b>If not -> </b> import ReactiveFormsModule in app.module.ts
+        </li>
+    </ul>
+    <div class="row">
+        <div class="col-6">
+            <ul>
+                <li>✔ Create a FormGroup in TypeScript, <br> You use FormGroup + FormControl or FormBuilder:
+                </li> <br>
+                <li>
+                    form = new FormGroup( <br>
+                    name: new FormControl(''), <br>
+                    email: new FormControl('') <br>
+                    );
+                </li><br>
+                <li>✔ Connect the form in HTML<br>
+                    <b>
+                        &#11164;form [formGroup]="form" (ngSubmit)="onSubmit()"&#11166; <br>
+                        &#11164;input formControlName="name"&#11166; <br>
+                        &#11164;/form&#11166;
+                    </b>
+                    <br>
+                </li> <br>
+                <li>✔ Add Validators in TS:<br>
+                    <b>name: new FormControl('', [Validators.required, Validators.minLength(3)])</b>
+                </li> <br>
+                <li> ✔ Show errors in HTML: <br>
+                    &#11164;p *ngIf="form.get('name')?.invalid && form.get('name')?.touched"&#11166; <br>
+                    Name is required
+                    &#11164;/p&#11166;
+                </li> <br>
+                <li>✔ On submit → mark all as touched + check form.valid: <br>
+                    onSubmit() <br>
+                    this.form.markAllAsTouched(); <br>
+                    if (this.form.invalid) return; <br>
+                    console.log(this.form.value); <br>
+                </li>
+            </ul>
+            <div>
+                <pre>
+<b>When using Reactive Forms, always remember:</b>
+
+Import ReactiveFormsModule
+
+Create FormGroup in TS (FormBuilder or FormControl)
+
+Bind form:  &#11164;form [formGroup]="form" &#11166;
+
+Bind controls:  &#11164;input formControlName="field" &#11166;
+
+Add validators in TS (Validators.required, etc.)
+
+Use getters for clean HTML (like fullName, email)
+
+On submit:
+
+form.markAllAsTouched()
+
+If form.invalid → show errors
+
+If form.valid → use form.value
+                </pre>
+            </div>
+            <pre>
+✅ FormGroup = group of related fields
+✅ FormArray = list of repeating FormGroups
+✅ FormControl = single input field
+✅ FormBuilder = FormBuilder is just a helper <br> (utility) service that makes creating FormGroup,<br> FormControl, and FormArray easier and shorter.
+
+<b>without FormBuilder we will use below for each field</b>
+name: new FormControl('', Validators.required),
+
+<b>with FormBuilder :</b>
+name: ['', Validators.required],
+
+<b>Angular internally converts it to:</b>
+name: new FormControl('', Validators.required),
+
+<b class="text-primary">FormGroup</b> (registrationForm)
+ ├── fullName → <b class="text-success">FormControl</b>
+ ├── email →  <b class="text-success">FormControl</b>
+ ├── passwordGroup → <b class="text-primary">FormGroup</b>
+ │     ├── password →  <b class="text-success">FormControl</b>
+ │     └── confirmPassword →  <b class="text-success">FormControl</b>
+ ├── gender →  <b class="text-success">FormControl</b>
+ ├── country →  <b class="text-success">FormControl</b>
+ ├── terms →  <b class="text-success">FormControl</b>
+ ├── phones → <b class="text-danger">FormArray</b>
+ │     ├── <b class="text-primary">FormGroup</b> → phone
+ │     ├── <b class="text-primary">FormGroup</b> → phone
+ │     └── <b class="text-primary">FormGroup</b> → phone
+ └── addresses → <b class="text-danger">FormArray</b>
+       ├── <b class="text-primary">FormGroup</b> → house, city, pincode
+       ├── <b class="text-primary">FormGroup</b> → house, city, pincode
+       └── <b class="text-primary">FormGroup</b> → house, city, pincode
+            </pre>
+        </div>
+        <div class="col-6">
+            <div class="container mt-4 card alert alert-warning p-4">
+                <div class="container p-4 mt-4">
+                    <h3>Reactive Form - User Registration</h3>
+
+                    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" formControlName="fullName">
+
+                            <small class="text-danger" *ngIf="fullName?.invalid && (fullName?.touched || submitted)">
+                                <span *ngIf="fullName?.errors?.['required']">Full Name is required</span>
+                                <span *ngIf="fullName?.errors?.['minlength']">Minimum 3 characters</span>
+                            </small>
+                        </div>
+
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" formControlName="email">
+
+                            <small class="text-danger" *ngIf="email?.invalid && (email?.touched || submitted)">
+                                <span *ngIf="email?.errors?.['required']">Email is required</span>
+                                <span *ngIf="email?.errors?.['email']">Enter a valid email</span>
+                            </small>
+                        </div>
+
+
+                        <!-- Password Group -->
+                        <div formGroupName="passwordGroup" class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control mb-2" formControlName="password">
+
+                            <small class="text-danger" *ngIf="password?.invalid && (password?.touched || submitted)">
+                                <span *ngIf="password?.errors?.['required']">Password is required</span>
+                                <span *ngIf="password?.errors?.['minlength']">Minimum 6 characters</span>
+                            </small>
+                            <br>
+                            <label class="form-label mt-2">Confirm Password</label>
+                            <input type="password" class="form-control" formControlName="confirmPassword">
+
+                            <small class="text-danger"
+                                *ngIf="confirmPassword?.invalid && (confirmPassword?.touched || submitted)">
+                                Confirm Password is required
+                            </small>
+
+                            <small class="text-danger d-block"
+                                *ngIf="passwordGroup?.errors?.['mismatch'] && (passwordGroup?.touched || submitted)">
+                                Passwords do not match
+                            </small>
+                        </div>
+
+
+                        <!-- Gender -->
+                        <div class="mb-3">
+                            <label class="form-label">Gender</label><br>
+
+                            <input type="radio" class="form-check-input" formControlName="gender" value="male"> Male
+                            <input type="radio" class="form-check-input" formControlName="gender" value="female"> Female
+                            <input type="radio" class="form-check-input" formControlName="gender" value="transgender">
+                            Trans gender
+
+                            <small class="text-danger d-block"
+                                *ngIf="gender?.invalid && (gender?.touched || submitted)">
+                                Gender is required
+                            </small>
+                        </div>
+
+
+                        <!-- Country -->
+                        <div class="mb-3">
+                            <label class="form-label">Country</label>
+                            <select class="form-control form-select" formControlName="country">
+                                <option value="">-- Select Country --</option>
+                                <option value="india">India</option>
+                                <option value="usa">USA</option>
+                                <option value="uk">UK</option>
+                            </select>
+
+                            <small class="text-danger" *ngIf="country?.invalid && (country?.touched || submitted)">
+                                Country is required
+                            </small>
+                        </div>
+
+                        <!-- ✅ PHONES FormArray -->
+                        <label class="form-label">Phone Numbers</label>
+
+                        <div formArrayName="phones">
+
+                            <div *ngFor="let phoneGroup of phones.controls; let i = index" [formGroupName]="i">
+
+                                <input class="form-control mt-2" type="text" maxlength="10" formControlName="phone"
+                                    placeholder="Enter 10-digit Phone">
+
+                                <!-- ✅ Row-specific validation -->
+                                <!---✅ ALWAYS validate the individual FormGroup or FormControl inside the loop -->
+                                <small class="text-danger d-block" *ngIf="phoneGroup.get('phone')?.invalid &&
+             (phoneGroup.get('phone')?.touched || (submitted && phoneGroup.get('phone')?.dirty))">
+
+                                    <span *ngIf="phoneGroup.get('phone')?.errors?.['required']">
+                                        Phone number is required
+                                    </span>
+
+                                    <span *ngIf="phoneGroup.get('phone')?.errors?.['pattern']">
+                                        Enter valid 10-digit phone number
+                                    </span>
+
+                                </small>
+
+                                <button type="button" class="btn btn-danger btn-sm mt-1" *ngIf="phones.length > 1"
+                                    (click)="removePhone(i)">
+
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-info btn-sm mt-2" (click)="addPhone()">
+
+                            ➕ Add Phone
+                        </button>
+
+                        <br>
+                        <!-- ✅ ADDRESSES FormArray -->
+                        <label class="form-label mt-4">Addresses</label>
+
+                        <div formArrayName="addresses">
+
+                            <div *ngFor="let addressGroup of addresses.controls; let i = index" [formGroupName]="i"
+                                class="border p-2 mt-2">
+
+                                <!-- House -->
+                                <input class="form-control mt-1" placeholder="House" formControlName="house">
+
+                                <small class="text-danger d-block" *ngIf="addressGroup.get('house')?.invalid &&
+             (addressGroup.get('house')?.touched || (submitted && addressGroup.get('house')?.dirty))">
+                                    House is required
+                                </small>
+
+                                <!-- City -->
+                                <input class="form-control mt-1" placeholder="City" formControlName="city">
+
+                                <small class="text-danger d-block" *ngIf="addressGroup.get('city')?.invalid &&
+             (addressGroup.get('city')?.touched || (submitted && addressGroup.get('city')?.dirty))">
+                                    City is required
+                                </small>
+
+                                <!-- Pincode -->
+                                <input class="form-control mt-1" placeholder="Pincode" minlength="6" maxlength="6"
+                                    formControlName="pincode">
+
+                                <small class="text-danger d-block" *ngIf="addressGroup.get('pincode')?.invalid &&
+             (addressGroup.get('pincode')?.touched || (submitted && addressGroup.get('pincode')?.dirty))">
+
+                                    <span *ngIf="addressGroup.get('pincode')?.errors?.['required']">
+                                        Pincode is required
+                                    </span>
+
+                                    <span *ngIf="addressGroup.get('pincode')?.errors?.['pattern']">
+                                        Enter valid 6-digit pincode
+                                    </span>
+
+                                </small>
+
+                                <button type="button" class="btn btn-danger btn-sm mt-2" *ngIf="addresses.length > 1"
+                                    (click)="removeAddress(i)">
+
+                                    Remove Address
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-info btn-sm mt-2" (click)="addAddress()">
+
+                            ➕ Add Address
+                        </button>
+
+
+                        <!-- Terms -->
+                        <div class="mb-3">
+                            <input class="form-check-input" type="checkbox" formControlName="terms">
+                            <label> &nbsp; I agree to the terms & conditions</label>
+
+                            <small class="text-danger d-block" *ngIf="terms?.invalid && (terms?.touched || submitted)">
+                                You must agree before continuing
+                            </small>
+                        </div>
+
+
+                        <!-- Submit (Always Enabled) -->
+                        <button class="btn btn-primary">Register</button>
+
+                    </form>
+
+                    <hr>
+
+                    <!-- Debug Panel -->
+                    <h4>Form Value (live)</h4>
+                    <pre class="bg-light p-2">{{ registrationForm.value | json }}</pre>
+
+                    <h4>Form Status</h4>
+                    <pre class="bg-light p-2">
+valid: {{ registrationForm.valid }}
+invalid: {{ registrationForm.invalid }}
+touched: {{ registrationForm.touched }}
+dirty: {{ registrationForm.dirty }}
+  </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container alert alert-info">
+        <pre>
+            {{tsCode}}
+        </pre>
+    </div>
+    <div class="alert alert-danger">
+        <p> <b> validators: [this.passwordMatchValidator] // it is function reference only, not the function call </b>
+            “This is a function right? Then why are we NOT calling it like this.passwordMatchValidator() with brackets?”
+        </p>
+        <div class="row">
+            <div class="col">
+                <p>Function (Definition / Reference) - this.passwordMatchValidator</p>
+                <ul>
+                    This means:
+                    <li>👉 “Here is the function itself”
+                    </li>
+                    <li>👉 You are passing the function as a value
+                    </li>
+                    <li>👉 It is NOT executed now
+                    </li>
+                </ul>
+            </div>
+            <div class="col">
+                <p>Function (Call) - this.passwordMatchValidator()</p>
+                <ul>
+                    This means:
+                    <li> 👉 “Execute the function immediately”
+                    </li>
+                    <li> 👉 It runs right now
+                    </li>
+                    <li> 👉 And returns its result immediately
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <p>Angular’s validators option expects:
+            ✅ A function reference
+            ❌ NOT a function execution</p>
+        <p>Because Angular will: <br>
+            Call the function by itself <br>
+            Pass the <b>AbstractControl</b> automatically <br>
+            Call it again and again on every value change <br>
+            So Angular internally does this: <br>
+            this.passwordMatchValidator(<b>control</b>)
+        </p>
+        <p>validators: [this.passwordMatchValidator()] - so if added like this, The function executes ONLY ONCE <br>
+            It returns either: <br>
+            null
+            OR mismatch: true , so Form never re-validates properly, so that we are just use reference only</p>
+        <span>************</span>
+        <p>(submitted && phoneGroup.get('phone')?.dirty) - For FormArray rows, NEVER use only submitted.
+            Always combine touched OR (submitted + dirty). so that we are not get the error while newly add itself</p>
+    </div>
+</div>
