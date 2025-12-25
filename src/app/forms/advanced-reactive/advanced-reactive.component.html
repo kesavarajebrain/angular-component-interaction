@@ -55,7 +55,7 @@
                 <li>Conditional validation decides which field must be validated.</li>
             </ul>
         </div>
-          <div class="col alert alert-warning">
+        <div class="col alert alert-warning">
             <h5> Async Validators </h5>
             <ul>
                 <li>Based on the api response validation</li>
@@ -92,7 +92,7 @@
             </h5>
             <ul>
                 <li>Fields that appear or disappear based on the value of another field.</li>
-                <li>Here managing the differently abled  field based on differentlyAbled select box field </li>
+                <li>Here managing the differently abled field based on differentlyAbled select box field </li>
             </ul>
         </div>
     </div>
@@ -231,15 +231,15 @@
                 <form [formGroup]="profileForm">
                     <ng-container>
                         <label>Name</label>
-                        <input type="text"  class="form-control" formControlName="name">
+                        <input type="text" class="form-control" formControlName="name">
                     </ng-container>
                     <ng-container>
                         <label>Email</label>
-                        <input type="email"  class="form-control" formControlName="email">
+                        <input type="email" class="form-control" formControlName="email">
                     </ng-container>
                     <ng-container>
                         <label>Bio</label>
-                        <textarea  class="form-control" formControlName="bio"></textarea>
+                        <textarea class="form-control" formControlName="bio"></textarea>
                     </ng-container>
                     <br>
                     <p *ngIf="isSaving">💾 Saving draft...</p>
@@ -247,6 +247,12 @@
                 </form>
 
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="container alert alert-light">
+            <pre>            {{tsCode}}
+</pre>
         </div>
     </div>
 </div>
