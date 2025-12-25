@@ -14,46 +14,103 @@
         <div class="col">
             🔴 Level 3 — Advanced Reactive Forms
             <ul>
-                <li> ✅ JSON-based Dynamic Forms ✅
+                <li> ✅ JSON-based Dynamic Forms
                 </li>
-                <li> ✅ Custom Validators ✅
+                <li> ✅ Custom Validators
                 </li>
-                <li> ✅ Conditional Validators ✅
+                <li> ✅ Conditional Validators
                 </li>
-                <li> ✅ Async Validators ✅
+                <li> ✅ Async Validators
                 </li>
-                <li> ✅ Dynamic validators ✅
+                <li> ✅ Dynamic validators
                 </li>
-                <li> ✅ Auto-save using valueChanges ✅
+                <li> ✅ Auto-save using valueChanges
                 </li>
-                <li> ✅ Dynamic enable/disable controls ✅
+                <li> ✅ Dynamic enable/disable controls
                 </li>
-                <li> ✅ Conditional fields ✅
+                <li> ✅ Conditional fields
                 </li>
             </ul>
         </div>
     </div>
     <div class="row">
-        <h5>JSON-based Dynamic Forms</h5>
-        <ul>
-            <li>Form structure is NOT fixed in HTML</li>
-            <li>Form is generated from JSON (API Response)</li>
-        </ul>
-        <div class="col">
-          
+        <div class="col alert alert-success">
+            <h5>JSON-based Dynamic Forms</h5>
+            <ul>
+                <li>Form structure is NOT fixed in HTML</li>
+                <li>Form is generated from JSON (API Response)</li>
+            </ul>
         </div>
+        <div class="col alert alert-primary">
+            <h5> Custom Validators </h5>
+            <ul>
+                <li>Password and confirmPassword validation</li>
+            </ul>
+        </div>
+        <div class="col alert alert-secondary">
+            <h5> Conditional Validators </h5>
+            <ul>
+                <li>“Depending on country, which document should the user submit?”</li>
+                <li>Only one document is required depending on nationality</li>
+                <li>Conditional validation decides which field must be validated.</li>
+            </ul>
+        </div>
+          <div class="col alert alert-warning">
+            <h5> Async Validators </h5>
+            <ul>
+                <li>Based on the api response validation</li>
+                <li>if the user enters email check it whether already registred or not like that</li>
+                <li>Enter following and test async validation - test&#64;gmail.com,
+                    admin&#64;gmail.com</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col alert alert-info">
+            <h5> Dynamic Validators </h5>
+            <ul>
+                <li>Dynamic validation decides how a field must be validated.</li>
+            </ul>
+        </div>
+        <div class="col alert alert-danger">
+            <h5> Auto-save using valueChanges
+            </h5>
+            <ul>
+                <li>Auto save will help long form, never lose the process. </li>
+            </ul>
+        </div>
+        <div class="col alert alert-success">
+            <h5> Dynamic enable / disable controls
+            </h5>
+            <ul>
+                <li>Enable or disable controls based on other field values</li>
+                <li>Here managing the Appiled before field based on the disabled the reason field </li>
+            </ul>
+        </div>
+        <div class="col alert alert-dark">
+            <h5> Conditional fields
+            </h5>
+            <ul>
+                <li>Fields that appear or disappear based on the value of another field.</li>
+                <li>Here managing the differently abled  field based on differentlyAbled select box field </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
         <div class="col">
-              <div class="container alert alert-success card p-4 mt-4">
-                <h6>Dynamic JSON-Based Reactive Form</h6>
+            <div class="container alert alert-success card p-4 mt-4">
+                <h6>This form covers JSON-based Dynamic Forms ** Custom Validators & Conditional Validators ** Async
+                    Validators ** Dynamic validators ** Dynamic Enable , Disable controls ** Conditional Fields</h6><br>
+                <h5 class="text-center">VISA APPLICATION FORM</h5>
 
                 <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
-                    <div *ngFor="let field of formConfig" class="mb-3">
+                    <div *ngFor="let field of formConfig" class="mb-3 mt-3">
 
                         <!-- ✅ TEXT, EMAIL (NON-GROUP, NON-SELECT, NON-RADIO, NON-CHECKBOX) -->
                         <ng-container *ngIf="field.type !== 'group' &&
              field.type !== 'select' &&
              field.type !== 'radio' &&
-             field.type !== 'checkbox'">
+             field.type !== 'checkbox' &&  isFieldVisible(field)">
                             <label class="form-label">{{ field.label }}</label>
                             <input class="form-control" [type]="field.type" [formControlName]="field.name"
                                 [placeholder]="field.placeholder">
@@ -72,7 +129,15 @@
           dynamicForm.get(field.name)?.invalid && !dynamicForm.get(field.name)?.errors?.['emailExists'] &&
           (dynamicForm.get(field.name)?.touched || submitted)
         ">
-                                {{ field.label }} is invalid
+                                {{ field.label }} is required
+                            </small>
+
+                            <small class="text-danger" *ngIf="
+    field.name === 'companyName' &&
+    dynamicForm.get('companyName')?.hasError('required') &&
+    (dynamicForm.get('companyName')?.touched || submitted)
+  ">
+                                When Employment Type is Employed
                             </small>
                         </ng-container>
 
@@ -156,6 +221,31 @@
                 <hr>
                 <h4>Live Form Value</h4>
                 <pre>{{ dynamicForm.value | json }}</pre>
+            </div>
+        </div>
+        <div class="col">
+            <div class="container alert alert-primary card p-4 mt-4">
+                <h6>This form covers Auto-save using valueChanges</h6><br>
+                <h5 class="text-center">Auto save Form</h5>
+
+                <form [formGroup]="profileForm">
+                    <ng-container>
+                        <label>Name</label>
+                        <input type="text"  class="form-control" formControlName="name">
+                    </ng-container>
+                    <ng-container>
+                        <label>Email</label>
+                        <input type="email"  class="form-control" formControlName="email">
+                    </ng-container>
+                    <ng-container>
+                        <label>Bio</label>
+                        <textarea  class="form-control" formControlName="bio"></textarea>
+                    </ng-container>
+                    <br>
+                    <p *ngIf="isSaving">💾 Saving draft...</p>
+                    <button type="button" class="btn btn-info" (click)="clearDraft()">Clear Draft</button>
+                </form>
+
             </div>
         </div>
     </div>

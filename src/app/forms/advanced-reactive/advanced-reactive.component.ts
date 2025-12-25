@@ -12,6 +12,8 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 // async validators
 import { UserApiService } from './async-validators/user-api.service';
 import { emailExistsValidator } from './async-validators/email-exists.validator';
+
+import { debounceTime, Subscription } from 'rxjs';
 @Component({
   selector: "app-advanced-reactive",
   templateUrl: "./advanced-reactive.component.html",
@@ -44,7 +46,7 @@ export class AdvancedReactiveComponent implements OnInit {
     },
     {
       type: 'group',
-      name: 'passwordGroup',
+      name: 'password',
       validators: ['passwordMatch'],
       fields: [
         {
@@ -85,6 +87,52 @@ export class AdvancedReactiveComponent implements OnInit {
       validators: []
     },
     {
+      type: 'select',
+      label: 'Employment Type',
+      name: 'employmentType',
+      options: ['Student', 'Self Employed', 'Employed'],
+      validators: ['required']
+    },
+    {
+      type: 'text',
+      label: 'Company Name',
+      name: 'companyName',
+      placeholder: 'Enter company name',
+      validators: []   // ✅ REQUIRED will be added dynamically
+    },
+    {
+      type: 'select',
+      label: 'Applied Before?',
+      name: 'appliedCase',
+      options: ['No', 'Applied But Rejected'],
+      validators: ['required']
+    },
+    {
+      type: 'text',
+      label: 'Specify Reason (if already rejected)',
+      name: 'reason',
+      placeholder: 'Enter Specific Reason',
+      validators: ['required']
+    },
+    {
+      type: 'select',
+      label: 'Differently Abled Person?',
+      name: 'differentlyAbledCheck',
+      options: ['Yes', 'No'],
+      validators: ['required']
+    },
+    {
+      type: 'text',
+      label: 'Please Specify Details',
+      name: 'differentlyAbled',
+      placeholder: 'Enter Specific Details',
+      visibleWhen: {
+        field: 'differentlyAbledCheck',
+        value: 'Yes'
+      },
+      validators: ['required']
+    },
+    {
       type: 'radio',
       label: 'Gender',
       name: 'gender',
@@ -103,18 +151,44 @@ export class AdvancedReactiveComponent implements OnInit {
 
   }
 
+  profileForm!: FormGroup;
+  autoSaveSub!: Subscription;
+  isSaving = false;
+
   ngOnInit() {
-    this.buildFormFromConfig();
-    this.applyConditionalValidation();
+    this.buildFormFromConfig(); // build form from api
+    this.applyConditionalValidation();  // Country → Aadhaar / Greencard
+    this.applyDynamicValidators();      // ✅ Gender → Greencard REQUIRED
+    this.enableDisableValidators();
+    this.conditionalFieldsValidators();
+
+
+    /* Auto save form*/
+    // ✅ 1. Build form
+    this.profileForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      bio: ['', [Validators.required]]
+    });
+
+    // ✅ 2. Restore saved draft
+    this.restoreDraft();
+
+    // ✅ 3. Listen for auto-save
+    this.autoSaveSub = this.profileForm.valueChanges
+      .pipe(
+        debounceTime(1000) // wait until user stops typing
+      )
+      .subscribe(value => {
+        this.autoSave(value);
+      });
   }
 
-  // ✅ Convert JSON to FormGroup
+  // ✅ Convert JSON to FormGroup - JSON-based Dynamic Forms
   buildFormFromConfig() {
     const formGroup: any = {};
-
     this.formConfig.forEach((field: any) => {
 
-      // ASYNC validators
       const syncValidators = this.mapValidators(field.validators || []);
       const asyncValidators = this.mapAsyncValidators(field.asyncValidators || []);
 
@@ -151,13 +225,6 @@ export class AdvancedReactiveComponent implements OnInit {
     this.dynamicForm = this.fb.group(formGroup);
   }
 
-  passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
-    const password = group.get('password')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
-    if (!password || !confirmPassword) return null;
-    return password === confirmPassword ? null : { passwordMismatch: true };
-  }
-
   // ✅ Convert string validators to Angular validators
   mapValidators(validators: string[]) {
     const formValidators = [];
@@ -174,7 +241,15 @@ export class AdvancedReactiveComponent implements OnInit {
     return formValidators;
   }
 
-  // ✅ ✅ ✅ CONDITIONAL VALIDATION (JSON + valueChanges)
+  // CUSTOM VALIDATION
+  passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    if (!password || !confirmPassword) return null;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  }
+
+  // ✅ ✅ ✅ CONDITIONAL VALIDATION (JSON + valueChanges) Conditional Validators 
   applyConditionalValidation() {
     this.dynamicForm.get('country')?.valueChanges.subscribe(country => {
 
@@ -224,6 +299,29 @@ export class AdvancedReactiveComponent implements OnInit {
 
     return asyncValidators;
   }
+
+  // Dynamic validation
+  applyDynamicValidators() {
+    this.dynamicForm.get('employmentType')?.valueChanges.subscribe(type => {
+
+      const company = this.dynamicForm.get('companyName');
+
+      if (type === 'Employed') {
+        company?.setValidators([
+          Validators.required,
+          Validators.minLength(3)
+        ]);
+      } else {
+        company?.clearValidators();
+        company?.setValue('');
+      }
+
+      // ✅ MANDATORY
+      company?.updateValueAndValidity();
+    });
+  }
+
+
   onSubmit() {
     this.submitted = true;
     this.dynamicForm.markAllAsTouched();
@@ -235,8 +333,10 @@ export class AdvancedReactiveComponent implements OnInit {
 
     // ✅ ✅ ✅ PROPER FRESH RESET
     this.resetFormFresh();
+    //this.resetFormHard();
   }
 
+  // Normal reset
   resetFormFresh() {
     // ✅ 1. Reset submitted flag FIRST
     this.submitted = false;
@@ -262,4 +362,93 @@ export class AdvancedReactiveComponent implements OnInit {
     this.applyConditionalValidation();
   }
 
+  // HARD Reset
+  resetFormHard() {
+    this.submitted = false;
+    this.buildFormFromConfig();       // ✅ rebuild form fresh
+    this.applyConditionalValidation();
+  }
+
+  enableDisableValidators() {
+    this.dynamicForm.get('appliedCase')?.valueChanges.subscribe(type => {
+      const reason = this.dynamicForm.get('reason');
+
+      if (type === 'Applied But Rejected') {
+        reason?.enable();
+        reason?.setValidators([
+          Validators.required,
+          Validators.minLength(3)]
+        );
+      } else {
+        reason?.disable();
+        reason?.reset(); // 🔥 clear value when disabled
+      }
+    })
+  }
+
+  conditionalFieldsValidators() {
+    this.formConfig.forEach(field => {
+      if (!field.visibleWhen) return;
+
+      const dependent = this.dynamicForm.get(field.visibleWhen.field);
+      const control = this.dynamicForm.get(field.name);
+
+      dependent?.valueChanges.subscribe(value => {
+        if (value === field.visibleWhen.value) {
+          // SHOW → enable validators
+          control?.setValidators(
+            this.mapValidators(field.validators || [])
+          );
+        } else {
+          // HIDE → remove value + validators
+          control?.clearValidators();
+          control?.reset();
+        }
+
+        control?.updateValueAndValidity();
+      });
+    });
+  }
+
+  isFieldVisible(field: any): boolean {
+    if (!field.visibleWhen) return true;
+
+    const dependentControl = this.dynamicForm.get(field.visibleWhen.field);
+    return dependentControl?.value === field.visibleWhen.value;
+  }
+
+
+  // ✅ AUTO SAVE LOGIC
+  autoSave(value: any) {
+    // ❌ Don't save invalid form
+    if (this.profileForm.invalid) return;
+
+    this.isSaving = true;
+
+    // simulate API / storage delay
+    setTimeout(() => {
+      localStorage.setItem('profileDraft', JSON.stringify(value));
+      this.isSaving = false;
+      console.log('💾 Draft auto-saved', value);
+    }, 300);
+  }
+
+  // ✅ RESTORE ON LOAD
+  restoreDraft() {
+    const saved = localStorage.getItem('profileDraft');
+    if (!saved) return;
+
+    this.profileForm.patchValue(JSON.parse(saved), {
+      emitEvent: false // 🔥 VERY IMPORTANT
+    });
+  }
+
+  clearDraft() {
+    localStorage.removeItem('profileDraft');
+    this.profileForm.reset();
+  }
+
+  ngOnDestroy() {
+    this.autoSaveSub.unsubscribe();
+  }
 }
