@@ -1,0 +1,27 @@
+<!-- 👇 UI render ஆகுற இடம் -->
+<h5>Child Component</h5>
+<ng-template #container>
+</ng-template>
+
+<!-- ✅ DEFAULT VIEW -->
+<ng-template #defaultTpl>
+  <div class="alert alert-success">
+    <ng-container>
+      <ng-content></ng-content>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- ⏳ LOADING VIEW -->
+<ng-template #loadingTpl>
+  <div class="alert alert-light">
+    Loading... Please wait
+  </div>
+</ng-template>
+
+<!-- ❌ ERROR VIEW -->
+<ng-template #errorTpl>
+  <div class="alert alert-danger">
+    Something went wrong!
+  </div>
+</ng-template>

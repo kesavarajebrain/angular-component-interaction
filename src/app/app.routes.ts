@@ -23,6 +23,7 @@ import { FormsComponent } from './forms/forms.component';
 import { TemplateDrivenComponent } from './forms/template-driven/template-driven.component';
 import { ReactiveComponent } from './forms/reactive/reactive.component';
 import { AdvancedReactiveComponent } from './forms/advanced-reactive/advanced-reactive.component';
+import { Dynamicrender } from './dynamic-rendering/dynamic-render.component';
 
 export const routes: Routes = [
   {
@@ -125,5 +126,9 @@ export const routes: Routes = [
   {
     path:'forms/advanced-reactive',
     component:AdvancedReactiveComponent
+  },
+   {
+    path:'dynamic-rendering',
+    component:Dynamicrender
   }
 ];

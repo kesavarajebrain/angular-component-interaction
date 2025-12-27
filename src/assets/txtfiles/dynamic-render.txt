@@ -1,0 +1,200 @@
+<-------------------------------HTML (PARENT)------------------------------------>
+<div class="row">
+    <h5>Example : 1</h5>
+    <h6>Dynamic View Rendering (Same Component)</h6>
+    <div class="col">
+        <!-- 🔘 CONTROLS -->
+        <button class="btn btn-info" (click)="showDefault()">Default</button> &nbsp;
+        <button class="btn btn-primary" (click)="showLoading()">Loading</button> &nbsp;
+        <button class="btn btn-danger" (click)="showError()">Error</button> &nbsp;
+        <button class="btn btn-warning" (click)="showCustom()">Custom template</button>
+    </div>
+    <div class="col">
+
+        <!-- 👇 UI WILL APPEAR HERE -->
+        <ng-template #container></ng-template>
+
+        <!-- ✅ DEFAULT TEMPLATE -->
+        <ng-template #defaultTpl>
+            <!-- ng-container = NO EXTRA DOM -->
+            <ng-container>
+                <div style="border:1px solid green; padding:10px;">
+                    <strong>Success!</strong> Profile updated.
+                </div>
+            </ng-container>
+        </ng-template>
+
+        <!-- ⏳ LOADING TEMPLATE -->
+        <ng-template #loadingTpl>
+            Loading... please wait
+        </ng-template>
+
+        <!-- ❌ ERROR TEMPLATE -->
+        <ng-template #errorTpl>
+            <div style="border:1px solid red; padding:10px;">
+                Something went wrong!
+            </div>
+        </ng-template>
+
+        <!--  Custom TEMPLATE -->
+        <ng-template #customTemplate>
+            <div style="border:1px solid rgb(255, 0, 200); padding:10px;">
+                Welcome to angular tutorial!
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+
+*****************************************************************
+
+ <div class="row">
+    <h5>Example : 2</h5>
+    <h6>Dynamic View Rendering (Parent to Child Component)</h6>
+
+    <div class="col">
+        <h5>Parent Component</h5>
+        <button class="btn btn-info" (click)="childComponent.showLoading()">Show Loading</button> &nbsp;
+        <button class="btn btn-danger" (click)="childComponent.showError()">Show Error</button> &nbsp;
+        <button class="btn btn-success" (click)="childComponent.showDefault()">Show Success</button>
+    </div>
+    <div class="col">
+        <app-child-component #childComponent>
+            <strong>Default Content from Parent : Profile updated successfully!</strong>
+        </app-child-component>
+    </div>
+</div>
+
+<----------------------------------TS (PARENT)-------------------------------->
+
+import {
+  Component,
+  ViewChild,
+  TemplateRef,
+  ViewContainerRef,
+  AfterViewInit
+} from '@angular/core';
+import { RouterModule } from "@angular/router";
+import { ChildComponentComponent } from "./child-component/child-component.component";
+
+@Component({
+  selector: "app-dynamic-render",
+  templateUrl: "./dynamic-render.component.html",
+  styleUrls: ["./dynamic-render.component.scss"],
+  standalone:true,
+  imports:[RouterModule,ChildComponentComponent]
+})
+
+export class Dynamicrender implements AfterViewInit {
+  
+  
+  // 🔹 WHERE UI WILL RENDER
+  @ViewChild('container', { read: ViewContainerRef })
+  container!: ViewContainerRef;
+
+  // 🔹 WHAT CAN BE RENDERED
+  @ViewChild('defaultTpl') defaultTpl!: TemplateRef<any>;
+  @ViewChild('loadingTpl') loadingTpl!: TemplateRef<any>;
+  @ViewChild('errorTpl') errorTpl!: TemplateRef<any>;
+  @ViewChild('customTemplate') customTemplate!: TemplateRef<any>;
+
+  ngAfterViewInit() {
+    this.showDefault();
+  }
+
+  showDefault() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.defaultTpl);
+  }
+
+  showLoading() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.loadingTpl);
+  }
+
+  showError() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.errorTpl);
+  }
+
+  showCustom(){
+     this.container.clear();
+    this.container.createEmbeddedView(this.customTemplate);
+  }
+}
+
+<--------------------------------HTML (CHILD)------------------------->
+
+<!-- 👇 UI render ஆகுற இடம் -->
+<h5>Child Component</h5>
+<ng-template #container>
+</ng-template>
+
+<!-- ✅ DEFAULT VIEW -->
+<ng-template #defaultTpl>
+  <div class="alert alert-success">
+    <ng-container>
+      <ng-content></ng-content>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- ⏳ LOADING VIEW -->
+<ng-template #loadingTpl>
+  <div class="alert alert-light">
+    Loading... Please wait
+  </div>
+</ng-template>
+
+<!-- ❌ ERROR VIEW -->
+<ng-template #errorTpl>
+  <div class="alert alert-danger">
+    Something went wrong!
+  </div>
+</ng-template>
+
+<------------------------------------TS (CHILD)----------------------------------->
+
+import {
+  Component,
+  ViewChild,
+  TemplateRef,
+  ViewContainerRef,
+  AfterViewInit
+} from '@angular/core';
+
+@Component({
+  selector: "app-child-component",
+  templateUrl: "./child-component.component.html",
+  styleUrls: ["./child-component.component.scss"],
+  standalone: true,
+})
+
+export class ChildComponentComponent implements AfterViewInit {
+  
+ @ViewChild('container', { read: ViewContainerRef })
+  container!: ViewContainerRef;
+
+  @ViewChild('defaultTpl') defaultTpl!: TemplateRef<any>;
+  @ViewChild('loadingTpl') loadingTpl!: TemplateRef<any>;
+  @ViewChild('errorTpl') errorTpl!: TemplateRef<any>;
+
+  ngAfterViewInit() {
+    this.showDefault();
+  }
+
+  showDefault() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.defaultTpl);
+  }
+
+  showLoading() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.loadingTpl);
+  }
+
+  showError() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.errorTpl);
+  }
+}

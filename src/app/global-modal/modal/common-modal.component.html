@@ -1,0 +1,7 @@
+<!-- Modal Overlay -->
+<div class="overlay" *ngIf="modalContainer?.length">
+  <div class="modal-box">
+    <ng-template #modalContainer></ng-template>
+    <button class="close-btn" (click)="close()">Close</button>
+  </div>
+</div>

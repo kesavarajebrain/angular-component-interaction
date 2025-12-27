@@ -1,0 +1,71 @@
+import {
+  Component,
+  ViewChild,
+  TemplateRef,
+  ViewContainerRef,
+  AfterViewInit
+} from '@angular/core';
+import { RouterModule } from "@angular/router";
+import { ChildComponentComponent } from "./child-component/child-component.component";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+// global modal
+import { GlobalModalService } from '../global-modal/global-modal.service';
+@Component({
+  selector: "app-dynamic-render",
+  templateUrl: "./dynamic-render.component.html",
+  styleUrls: ["./dynamic-render.component.scss"],
+  standalone: true,
+  imports: [RouterModule, ChildComponentComponent, HttpClientModule],
+})
+
+export class Dynamicrender implements AfterViewInit {
+
+  public tsCode: any;
+
+  constructor(private http: HttpClient, private modalService: GlobalModalService) {
+    this.http.get('../../../assets/txtfiles/dynamic-render.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+  // 🔹 WHERE UI WILL RENDER
+  @ViewChild('container', { read: ViewContainerRef })
+  container!: ViewContainerRef;
+
+  // 🔹 WHAT CAN BE RENDERED
+  @ViewChild('defaultTpl') defaultTpl!: TemplateRef<any>;
+  @ViewChild('loadingTpl') loadingTpl!: TemplateRef<any>;
+  @ViewChild('errorTpl') errorTpl!: TemplateRef<any>;
+  @ViewChild('customTemplate') customTemplate!: TemplateRef<any>;
+
+  ngAfterViewInit() {
+    this.showDefault();
+  }
+
+  showDefault() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.defaultTpl);
+  }
+
+  showLoading() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.loadingTpl);
+  }
+
+  showError() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.errorTpl);
+  }
+
+  showCustom() {
+    this.container.clear();
+    this.container.createEmbeddedView(this.customTemplate);
+  }
+
+  openProfile() {
+    this.modalService.open(this.customTemplate);
+  }
+
+  openDelete() {
+    this.modalService.open(this.customTemplate);
+  }
+}

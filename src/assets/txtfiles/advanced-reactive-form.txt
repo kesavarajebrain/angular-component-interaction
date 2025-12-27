@@ -3,7 +3,7 @@
 <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
                     <div *ngFor="let field of formConfig" class="mb-3 mt-3">
 
-                        <!-- ✅ TEXT, EMAIL (NON-GROUP, NON-SELECT, NON-RADIO, NON-CHECKBOX) -->
+        👉 👉 🔴  <!-- ✅ TEXT, EMAIL (NON-GROUP, NON-SELECT, NON-RADIO, NON-CHECKBOX) -->
                         <ng-container *ngIf="field.type !== 'group' &&
              field.type !== 'select' &&
              field.type !== 'radio' &&
@@ -38,7 +38,7 @@
                             </small>
                         </ng-container>
 
-                        <!-- ✅ GROUP (Password + Confirm Password) -->
+            👉 👉 🔴   <!-- ✅ GROUP (Password + Confirm Password) -->
                         <ng-container *ngIf="field.type === 'group'" [formGroupName]="field.name">
                             <div *ngFor="let child of field.fields" class="mb-2">
                                 <label class="form-label">{{ child.label }}</label>
@@ -62,7 +62,7 @@
                             </small>
                         </ng-container>
 
-                        <!-- ✅ SELECT -->
+            👉 👉 🔴   <!-- ✅ SELECT -->
                         <ng-container *ngIf="field.type === 'select'">
                             <label class="form-label">{{ field.label }}</label>
                             <select class="form-control form-select" [formControlName]="field.name">
@@ -79,7 +79,7 @@
                             </small>
                         </ng-container>
 
-                        <!-- ✅ RADIO -->
+            👉 👉 🔴   <!-- ✅ RADIO -->
                         <ng-container *ngIf="field.type === 'radio'">
                             <label class="form-label d-block">{{ field.label }}</label>
                             <label *ngFor="let opt of field.options" class="me-3">
@@ -96,7 +96,7 @@
                             </small>
                         </ng-container>
 
-                        <!-- ✅ CHECKBOX -->
+            👉 👉 🔴  <!-- ✅ CHECKBOX -->
                         <ng-container *ngIf="field.type === 'checkbox'">
                             <label>
                                 <input class="form-check-input" type="checkbox" [formControlName]="field.name">
@@ -116,7 +116,7 @@
 </form>
 
 
-***************************** AUTO SAVE FORM ************************************
+***************************** 👉 👉 🔵 AUTO SAVE FORM ************************************
 
 <form [formGroup]="profileForm">
                     <ng-container>
@@ -169,7 +169,7 @@ export class AdvancedReactiveComponent implements OnInit {
   dynamicForm!: FormGroup;
   submitted = false;
 
-  // ✅ JSON CONFIG (API-driven) assume this the api response
+👉 👉 🔴 // ✅ JSON CONFIG (API-driven) assume this the api response
   formConfig = [
     {
       type: 'text',
@@ -301,6 +301,7 @@ export class AdvancedReactiveComponent implements OnInit {
   isSaving = false;
 
   ngOnInit() {
+    👉 👉 🔴
     this.buildFormFromConfig(); // build form from api
     this.applyConditionalValidation();  // Country → Aadhaar / Greencard
     this.applyDynamicValidators();      // ✅ Gender → Greencard REQUIRED
@@ -308,7 +309,7 @@ export class AdvancedReactiveComponent implements OnInit {
     this.conditionalFieldsValidators();
 
 
-    /* Auto save form*/
+   👉 👉 🔵 /* Auto save form*/
     // ✅ 1. Build form
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
@@ -563,7 +564,7 @@ export class AdvancedReactiveComponent implements OnInit {
   }
 
 
-  // ✅ AUTO SAVE LOGIC
+ 👉 👉 🔵 // ✅ AUTO SAVE LOGIC
   autoSave(value: any) {
     // ❌ Don't save invalid form
     if (this.profileForm.invalid) return;
@@ -578,7 +579,7 @@ export class AdvancedReactiveComponent implements OnInit {
     }, 300);
   }
 
-  // ✅ RESTORE ON LOAD
+  👉 👉 🔵 // ✅ RESTORE ON LOAD
   restoreDraft() {
     const saved = localStorage.getItem('profileDraft');
     if (!saved) return;
@@ -588,12 +589,12 @@ export class AdvancedReactiveComponent implements OnInit {
     });
   }
 
-  clearDraft() {
+ 👉 👉 🔵 clearDraft() {
     localStorage.removeItem('profileDraft');
     this.profileForm.reset();
   }
 
-  ngOnDestroy() {
+ 👉 👉 🔵 ngOnDestroy() {
     this.autoSaveSub.unsubscribe();
   }
 }

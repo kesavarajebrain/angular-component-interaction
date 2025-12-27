@@ -1,0 +1,140 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Dynamic UI Rendering</h4>
+    <ul>
+        <li>ng-content - WHAT comes in</li>
+        <li>ng-template - WHAT can render</li>
+        <li>TemplateRef - POINTER to template</li>
+        <li>ViewContainerRef - WHERE it renders</li>
+        <li>ng-container - NO extra DOM</li>
+    </ul>
+    <div class="row">
+        <div class="col alert alert-success">
+            <b>ng-content</b>
+            <ul>
+                <li>Injected external HTML (header/body/footer)</li>
+                <li>Makes component reusable & flexible</li>
+                <li>Parent-லிருந்து content inject பண்ண”</li>
+            </ul>
+        </div>
+        <div class="col alert alert-warning">
+            <b>ng-template</b>
+            <ul>
+                <li>Defined views that don’t render immediately</li>
+                <li>HTML-ஐ define பண்ணி வைக்கறது, Angular வேண்டும்னா மட்டும் render பண்ணும்</li>
+            </ul>
+        </div>
+        <div class="col alert alert-primary">
+            <b>TemplateRef</b>
+            <ul>
+                <li>References those templates in TS</li>
+                <li>Lets us say “render THIS template now”</li>
+                <li>“ng-template-க்கு reference”</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col alert alert-danger">
+            <b>ViewContainerRef</b>
+            <ul>
+                <li>Controls WHERE the template is rendered</li>
+                <li>Enables dynamic UI switching</li>
+                <li>“UI render ஆகுற இடம்”</li>
+            </ul>
+        </div>
+        <div class="col alert alert-dark">
+            <b>ng-container</b>
+            <ul>
+                <li>Groups projected content</li>
+                <li>Adds zero DOM elements</li>
+                <li>Logic வேணும், markup வேண்டாம் → ng-container</li>
+            </ul>
+            <pre>
+&#11164;div *ngIf="condition"&#11166; // here DIV is an extra wrapper , its creating DOM
+&#11164;p&#11166;Some Content&#11164;/p&#11166;
+&#11164;/div&#11166;
+
+&#11164;ng-container *ngIf="condition"&#11166; // Now here if we add *ngIf condition -> NO EXTRA DOM 
+&#11164;p&#11166;Some Content&#11164;/p&#11166;
+&#11164;/ng-container&#11166;
+            </pre>
+        </div>
+    </div>
+    <div class="container alert alert-primary">
+        <div class="row">
+            <h5>Example : 1</h5>
+            <h6>Dynamic View Rendering (Same Component)</h6>
+            <div class="col">
+                <!-- 🔘 CONTROLS -->
+                <button class="btn btn-info" (click)="showDefault()">Default</button> &nbsp;
+                <button class="btn btn-primary" (click)="showLoading()">Loading</button> &nbsp;
+                <button class="btn btn-danger" (click)="showError()">Error</button> &nbsp;
+                <button class="btn btn-warning" (click)="showCustom()">Custom template</button>
+            </div>
+            <div class="col">
+
+                <!-- 👇 UI WILL APPEAR HERE -->
+                <ng-template #container></ng-template>
+
+                <!-- ✅ DEFAULT TEMPLATE -->
+                <ng-template #defaultTpl>
+                    <!-- ng-container = NO EXTRA DOM -->
+                    <ng-container>
+                        <div style="border:1px solid green; padding:10px;">
+                            <strong>Success!</strong> Profile updated.
+                        </div>
+                    </ng-container>
+                </ng-template>
+
+                <!-- ⏳ LOADING TEMPLATE -->
+                <ng-template #loadingTpl>
+                    Loading... please wait
+                </ng-template>
+
+                <!-- ❌ ERROR TEMPLATE -->
+                <ng-template #errorTpl>
+                    <div style="border:1px solid red; padding:10px;">
+                        Something went wrong!
+                    </div>
+                </ng-template>
+
+                <!--  Custom TEMPLATE -->
+                <ng-template #customTemplate>
+                    <div style="border:1px solid rgb(255, 0, 200); padding:10px;">
+                        Welcome to angular tutorial!
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <div class="container alert alert-info">
+        <div class="row">
+            <h5>Example : 2</h5>
+            <h6>Dynamic View Rendering (Parent to Child Component)</h6>
+
+            <div class="col">
+                <h5>Parent Component</h5>
+                <button class="btn btn-info" (click)="childComponent.showLoading()">Show Loading</button> &nbsp;
+                <button class="btn btn-danger" (click)="childComponent.showError()">Show Error</button> &nbsp;
+                <button class="btn btn-success" (click)="childComponent.showDefault()">Show Success</button>
+            </div>
+            <div class="col">
+                <app-child-component #childComponent>
+                    <strong>Default Content from Parent : Profile updated successfully!</strong>
+                </app-child-component>
+            </div>
+        </div>
+    </div>
+    <div class="container alert alert-primary">
+        <div class="row">
+            <h5>Example : 3</h5>
+            <h6>Global modal using ViewContainerRef</h6>
+            <button (click)="openProfile()">Open Profile Modal</button>
+            <button (click)="openDelete()">Open Delete Modal</button>
+        </div>
+        <div class="container alert alert-warning">
+            <pre>{{tsCode}}</pre>
+        </div>
+    </div>
