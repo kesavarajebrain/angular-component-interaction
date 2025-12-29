@@ -21,10 +21,13 @@ import { GlobalModalService } from '../global-modal/global-modal.service';
 export class Dynamicrender implements AfterViewInit {
 
   public tsCode: any;
+  public modalCode: any;
 
   constructor(private http: HttpClient, private modalService: GlobalModalService) {
     this.http.get('../../../assets/txtfiles/dynamic-render.txt', { responseType: 'text' })
       .subscribe(code => this.tsCode = code);
+    this.http.get('../../../assets/txtfiles/common-modal.txt', { responseType: 'text' })
+      .subscribe(code => this.modalCode = code);
   }
 
   // 🔹 WHERE UI WILL RENDER
@@ -36,6 +39,7 @@ export class Dynamicrender implements AfterViewInit {
   @ViewChild('loadingTpl') loadingTpl!: TemplateRef<any>;
   @ViewChild('errorTpl') errorTpl!: TemplateRef<any>;
   @ViewChild('customTemplate') customTemplate!: TemplateRef<any>;
+  @ViewChild('pageContent') pageContent!: TemplateRef<any>;
 
   ngAfterViewInit() {
     this.showDefault();
@@ -61,11 +65,10 @@ export class Dynamicrender implements AfterViewInit {
     this.container.createEmbeddedView(this.customTemplate);
   }
 
-  openProfile() {
-    this.modalService.open(this.customTemplate);
-  }
-
-  openDelete() {
-    this.modalService.open(this.customTemplate);
+  openModal() {
+    this.modalService.open({
+      header: this.customTemplate,
+      body: this.errorTpl
+    });
   }
 }

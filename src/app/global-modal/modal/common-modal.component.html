@@ -1,7 +1,36 @@
-<!-- Modal Overlay -->
-<div class="overlay" *ngIf="modalContainer?.length">
-  <div class="modal-box">
-    <ng-template #modalContainer></ng-template>
-    <button class="close-btn" (click)="close()">Close</button>
+<!-- Modal always exists -->
+<div
+  class="modal fade"
+  [class.show]="isOpen"
+  [style.display]="isOpen ? 'block' : 'none'"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+                  <ng-template #headerVc></ng-template>
+        </h5>
+        <button type="button" class="btn-close" (click)="close()"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- ✅ ViewContainerRef anchor INSIDE modal -->
+        <ng-template #bodyVc></ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="close()">Close</button>
+      </div>
+
+    </div>
   </div>
 </div>
+
+<!-- Backdrop -->
+<div
+  class="modal-backdrop fade"
+  [class.show]="isOpen"
+  *ngIf="isOpen"
+></div>

@@ -130,11 +130,17 @@
     <div class="container alert alert-primary">
         <div class="row">
             <h5>Example : 3</h5>
-            <h6>Global modal using ViewContainerRef</h6>
-            <button (click)="openProfile()">Open Profile Modal</button>
-            <button (click)="openDelete()">Open Delete Modal</button>
-        </div>
-        <div class="container alert alert-warning">
-            <pre>{{tsCode}}</pre>
+            <h6>Global modal using ViewContainerRef - here we are injecting current page content to the modal, we can do
+                it from any page </h6>
+            <div class="col">
+                <button class="btn btn-dark" (click)="openModal()">Open Modal</button>
+            </div>
         </div>
     </div>
+    <div class="container alert alert-warning">
+        <pre>{{tsCode}}</pre>
+    </div>
+    <div class="container alert alert-info">
+        <pre>{{modalCode}}</pre>
+    </div>
+</div>

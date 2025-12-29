@@ -1,11 +1,11 @@
-import { Injectable, TemplateRef  } from "@angular/core";
+import { Injectable, TemplateRef } from "@angular/core";
 import { CommonModalComponent } from "./modal/common-modal.component";
 /**
  * @description
  * @class
  */
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root'
 })
 export class GlobalModalService {
 
@@ -15,13 +15,16 @@ export class GlobalModalService {
     this.modal = modal;
   }
 
-  open(template: TemplateRef<any>) {
-    console.log(template)
-     if (!this.modal) {
-    console.error('GlobalModalComponent not registered yet');
-    return;
-  }
-    this.modal.open(template);
+  open(config: {
+    header?: TemplateRef<any>;
+    body: TemplateRef<any>;
+  }) {
+    console.log(config)
+    if (!this.modal) {
+      console.error('GlobalModalComponent not registered yet');
+      return;
+    }
+    this.modal.open(config);
   }
 
   close() {
