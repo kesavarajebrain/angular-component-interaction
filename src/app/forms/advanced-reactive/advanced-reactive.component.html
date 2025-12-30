@@ -227,7 +227,6 @@
             <div class="container alert alert-primary card p-4 mt-4">
                 <h6>This form covers Auto-save using valueChanges</h6><br>
                 <h5 class="text-center">Auto save Form</h5>
-
                 <form [formGroup]="profileForm">
                     <ng-container>
                         <label>Name</label>
@@ -243,9 +242,76 @@
                     </ng-container>
                     <br>
                     <p *ngIf="isSaving">💾 Saving draft...</p>
-                    <button type="button" class="btn btn-info" (click)="clearDraft()">Clear Draft</button>
+                    <button type="button" class="btn btn-info" (click)="clearDraft()">Clear Draft</button> &nbsp;
+                    <button type="button" class="btn btn-primary" (click)="patchValue()">Patch Value</button> &nbsp;
+                    <button type="button" class="btn btn-secondary" (click)="setValue()">Set Value</button>
                 </form>
+            </div>
+            <div class="container alert alert-warning">
+                <p><b>PATCH value</b> - we can patch single or mutiple fields also, no need to configure all the fields
+                    what ever we patched fields that only going to update in the form remaining all will be remains the
+                    same
+                </p>
+                <p><b>SET value</b>- we need to pass all the fileds if any field we missed it will throw a error like
+                    below</p>
+                <div class="card alert alert-danger">
+                    <b>ERROR RuntimeError: NG01002: Must supply a value for form control with name: 'bio'</b>
+                </div>
+            </div>
+            <div class="conatiner alert alert-info">
+                <b>Why we can use traditional update the form using ngModal?</b>
+                <pre>
 
+user = &#123;
+  fullName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  gender: '',
+  country: '',
+  terms: false
+&#125;;
+
+And in template (template-driven form):
+
+&#60;input [(ngModel)]="user.fullName"&#62;
+&#60;input [(ngModel)]="user.email"&#62;
+                </pre>
+                <p>Then when API response comes: <br>
+                    <span> this.user.fullName = api.fullName;</span> <br>
+                    <span> this.user.email = api.email;</span><br><br>
+                    <span>✅ YES — UI updates automatically</span><br>
+                    <span>✅ YES — ngModel handles this</span><br>
+                    <span>❌ NO — this does not involve patchValue</span><br>
+                    <span> So far, your understanding is correct.</span><br><br>
+                    <span>❌ Do NOT mix ngModel with Reactive Forms</span><br>
+                    <span>❌ Do NOT update objects directly in Reactive Forms</span><br>
+                    <span>✅ Update the FormGroup using patchValue</span><br>
+                    <span>patchValue is the reactive-forms equivalent of
+                        updating the model object in ngModel</span><br>
+                    <span><b>ngModel updates objects</b> → UI updates</span><br>
+                    <span><b>Reactive Forms update FormGroup</b> → UI updates</span><br> <br>
+                    <span>❌ formControlName does NOT replace ngModel </span><br>
+                    <span>❌ ngModel does NOT replace patchValue</span> <br>
+                    <span>✅ They belong to different form systems</span>
+                </p>
+                <pre>
+(Template-Driven, reactive-forms)
+|      Looks same                    Actually is  
+| ---------------------------- | --------------------------- |
+| `name="fullName"`            | HTML attribute              |
+| `formControlName="fullName"` | Angular directive           |
+                    </pre>
+                <b>🧠 What is updateValueAndValidity()?</b> <br>
+                <span>It tells Angular: “Recalculate this control’s value, validation status, and errors NOW.”</span>
+                <pre>
+✅ MUST call when:
+Adding/removing validators
+Changing async validators
+Dynamic validation rules
+Enabling/disabling controls conditionally
+If you change validators → call updateValueAndValidity()
+                    </pre>
             </div>
         </div>
     </div>

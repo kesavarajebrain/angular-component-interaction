@@ -597,4 +597,27 @@ export class AdvancedReactiveComponent implements OnInit {
  👉 👉 🔵 ngOnDestroy() {
     this.autoSaveSub.unsubscribe();
   }
+
+  👉 👉 🔵  // PATCH VALUE - we can patch single or mutiple fields also, no need to configure all the fields
+   what ever we patched fields that only going to update in the form remaining all will be remains the same
+
+  patchValue() {
+    this.profileForm.patchValue({
+      name: 'Name is patched',
+      email: 'Email@ispatched.com'
+    })
+  }
+
+ 👉 👉 🔵 // SET VALUE - we need to pass all the fileds if any field we missed it will throw a error like below
+  
+  //   patchValue = partial update
+  //   setValue = full contract update
+
+  setValue() {
+    this.profileForm.setValue({
+      name: 'Name is set',
+      email: 'Email@iset.com',
+      bio: 'Bio is set' // ERROR RuntimeError: NG01002: Must supply a value for form control with name: 'bio'
+    })
+  }
 }

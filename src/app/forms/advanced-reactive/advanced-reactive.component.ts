@@ -20,7 +20,7 @@ import { debounceTime, Subscription } from 'rxjs';
   templateUrl: "./advanced-reactive.component.html",
   styleUrls: ["./advanced-reactive.component.scss"],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule,HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
 })
 
 export class AdvancedReactiveComponent implements OnInit {
@@ -149,8 +149,8 @@ export class AdvancedReactiveComponent implements OnInit {
   ];
   tsCode!: string;
 
-  constructor(private fb: FormBuilder, private userApi: UserApiService,private http: HttpClient) {
-     this.http.get('../../../assets/txtfiles/advanced-reactive-form.txt', { responseType: 'text' })
+  constructor(private fb: FormBuilder, private userApi: UserApiService, private http: HttpClient) {
+    this.http.get('../../../assets/txtfiles/advanced-reactive-form.txt', { responseType: 'text' })
       .subscribe(code => this.tsCode = code);
 
   }
@@ -455,4 +455,24 @@ export class AdvancedReactiveComponent implements OnInit {
   ngOnDestroy() {
     this.autoSaveSub.unsubscribe();
   }
+
+  // PATCH VALUE - we can patch single data also, no need to configure all the data what ever we patched that only going to remaining all will be remains the same
+  patchValue() {
+    this.profileForm.patchValue({
+      name: 'Name is patched',
+      email: 'Email@ispatched.com'
+    })
+  }
+
+  // SET VALUE - we need to pass all the fileds if any field we missed it will throw a error like below
+  //   patchValue = partial update
+  //   setValue = full contract update
+  setValue() {
+    this.profileForm.setValue({
+      name: 'Name is set',
+      email: 'Email@iset.com',
+      bio: 'Bio is set' // ERROR RuntimeError: NG01002: Must supply a value for form control with name: 'bio'
+    })
+  }
+
 }
