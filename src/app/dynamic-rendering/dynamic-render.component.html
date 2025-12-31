@@ -9,6 +9,8 @@
         <li>TemplateRef - POINTER to template</li>
         <li>ViewContainerRef - WHERE it renders</li>
         <li>ng-container - NO extra DOM</li>
+        <li>ngTemplateOutlet - ngTemplateOutlet is a declarative way to render an ng-template in the template itself —
+            without using ViewContainerRef</li>
     </ul>
     <div class="row">
         <div class="col alert alert-success">
@@ -36,7 +38,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col alert alert-danger">
+        <div class="col-4 alert alert-danger">
             <b>ViewContainerRef</b>
             <ul>
                 <li>Controls WHERE the template is rendered</li>
@@ -44,22 +46,47 @@
                 <li>“UI render ஆகுற இடம்”</li>
             </ul>
         </div>
-        <div class="col alert alert-dark">
+        <div class="col-4 alert alert-info">
             <b>ng-container</b>
             <ul>
                 <li>Groups projected content</li>
                 <li>Adds zero DOM elements</li>
                 <li>Logic வேணும், markup வேண்டாம் → ng-container</li>
             </ul>
-            <pre>
-&#11164;div *ngIf="condition"&#11166; // here DIV is an extra wrapper , its creating DOM
-&#11164;p&#11166;Some Content&#11164;/p&#11166;
-&#11164;/div&#11166;
+            <p>
+                &#11164;div *ngIf="condition"&#11166; // here DIV is an extra wrapper , its creating DOM <br>
+                &#11164;p&#11166;Some Content&#11164;/p&#11166; <br>
+                &#11164;/div&#11166; <br> <br>
 
-&#11164;ng-container *ngIf="condition"&#11166; // Now here if we add *ngIf condition -> NO EXTRA DOM 
-&#11164;p&#11166;Some Content&#11164;/p&#11166;
-&#11164;/ng-container&#11166;
-            </pre>
+                &#11164;ng-container *ngIf="condition"&#11166; // Now here if we add *ngIf condition -> NO EXTRA DOM
+                <br>
+                &#11164;p&#11166;Some Content&#11164;/p&#11166; <br>
+                &#11164;/ng-container&#11166;
+            </p>
+        </div>
+        <div class="col-4 alert alert-dark">
+            <b>ngTemplateOutlet</b>
+            <ul>
+                <li>ngTemplateOutlet is HTML-level dynamic rendering</li>
+                <li>This is like a template switch</li>
+                <li>No TS logic needed</li>
+            </ul>
+            <p>
+                🔥<b>ngTemplateOutlet</b> vs <b>ViewContainerRef</b> <br> <br>
+                <b>ngTemplateOutlet</b> <br>
+
+                * Declarative <br>
+                * Lives in HTML <br>
+                * Angular controls lifecycle <br>
+                * Best for simple dynamic UI <br> <br>
+
+                <b>ViewContainerRef</b> <br>
+
+                * Imperative <br>
+                * Lives in TS <br>
+                * You control lifecycle <br>
+                * Best for complex / programmatic UI <br>
+            </p>
         </div>
     </div>
     <div class="container alert alert-primary">
@@ -134,6 +161,87 @@
                 it from any page </h6>
             <div class="col">
                 <button class="btn btn-dark" (click)="openModal()">Open Modal</button>
+            </div>
+        </div>
+    </div>
+    <div class="container alert alert-info">
+        <div class="row">
+            <h5>Example : 4</h5>
+            <h6>ngTemplateOutlet</h6>
+            <div class="col">
+                <pre>
+&#11164;ng-template #success&#11166; Success message &#11164;/ng-template&#11166;
+&#11164;ng-template #failure&#11166; Failure message &#11164;/ng-template&#11166;
+&#11164;ng-template #default&#11166; Default message &#11164;/ng-template&#11166;
+
+&#11164;ng-container *ngTemplateOutlet="
+    status === 'success' ? success :
+    status === 'error' ? error :
+    default"" &#11166; <br> &#11164;/ng-container&#11166;
+
+    **************
+
+&#11164;ng-template #userTpl let-name let-age="age"&#11166;
+  &#11164;p&#11166;&#123;name&#125; - &#123; age &#125;&#11164;/p&#11166;
+&#11164;/ng-template&#11166;
+
+&#11164;ng-container
+  *ngTemplateOutlet="userTpl; context:  &#123; $implicit: 'Kesava', age: 29  &#125;"&#11166;
+&#11164;/ng-container&#11166;
+                </pre>
+            </div>
+            <div class="col">
+                <select class="form-select" name="status" [(ngModel)]="status" aria-label="Default select example">
+                    {{status}}
+                    <option value="">Default</option>
+                    <option value="success">Success Template</option>
+                    <option value="error">Error Template</option>
+                </select>
+                <br>
+                <ng-template #default>
+                    <ng-container>
+                        <p class="alert alert-secondary">This is default template</p>
+                    </ng-container>
+                </ng-template>
+                <ng-template #success>
+                    <ng-container>
+                        <p class="alert alert-success">This is Success template</p>
+                    </ng-container>
+                </ng-template>
+                <ng-template #error>
+                    <ng-container>
+                        <p class="alert alert-danger">This is Error template</p>
+                    </ng-container>
+                </ng-template>
+
+                <ng-container *ngTemplateOutlet="
+    status === 'success' ? success :
+    status === 'error' ? error :
+    default">
+                </ng-container>
+                <p>*****************</p>
+                <ng-template #userTpl let-name let-age="age">
+                    <p>{{ name }} - {{ age }}</p>
+                </ng-template>
+
+                <ng-container *ngTemplateOutlet="userTpl; context: { $implicit: 'Kesava', age: 30 }">
+                </ng-container>
+
+                <p>Components use &#64;Input(), Templates use context <br>
+                    🧠 One-line memory (keep this) <br>
+                    $implicit = default value <br>
+                    let-age="29" = map from context.age</p>
+                <p>*********Render Dynamic data(from TS file)**********</p>
+                <ng-template #userListTpl let-user>
+                    <p>{{ user.name }} - {{ user.age }}</p>
+                </ng-template>
+                <ng-container *ngFor="let user of users">
+                    <ng-container *ngTemplateOutlet="
+      userListTpl;
+      context: { $implicit: user }
+    ">
+                    </ng-container>
+                </ng-container>
             </div>
         </div>
     </div>

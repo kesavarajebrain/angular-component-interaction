@@ -10,18 +10,26 @@ import { ChildComponentComponent } from "./child-component/child-component.compo
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 // global modal
 import { GlobalModalService } from '../global-modal/global-modal.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: "app-dynamic-render",
   templateUrl: "./dynamic-render.component.html",
   styleUrls: ["./dynamic-render.component.scss"],
   standalone: true,
-  imports: [RouterModule, ChildComponentComponent, HttpClientModule],
+  imports: [RouterModule, ChildComponentComponent, HttpClientModule, FormsModule,CommonModule],
 })
 
 export class Dynamicrender implements AfterViewInit {
 
   public tsCode: any;
   public modalCode: any;
+  public status = ''; // initial state
+  public users = [
+  { name: 'Kesava', age: 29 },
+  { name: 'Arun', age: 28 },
+  { name: 'Suresh', age: 35 }
+];
 
   constructor(private http: HttpClient, private modalService: GlobalModalService) {
     this.http.get('../../../assets/txtfiles/dynamic-render.txt', { responseType: 'text' })

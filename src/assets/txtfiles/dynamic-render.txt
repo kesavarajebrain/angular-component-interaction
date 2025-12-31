@@ -65,6 +65,67 @@
     </div>
 </div>
 
+********************************************************************
+
+ <h6>ngTemplateOutlet</h6>
+ 
+            <div class="col">
+                <select class="form-select" name="status" [(ngModel)]="status" aria-label="Default select example">
+                    {{status}}
+                    <option value="">Default</option>
+                    <option value="success">Success Template</option>
+                    <option value="error">Error Template</option>
+                </select>
+                <br>
+                <ng-template #default>
+                    <ng-container>
+                        <p class="alert alert-secondary">This is default template</p>
+                    </ng-container>
+                </ng-template>
+                <ng-template #success>
+                    <ng-container>
+                        <p class="alert alert-success">This is Success template</p>
+                    </ng-container>
+                </ng-template>
+                <ng-template #error>
+                    <ng-container>
+                        <p class="alert alert-danger">This is Error template</p>
+                    </ng-container>
+                </ng-template>
+
+                <ng-container *ngTemplateOutlet="
+    status === 'success' ? success :
+    status === 'error' ? error :
+    default">
+                </ng-container>
+
+                  <p>*****************</p>
+
+                <ng-template #userTpl let-name let-age="age">
+                    <p>{{ name }} - {{ age }}</p>
+                </ng-template>
+
+                <ng-container *ngTemplateOutlet="userTpl; context: { $implicit: 'Kesava', age: 30 }">
+                </ng-container>
+
+                <p>Components use &#64;Input(), Templates use context <br>
+                    🧠 One-line memory (keep this) <br>
+                    $implicit = default value <br>
+                    let-age="29" = map from context.age</p>
+
+                <p>*********Render Dynamic data(from TS file)**********</p>
+
+                <ng-template #userListTpl let-user>
+                    <p>{{ user.name }} - {{ user.age }}</p>
+                </ng-template>
+                <ng-container *ngFor="let user of users">
+                    <ng-container *ngTemplateOutlet="
+      userListTpl;
+      context: { $implicit: user }
+    ">
+                    </ng-container>
+                </ng-container>
+
 <----------------------------------TS (PARENT)-------------------------------->
 
 import {
@@ -76,18 +137,37 @@ import {
 } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { ChildComponentComponent } from "./child-component/child-component.component";
-
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+// global modal
+import { GlobalModalService } from '../global-modal/global-modal.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: "app-dynamic-render",
   templateUrl: "./dynamic-render.component.html",
   styleUrls: ["./dynamic-render.component.scss"],
-  standalone:true,
-  imports:[RouterModule,ChildComponentComponent]
+  standalone: true,
+  imports: [RouterModule, ChildComponentComponent, HttpClientModule, FormsModule,CommonModule],
 })
 
 export class Dynamicrender implements AfterViewInit {
-  
-  
+
+  public tsCode: any;
+  public modalCode: any;
+  public status = ''; // initial state
+  public users = [
+  { name: 'Kesava', age: 29 },
+  { name: 'Arun', age: 28 },
+  { name: 'Suresh', age: 35 }
+];
+
+  constructor(private http: HttpClient, private modalService: GlobalModalService) {
+    this.http.get('../../../assets/txtfiles/dynamic-render.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+    this.http.get('../../../assets/txtfiles/common-modal.txt', { responseType: 'text' })
+      .subscribe(code => this.modalCode = code);
+  }
+
   // 🔹 WHERE UI WILL RENDER
   @ViewChild('container', { read: ViewContainerRef })
   container!: ViewContainerRef;
@@ -97,6 +177,7 @@ export class Dynamicrender implements AfterViewInit {
   @ViewChild('loadingTpl') loadingTpl!: TemplateRef<any>;
   @ViewChild('errorTpl') errorTpl!: TemplateRef<any>;
   @ViewChild('customTemplate') customTemplate!: TemplateRef<any>;
+  @ViewChild('pageContent') pageContent!: TemplateRef<any>;
 
   ngAfterViewInit() {
     this.showDefault();
@@ -117,11 +198,19 @@ export class Dynamicrender implements AfterViewInit {
     this.container.createEmbeddedView(this.errorTpl);
   }
 
-  showCustom(){
-     this.container.clear();
+  showCustom() {
+    this.container.clear();
     this.container.createEmbeddedView(this.customTemplate);
   }
+
+  openModal() {
+    this.modalService.open({
+      header: this.customTemplate,
+      body: this.errorTpl
+    });
+  }
 }
+
 
 <--------------------------------HTML (CHILD)------------------------->
 
