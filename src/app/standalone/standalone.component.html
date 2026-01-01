@@ -1,0 +1,219 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Standalone Components & Control Flows</h4>
+    <p>A standalone component is a component that does <b>NOT need an NgModule</b> </p>
+    <p>Standalone = “My component is independent. I don’t need an NgModule. I manage my own imports and can be used or
+        lazy-loaded directly.”</p>
+    <div class="row">
+        <div class="col-6">
+            <img src="../../assets/img/screenshots/stanalone-1.png" height="300px" width="450px" alt="cd">
+        </div>
+        <div class="col-6">
+            <img src="../../assets/img/screenshots/stanalone-2.png" height="300px" width="450px" alt="cd">
+        </div>
+    </div>
+    <div class="card mt-3 p-3 alert alert-info">
+        <p><b>Purpose of Standalone Components (Why Angular introduced this?)</b></p>
+        <div class="row">
+            <p> Angular team noticed problems: so they introduced this in Angular 14</p>
+            <div class="col">
+                <b>Problems with NgModules</b>
+                <ul>
+                    <li> Too much boilerplate</li>
+                    <li> Hard for new developers
+                    </li>
+                    <li> Debugging import issues was painful
+                    </li>
+                    <li> Lazy loading was module-based, not component-based
+                    </li>
+                </ul>
+            </div>
+            <div class="col">
+                <b>What Standalone fixes</b>
+                <ol>
+                    <li> ✅ Less boilerplate
+                    </li>
+                    <li>✅ Easier mental model
+                    </li>
+                    <li>✅ Better tree-shaking
+                    </li>
+                    <li>✅ Faster learning curve
+                    </li>
+                    <li>✅ Cleaner lazy loading
+                    </li>
+                    <li>✅ Aligns Angular with modern frameworks (React/Vue style)
+                    </li>
+                </ol>
+                <b>So the purpose is :- Make Angular simpler, modular, and more modern</b>
+                <pre>ng generate component componentName --standalone</pre>
+            </div>
+            <p>From Angular 17, standalone is the default approach, making Angular simpler, more modular, and aligned
+                with modern frameworks.</p>
+            <p>Boilerplate code என்றால்
+                ஒவ்வொரு முறையும் அவசியமாக எழுத வேண்டிய,
+                ஆனால் நமக்கு நேரடியாக எந்த logic-யும் சேர்க்காத code.சுலபமாக சொன்னா 👉 Same code,
+                Again and again,
+                No new feature,
+                Just compulsory setup,
+                👉 அதுதான் boilerplate.</p>
+        </div>
+    </div>
+    <div class="card mt-3 p-3 alert alert-primary">
+        <b>Limitations:</b>
+        <b>In new Angular projects (v17+), components are standalone by default</b>
+        <p>When you create a new project now: <br>
+            <b>ng new my-app</b>
+            - Angular internally treats components as: <b><u>standalone: true</u></b>
+            👉 Even if you don’t see it written, Angular assumes it.
+        </p>
+        <p>If we do <b>imports</b> in the component in this time we need write <b><u>standalone: true</u></b></p>
+        <p>What if we write standalone: false? <br>
+            This means: <br>
+            ❗ “This component MUST belong to an NgModule” , So Angular will expect NgModule, If you DON’T declare it in
+            a module? it will throw error
+
+            ``Component is not standalone and not declared in any NgModule``
+        </p>
+
+    </div>
+    <div class="card mt-3 p-3 alert alert-warning">
+        <b>Doubts :</b>
+        <p> Standalone components reduce NgModule boilerplate. But now every component imports CommonModule,
+            FormsModule,
+            ReactiveFormsModule.
+            If I have 10–20 components → same imports everywhere. 👉 Isn’t this again boilerplate??</p>
+        <b>Answer :</b>
+        <pre>
+    First Big Truth (Very Important)
+    ❗ In modern Angular (v17+):  You do NOT need CommonModule if you want use below new things
+    &#64;if (condition) &#123; ... &#125;
+    &#64;for (item of items; track item.id) &#123; ... &#125;
+    These are the new control flow syntax. so, 👉 CommonModule can be removed in many cases.
+
+    Second thing :
+    Create Shared Standalone Imports (BEST PRACTICE) : // shared-imports.ts
+        </pre>
+        <div class="row">
+            <div class="col-6">
+                <img src="../../assets/img/screenshots/stanalone-3.png" height="200px" width="450px" alt="cd">
+            </div>
+            <div class="col-6">
+                <img src="../../assets/img/screenshots/stanalone-4.png" height="200px" width="450px" alt="cd">
+            </div>
+        </div>
+    </div>
+    <div class="conatiner card alert alert-success">
+        <h5 class="text-center">Angular Control Flow Syntax</h5>
+        <div class="row">
+            <b>Why Angular introduced Control Flow Syntax?</b>
+            <p>Problem with old syntax (*ngIf, *ngFor)</p>
+            <div class="col">
+                <b>Issues:</b>
+                <ul>
+                    <li>Depends on CommonModule
+                    </li>
+                    <li>Uses * (structural directive magic)
+                    </li>
+                    <li>Nested templates become hard to read
+                    </li>
+                    <li>Boilerplate in standalone components
+                    </li>
+                </ul>
+            </div>
+            <div class="col">
+                <b>Angular wanted:</b>
+                <ol>
+                    <li>Less imports
+                    </li>
+                    <li>More readable templates
+                    </li>
+                    <li>JS-like syntax
+                    </li>
+                    <li>Better performance
+                    </li>
+                </ol>
+            </div>
+            <b class="text-center"> 👉 Result: Control Flow Syntax (Angular 17+)
+            </b>
+        </div>
+        <div class="row mt-2 alert alert-light">
+            <div class="col-4">
+                <p> <b>&#64;if – Conditional Rendering</b>
+                </p>
+                <select class="form-select" name="status" [(ngModel)]="status" aria-label="Default select example">
+                    {{status}}
+                    <option value="">Default Content</option>
+                    <option value="loading">Loading Content</option>
+                    <option value="error">Error Content</option>
+                </select>
+                <br>
+                @if (status =='loading') {
+                <div class="alert alert-primary">Loading Conetent...</div>
+                } @else if(status =='error') {
+                <div class="alert alert-danger">Error Content</div>
+                } @else {
+                <div class="alert alert-info">Default Content</div>
+                }
+
+                <br>
+                <ul>
+                    <li>Looks like normal if-else</li>
+                    <li>No CommonModule</li>
+                    <li>Easier to maintain</li>
+                </ul>
+            </div>
+            <div class="col-4">
+                <p> <b>&#64;for – Looping</b>
+                </p>
+                @for (item of items; track item.id) {
+                <li>{{ item.id }} - {{item.name}} - {{item.price}}</li>
+                }
+                <br>
+                <ul>
+                    <li>track is mandatory (performance win)</li>
+                    <li>No CommonModule</li>
+                </ul>
+            </div>
+            <div class="col-4">
+                <p><b>&#64;switch – Multiple Conditions</b></p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="orderStatus" [(ngModel)]="orderStatus"
+                        id="inlineRadio1" value="DELIVERED">
+                    <label class="form-check-label" for="inlineRadio1">Delivered</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="orderStatus" [(ngModel)]="orderStatus"
+                        id="inlineRadio2" value="CANCELLED">
+                    <label class="form-check-label" for="inlineRadio2">Cancelled</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="orderStatus" [(ngModel)]="orderStatus"
+                        id="inlineRadio3" value="PROCESSING">
+                    <label class="form-check-label" for="inlineRadio1">Processing</label>
+                </div>
+                <div class="card alert alert-primary mt-2">
+                    @switch (orderStatus) {
+                    @case ('DELIVERED') {
+                    <span class="text-success">Delivered</span>
+                    }
+                    @case ('CANCELLED') {
+                    <span class="text-danger">Cancelled</span>
+                    }
+                    @case ('PROCESSING') {
+                    <span class="text-dark">Processing</span>
+                    } @default {
+                    <span class="text-secondary">Waiting for status...</span>
+                    }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="conatiner card alert alert-secondary">
+        <pre>
+            {{tsCode}}
+        </pre>
+    </div>
+</div>

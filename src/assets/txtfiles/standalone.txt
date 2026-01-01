@@ -1,0 +1,98 @@
+<-------------------------------HTML------------------------------>
+
+   <p> <b>&#64;if – Conditional Rendering</b></p>
+
+    <select class="form-select" name="status" [(ngModel)]="status" aria-label="Default select example">
+        {{status}}
+        <option value="">Default Content</option>
+        <option value="loading">Loading Content</option>
+        <option value="error">Error Content</option>
+    </select>
+      
+        @if (status =='loading') {
+        <div class="alert alert-primary">Loading Conetent...</div>
+        } @else if(status =='error') {
+        <div class="alert alert-danger">Error Content</div>
+        } @else {
+        <div class="alert alert-info">Default Content</div>
+        }
+
+
+********************************************************************
+
+   <p> <b>&#64;for – Looping</b></p>
+
+    @for (item of items; track item.id) {
+    <li>{{ item.id }} - {{item.name}} - {{item.price}}</li>
+    }
+
+********************************************************************
+
+  <p><b>&#64;switch – Multiple Conditions</b></p>
+
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="orderStatus" [(ngModel)]="orderStatus"
+            id="inlineRadio1" value="DELIVERED">
+        <label class="form-check-label" for="inlineRadio1">Delivered</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="orderStatus" [(ngModel)]="orderStatus"
+            id="inlineRadio2" value="CANCELLED">
+        <label class="form-check-label" for="inlineRadio2">Cancelled</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="orderStatus" [(ngModel)]="orderStatus"
+            id="inlineRadio3" value="PROCESSING">
+        <label class="form-check-label" for="inlineRadio1">Processing</label>
+    </div>
+
+            <div class="card alert alert-primary mt-2">
+                @switch (orderStatus) {
+                @case ('DELIVERED') {
+                <span class="text-success">Delivered</span>
+                }
+                @case ('CANCELLED') {
+                <span class="text-danger">Cancelled</span>
+                }
+                @case ('PROCESSING') {
+                <span class="text-dark">Processing</span>
+                } @default {
+                <span class="text-secondary">Waiting for status...</span>
+                }
+                }
+            </div>
+
+<----------------------------------TS----------------------------------------------->
+
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { Component } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
+
+@Component({
+  selector: "app-standalone",
+  standalone: true,
+  imports: [RouterModule, FormsModule, HttpClientModule],
+  templateUrl: "./standalone.component.html",
+  styleUrls: ["./standalone.component.scss"],
+})
+
+export class StandaloneComponent {
+
+  public status: string = '';
+  public orderStatus: string = '';
+  public tsCode: any
+
+  public items = [
+    { id: '1YCXD0', name: 'Television', price: 15000 },
+    { id: '2REAW6', name: 'Fridge', price: 25000 },
+    { id: '3NBCDR', name: 'Air Purifier', price: 7000 },
+    { id: '4HYQA3', name: 'Fan', price: 1000 },
+    { id: '5YH7PL', name: 'Mobile', price: 20000 },
+  ]
+
+  constructor(private http: HttpClient) {
+    this.http.get('../../../assets/txtfiles/standalone.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+}
