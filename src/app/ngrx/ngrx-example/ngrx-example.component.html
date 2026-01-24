@@ -1,0 +1,152 @@
+<div class="container mt-3">
+    <p routerLink="/ngrx">
+        <a class="pe-auto text-secondary text-decoration-none"> <-Back </a>
+
+                <div class="row">
+                    <p><b>NgRx Installation :</b></p>
+                    <div class="col">
+                        <ul>
+                            <li>ng add &#64;ngrx/store</li>
+                            <li>ng add &#64;ngrx/effects</li>
+                            <li>ng add &#64;ngrx/store-devtools
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <p>Package.json</p>
+                        <img src="../../../assets/img/screenshots/ngrx-install.png" alt="ngrx" height="200px"
+                            width="300px">
+                    </div>
+                </div>
+</div>
+<div class="card container mt-3 mb-3">
+    @if (error$ | async; as err) {
+    <ng-container *ngTemplateOutlet="errorTpl; context: { $implicit: err }"></ng-container>
+
+    } @else if (loading$ | async) {
+    <ng-container *ngTemplateOutlet="loadingTpl"></ng-container>
+
+    } @else {
+    <ng-container *ngTemplateOutlet="listTpl"></ng-container>
+    }
+</div>
+
+
+<!-- Templates -->
+<ng-template #loadingTpl>
+    <p>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading data...
+    </p>
+</ng-template>
+
+<ng-template #errorTpl let-error>
+    <p class="error">{{ error }}</p>
+</ng-template>
+
+<ng-template #listTpl>
+    @if(programs$ | async; as programs){
+    @if(programs.length > 0){
+    <div>
+        <p>Programs List</p>
+        @for (program of programs; track program._id) {
+        <p>{{ program.title }} - {{program.liveDay}} - <img src="{{program.artwork}}" alt="artwork" height="50px"
+                width="50px"></p>
+        }
+    </div>
+    }@else{
+    <p>No Programs Found!!</p>
+    }
+    }
+</ng-template>
+
+<div class="container card alert alert-info">
+    <p class="fw-bold">Here we are dispatch the action from previous component Oninit, but this component we are just
+        get the data from store and displaying</p>
+    <p class="fw-bold">API called on previous component- if we do BROWSER REFRESH here state will be cleared</p>
+    <p>By clicking this button will call the API again here <button type="button" class="btn btn-primary btn-sm"
+            (click)="fetchPrograms()">Click</button></p>
+</div>
+<div class="container card alert alert-warning">
+    <h5>🧠 Why State Is Lost on Refresh?</h5>
+    <div class="row">
+        <p> NgRx is NOT persistence by default.(NgRx இயல்பாகவே நிலையாக இல்லை.)
+        </p>
+        <div class="col">
+            <p>NgRx store lives: <b>👉 only in browser memory</b> <br> When you refresh:</p>
+            <ul>
+                <li>JavaScript reloads</li>
+                <li>Angular restarts
+                </li>
+                <li>NgRx store resets to initial state
+                </li>
+            </ul>
+        </div>
+        <div class="col">
+            <pre>So:
+✔️ State cleared
+✔️ Effects restart
+✔️ Reducers reset
+✔️ Selectors empty
+This is normal.
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-success">
+    <h5>🏗 What Enterprise Apps Usually Do?</h5>
+    <p>Prevent this data lost, below are things will solve this issue:</p>
+    <div class="card alert alert-light">
+        <b>Strategy 1 — Always Re-fetch on Page Load (Most Common)</b>
+        <p>Component B (in our example current component:ngrx-example)</p>
+        <pre>
+ngOnInit() &#123;
+    this.store.dispatch(loadPrograms());
+&#125;
+        </pre>
+    </div>
+    <div class="card alert">
+        <b>Strategy 2 — Check Store First, Then Fetch (Smarter)</b>
+        <pre>
+
+this.programs$
+  .pipe(take(1))
+  .subscribe(list => &#123;
+    if (!list.length) &#123;
+      this.store.dispatch(loadPrograms());
+    &#125;
+  &#125;);
+
+So:
+* No duplicate API call
+* Still safe on refresh
+</pre>
+
+    </div>
+    <div class="card alert alert-info">
+        <b>Strategy 3 — Route Resolver Pattern (Very Enterprise)</b>
+        <p>Before navigating to component:</p>
+        <p>Router ensures data is loaded.</p>
+        <pre>
+export const programsResolver: ResolveFn &#11164;void&#11166; = () => &#123;
+  const store = inject(Store);
+
+  store.dispatch(loadPrograms());
+
+  return store.select(selectProgramsLoaded).pipe(
+    filter(Boolean),
+    take(1)
+  );
+&#125;;
+
+Then route:
+&#123;
+  path: 'programs',
+  component: ProgramsComponent,
+  resolve: &#123; programs: programsResolver &#125;
+&#125;
+
+<b>👉 This is common in big apps.</b>
+        </pre>
+    </div>
+</div>

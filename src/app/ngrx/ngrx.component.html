@@ -1,0 +1,405 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"> <-Back </a>
+    </p>
+    <h4>NgRx</h4>
+    <p><b>NgRx</b> is a predictable, centralized state management solution for Angular, inspired by Redux</p>
+    <p><b>State</b> = Data that represents the current condition of your application</p>
+
+    <div class="row">
+        <div class="col-4 alert alert-success">
+            <p><b>Why state management?</b></p>
+            <p>Multiple components need the same data, and it must stay consistent(சீரான).</p>
+            <ul>
+                <span><b> Key ideas:
+                    </b></span>
+                <li> Single source of truth
+                </li>
+                <li> Unidirectional(ஒருநிலை) data flow
+                </li>
+                <li> Immutable(மாற்ற முடியாத) state
+                </li>
+                <li> Explicit(வெளிப்படையானது) state changes
+                </li>
+                <span> NgRx is not mandatory, but extremely powerful for large projects.
+                </span>
+            </ul>
+        </div>
+        <div class="col-4 alert alert-info">
+            <p><b>Why Local State & Services Are NOT Enough (Large Apps)?</b></p>
+            <p>Multiple components need the same data, and it must stay consistent.</p>
+            <ul>
+                <span> In small apps:</span>
+                <li>&#64;Input()
+                </li>
+                <li>&#64;Output()
+                </li>
+                <li>Services with BehaviorSubject
+                </li>
+                <li>Signals
+                </li>
+            </ul>
+            <span>👉 Works fine ✅, but in large application </span>
+            <ol>
+                <span> Problems appear:
+                </span>
+                <li>Hard to track who updated what
+                </li>
+                <li>Debugging becomes painful
+                </li>
+                <li>Data flow is unclear
+                </li>
+                <li>Side effects (API calls) are scattered (சிதறியது)
+                </li>
+                <li>Bugs are hard to reproduce
+                </li>
+                <span>This is where <b>NgRx</b> comes in.
+                </span>
+            </ol>
+        </div>
+        <div class="col-4 alert alert-warning">
+            <p><b>Enterprise Architecture</b></p>
+            <pre>
+[ Component ]
+     |
+     | dispatch(action)
+     v
+[ Store ]
+     |
+     | Action stream
+     v
+[ Effect ]
+     |
+     | API call (RxJS)
+     v
+[ Backend (Node.js) ]
+     |
+     | Response
+     v
+[ Effect ]
+     |
+     | dispatch(success/failure)
+     v
+[ Reducer ]
+     |
+     | update state
+     v
+[ Store ]
+     |
+     | select()
+     v
+[ Component ]
+            </pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h5>Why Effects?</h5>
+            <p> Because in large apps:
+            </p>
+            <ul>
+                <li>Multiple components need the same data</li>
+                <li>You need caching</li>
+                <li> You need retries</li>
+                <li>You need cancellation</li>
+                <li>You need logging</li>
+            </ul>
+        </div>
+        <div class="col">
+            <p>🧠 Think of Effects Like This <br><b>Effects = Backend gateway of the frontend</b></p>
+            <ul>
+                <li>Only Effects talk to backend</li>
+                <li>Only Effects know RxJS deeply
+                </li>
+                <li>Components stay clean
+                </li>
+            </ul>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="card alert alert-primary">
+        <h4>Step-by-Step: Full API Flow</h4>
+        <p>We’ll assume: <br>
+
+            Node.js backend → <b>API URL -</b>
+            https://us-central1-firenodeapp-84a3f.cloudfunctions.net/app/service/api/<b>users</b> <br>
+            Angular frontend → needs <b>users data</b> everywhere</p>
+
+        <h6>STEP 1️⃣</h6>
+        <div class="row">
+            <div class="col">
+                <p><b>Component: “I want users” </b>- (Example : dashboard component need the users data from API)
+                </p>
+                <p>Say for example ngOninit we need users data</p>
+                <pre>
+            ngOnInit() &#123;
+                loadUsers()  &#123;
+                this.store.dispatch(loadUsers());
+                &#125;
+            &#125;
+        </pre>
+            </div>
+            <div class="col">
+                <b>That’s it. Component level this is enough</b>
+                <ul>
+                    <li>❌ No HttpClient</li>
+                    <li>❌ No subscribe</li>
+                    <li>❌ No RxJS</li>
+                </ul>
+                <p>This is intentional. (இது வேண்டுமென்றே)</p>
+                <p>Component does NOT care how users are fetched.
+                </p>
+            </div>
+        </div>
+        <hr>
+        <h6>STEP 2️⃣</h6>
+        <div class="row">
+            <div class="col">
+                <p><b>Action: “Users requested”</b></p>
+                <p>Action is just an event. (Example : We have one actions file, there we have multiple actions)</p>
+                <p>
+                    <b>export const loadUsers = createAction('[Users] Load Users');</b>
+                </p>
+            </div>
+            <div class="col">
+                <p>Think: <br>
+                    <b>“Someone asked for users”</b> <br>
+                    Nothing else.
+                </p>
+            </div>
+        </div>
+        <hr>
+        <h6>STEP 3️⃣</h6>
+        <div class="row">
+            <div class="col">
+                <p><b>Effect: “When users are requested, call API”</b></p>
+                <p>This is where RxJS + backend live.</p>
+                <pre>
+    loadUsers$ = createEffect(() => &#123;
+        this.actions$.pipe(
+
+            <b>// 1. Listen only for this action</b>
+            <b class="text-danger">ofType</b>(loadUsers),
+
+           <b>// 2. Decide how to call API</b> 
+            <b class="text-danger">switchMap</b>(() =>
+            this.userApi.getUsers().pipe(
+
+                <b>// 3. Convert response → success action</b>
+               <b class="text-danger">map</b>(users => loadUsersSuccess(&#123; users &#125;)),
+
+               <b>// 4. Convert error → failure action</b> 
+                <b class="text-danger">catchError</b>(error =>
+                of(loadUsersFailure(&#123; error: error.message &#125;))
+                )
+            )))&#125;
+        );
+                </pre>
+            </div>
+            <div class="col">
+                <p>
+                    This is the heart of NgRx.
+                </p>
+                <p><b>CODE BREAKUP :</b></p>
+                <h6 class="text-danger">ofType</h6>
+                <p> “Ignore everything except this specific event”</p>
+                <ul>
+                    <li>Effects are event-driven</li>
+                    <li>Clear separation of concerns</li>
+                </ul>
+                <h6 class="text-danger">switchMap</h6>
+                <p>“If the same request happens again, cancel the previous one”</p>
+                <ul>
+                    <li>Prevent race conditions</li>
+                    <li>Prevent outdated data</li>
+                    <li>Save backend load</li>
+                </ul>
+                <h6 class="text-danger">map</h6>
+                <p>“Translate backend response → frontend event”</p>
+                <ul>
+                    <li>Backend returns data</li>
+                    <li>Frontend speaks actions</li>
+                </ul>
+                <h6 class="text-danger">catchError</h6>
+                <p>“Translate backend response → frontend event”</p>
+                <ul>
+                    <li>Errors must update state</li>
+                    <li>Errors must be reproducible</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <h6>STEP 4️⃣</h6>
+        <div class="row">
+            <div class="col">
+                <p><b>Reducer: “Store the result”</b></p>
+                <pre>
+
+        on(loadUsers, state => (&#123;
+        ...state,
+        loading: true,
+        error: null
+        &#125;)),
+
+        on(loadUsersSuccess, (state, &#123; users &#125;) => (&#123;
+        ...state,
+        <b class="text-danger">users</b>,
+        loading: false
+        &#125;)),
+
+        on(loadUsersFailure, (state, &#123; error &#125;) => (&#123;
+        ...state,
+        error,
+        loading: false
+        &#125;))
+                </pre>
+                <p><b>🔥 Why This Pattern is NON-NEGOTIABLE in Enterprise Apps?</b></p>
+                <p>Big apps care about:</p>
+                <ul>
+                    <li>Loading spinners</li>
+                    <li>Retry buttons</li>
+                    <li>Error banners</li>
+                    <li>Logging</li>
+                    <li>Analytics</li>
+                    <li>Bug reproduction</li>
+                </ul>
+            </div>
+            <div class="col">
+                <p><b>Why we have this things? :</b></p>
+                <p>In normal coding, <br> you think: <b>“Call API → get data → show UI”</b>
+                </p>
+                <p>But in NgRx, we model the entire lifecycle of that API call as events. <br>
+                    Enterprise apps never treat API as a single step — they treat it as a process</p>
+                <ul>
+                    <li>1️⃣ Request started</li>
+                    <li>2️⃣ Request succeeded</li>
+                    <li>3️⃣ Request failed</li>
+                </ul>
+                <p>Each step is important for UI and debugging.
+                    <br>
+                    That’s why we create three actions.
+                </p>
+                <p><b>1️⃣ loadUsers — "Start the Request"</b></p>
+                <p>This action means: 🗣️ “Someone wants users data”</p>
+                <b>Why?</b>
+                <ul>
+                    <li>Show loader
+                    </li>
+                    <li>Reset old error
+                    </li>
+                    <li>UI knows request started
+                    </li>
+                </ul>
+                <p><b>2️⃣ loadUsersSuccess — "API Returned Data"</b></p>
+                <p>This is dispatched only by the Effect after API success.</p>
+                <b>Why?</b>
+                <ul>
+                    <li>Store backend data</li>
+                    <li>Stop loader
+                    </li>
+                    <li>Trigger UI update everywhere
+                    </li>
+                    <li>Cache data centrally
+                    </li>
+                </ul>
+                <p><b>3️⃣ loadUsersFailure — "API Failed"</b></p>
+                <p>This is dispatched when: Network error, 500 error , Timeout ,Unauthorized</p>
+                <b>Why?</b>
+                <ul>
+                    <li>Stop loader</li>
+                    <li>Store error</li>
+                    <li>Show message</li>
+                    <li>Allow retry</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <h6>STEP 5️⃣</h6>
+        <div class="row">
+            <div class="col">
+                <p><b>Store: “Single source of truth”</b></p>
+                <p>Once data is in the store:</p>
+                <ul>
+                    <li> Any component can read it
+                    </li>
+                    <li>No duplicate API calls
+                    </li>
+                    <li>Consistent data everywhere
+                    </li>
+
+                </ul>
+            </div>
+            <div class="col">
+                <p>This is the real power.</p>
+                <p>Now the data is stored in centralized STORE</p>
+            </div>
+        </div>
+        <hr>
+        <h6>STEP 6️⃣</h6>
+        <div class="row">
+            <div class="col">
+                <p><b>Selector: “Give me what I need”</b></p>
+                <p>Components never read state directly. from selector will get the data from STORE</p>
+                <p><b>this.users$ = this.store.select(selectUsers);</b></p>
+            </div>
+            <div class="col">
+                <ul>
+                    <li>State structure can change</li>
+                    <li>Components don’t break</li>
+                    <li>Performance optimized (memoization)</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <h6>STEP 7</h6>
+        <div class="row">
+            <div class="col">
+                <p><b>Component: “Ready to display the data”</b></p>
+                <pre>
+Component.ts
+
+constructor(private store: Store) &#123;
+    console.log('programs',this.programs$)
+&#125;
+
+programs$ = this.store.select(programsSelectors.selectPrograms);
+loading$ = this.store.select(programsSelectors.selectLoading);
+error$ = this.store.select(programsSelectors.selectError);
+
+component.html
+
+ &#64;if(programs$ | async; as programs)&#123;
+     &#64;if(programs.length > 0)&#123;
+    &#11164;div>
+        &#11164;p>Programs List&#11164;/p>
+         &#64;for (program of programs; track program._id) &#123;
+        &#11164;p>&#123; &#123; program.title &#125;&#125; - &#123; &#123;program.liveDay&#125;&#125; - &#11164;img src="&#123; &#123;program.artwork&#125;&#125;" alt="artwork" height="50px"
+                width="50px">&#11164;/p>
+        &#125;
+    &#11164;/div>
+    &#125; &#64;else&#123;
+    &#11164;p>No Programs Found!!&#11164;/p>
+    &#125;
+    &#125;
+                </pre>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+    <div class="card alert alert-light">
+        <h6>🧠 VERY IMPORTANT: When Effects RUN?</h6>
+        <pre>
+<b>Effects:</b>
+   * Do NOT run automatically
+   * Run ONLY when an action is dispatched
+
+<b>This means:</b>
+   * You control data flow
+   * No hidden behavior
+   * Easy debugging
+        </pre>
+
+        <button type="button" class="btn btn-info" routerLink="/ngrx-example">NgRx Example</button>
+    </div>
+</div>

@@ -25,6 +25,9 @@ import { ReactiveComponent } from './forms/reactive/reactive.component';
 import { AdvancedReactiveComponent } from './forms/advanced-reactive/advanced-reactive.component';
 import { Dynamicrender } from './dynamic-rendering/dynamic-render.component';
 import { StandaloneComponent } from './standalone/standalone.component';
+import { NgrxComponent } from './ngrx/ngrx.component';
+import { NgrxExampleComponent } from './ngrx/ngrx-example/ngrx-example.component';
+
 
 export const routes: Routes = [
   {
@@ -135,5 +138,13 @@ export const routes: Routes = [
   {
     path:'standalone',
     component:StandaloneComponent
+  },
+  {
+    path:'ngrx',
+    component:NgrxComponent
+  },
+   {
+    path:'ngrx-example',
+    component:NgrxExampleComponent
   }
 ];
