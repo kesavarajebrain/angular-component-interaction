@@ -17,4 +17,8 @@ export class ApiService {
       result: any[];
     }>(this.backEndURL + '/api/getLiveListSchedules');
   }
+
+  getUsers() {
+    return this.http.get<any[]>('https://jsonplaceholder.typicode.com/users');
+  }
 }

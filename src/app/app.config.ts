@@ -7,14 +7,17 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { programsReducer } from './store/reducers/programs.reducer';
 import { ProgramsEffects } from './store/effects/programs.effects';
+import { userReducer } from './store/reducers/users.reducer';
+import { UserEffects } from './store/effects/users.effects';
 import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideStore(
     {
       programs: programsReducer,
+      users: userReducer,
     }
   ), provideEffects(
-    [ProgramsEffects]
+    [ProgramsEffects,UserEffects]
   ), provideHttpClient(), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
 };

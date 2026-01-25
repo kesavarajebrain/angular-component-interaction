@@ -19,53 +19,100 @@
                     </div>
                 </div>
 </div>
-<div class="card container mt-3 mb-3">
-    @if (error$ | async; as err) {
-    <ng-container *ngTemplateOutlet="errorTpl; context: { $implicit: err }"></ng-container>
+<div class="container card container mt-3 alert alert-light">
+    <div class="row">
+        <div class="col alert alert-primary">
+            <b>Component A (ngrx page / prev page) - ngOnInit</b>
+            @if (error$ | async; as err) {
+            <ng-container *ngTemplateOutlet="errorTpl; context: { $implicit: err }"></ng-container>
 
-    } @else if (loading$ | async) {
-    <ng-container *ngTemplateOutlet="loadingTpl"></ng-container>
+            } @else if (loading$ | async) {
+            <ng-container *ngTemplateOutlet="loadingTpl"></ng-container>
 
-    } @else {
-    <ng-container *ngTemplateOutlet="listTpl"></ng-container>
-    }
+            } @else {
+            <ng-container *ngTemplateOutlet="listTpl"></ng-container>
+            }
+
+            <!-- Templates -->
+            <ng-template #loadingTpl>
+                <p>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading programs...
+                </p>
+            </ng-template>
+
+            <ng-template #errorTpl let-error>
+                <p class="error">{{ error }}</p>
+            </ng-template>
+
+            <ng-template #listTpl>
+                @if(programs$ | async; as programs){
+                @if(programs.length > 0){
+                <div>
+                    <p>Programs List</p>
+                    @for (program of programs; track program._id) {
+                    <p>{{ program.title }} - {{program.liveDay}} - <img src="{{program.artwork}}" alt="artwork"
+                            height="50px" width="50px"></p>
+                    }
+                </div>
+                }@else{
+                <p>No Programs Found!!</p>
+                }
+                }
+            </ng-template>
+
+        </div>
+        <div class="col alert alert-success">
+            <b>Component B (ngrx example page / current page) - ngOnInit</b>
+
+            @if (usersError$ | async; as err) {
+            <ng-container *ngTemplateOutlet="usererrorTpl; context: { $implicit: err }"></ng-container>
+
+            } @else if (userLoading$ | async) {
+            <ng-container *ngTemplateOutlet="userloadingTpl"></ng-container>
+
+            } @else {
+            <ng-container *ngTemplateOutlet="userlistTpl"></ng-container>
+            }
+
+            <ng-template #userloadingTpl>
+                <p>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading users...
+                </p>
+            </ng-template>
+
+            <ng-template #usererrorTpl let-error>
+                <p class="error">{{ error }}</p>
+            </ng-template>
+
+            <ng-template #userlistTpl>
+                @if(users$ | async; as user){
+                @if(user.length > 0){
+                <div>
+                    <p>Users List</p>
+                    @for (user of user; track user.id) {
+                    <p>{{ user.name }} - {{user.email}} - {{user.phone}}</p>
+                    }
+                </div>
+                }@else{
+                <p>No Programs Found!!</p>
+                }
+                }
+            </ng-template>
+        </div>
+    </div>
 </div>
 
-
-<!-- Templates -->
-<ng-template #loadingTpl>
-    <p>
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Loading data...
-    </p>
-</ng-template>
-
-<ng-template #errorTpl let-error>
-    <p class="error">{{ error }}</p>
-</ng-template>
-
-<ng-template #listTpl>
-    @if(programs$ | async; as programs){
-    @if(programs.length > 0){
-    <div>
-        <p>Programs List</p>
-        @for (program of programs; track program._id) {
-        <p>{{ program.title }} - {{program.liveDay}} - <img src="{{program.artwork}}" alt="artwork" height="50px"
-                width="50px"></p>
-        }
-    </div>
-    }@else{
-    <p>No Programs Found!!</p>
-    }
-    }
-</ng-template>
-
 <div class="container card alert alert-info">
-    <p class="fw-bold">Here we are dispatch the action from previous component Oninit, but this component we are just
+    <p class="fw-bold">Here (Programs List) we are dispatch the action from previous component Oninit, but this
+        component we are just
         get the data from store and displaying</p>
     <p class="fw-bold">API called on previous component- if we do BROWSER REFRESH here state will be cleared</p>
-    <p>By clicking this button will call the API again here <button type="button" class="btn btn-primary btn-sm"
-            (click)="fetchPrograms()">Click</button></p>
+    <p>By clicking this button will check the state once whether data is there or not , if not call the API again here
+        <button type="button" class="btn btn-primary btn-sm" (click)="checkStateForData()">Click</button>
+    </p>
+    <p>Because of not blindly call the api even data is present in state (Refer below Strategy 2)</p>
 </div>
 <div class="container card alert alert-warning">
     <h5>🧠 Why State Is Lost on Refresh?</h5>
@@ -148,5 +195,313 @@ Then route:
 
 <b>👉 This is common in big apps.</b>
         </pre>
+        <div class="container alert alert-warning">
+            <div class="row">
+                <div class="col">
+                    <p>👉 In Strategy 3, during navigation itself, the router triggers the NgRx action. <br>
+                        <b> The effect calls the API. <br>
+                            The reducer updates the store. <br>
+                            And ONLY after that does Angular activate and show the routed component.</b>
+                    </p>
+                    <p>The component never worries about fetching.</p>
+                    <pre>
+🎯 Why This Is Powerful?
+
+✔ No empty UI first
+✔ No flicker loaders inside component
+✔ Component simpler
+✔ Data guaranteed
+✔ Great for dashboards
+✔ SSR-friendly
+✔ Centralized loading logic
+                    </pre>
+                </div>
+                <div class="col">
+                    <pre>
+User clicks link
+    ↓
+Router starts navigation
+    ↓
+Resolver runs
+    ↓
+dispatch(loadPrograms)
+    ↓
+Effect calls API
+    ↓
+Reducer sets state (loaded = true)
+    ↓
+Resolver completes
+    ↓
+Router activates component
+    ↓
+Component renders with ready data
+
+                    </pre>
+                </div>
+                <b>“In between navigation, we call the API. Once state is ready, then the route page will shown.”</b>
+            </div>
+        </div>
+        <div class="container alert alert-danger">
+            <b>❓ What does the user see while the resolver is waiting? <br>
+                ❓ What if the API is slow? <br>
+                ❓ What if it fails? </b>
+            <pre>
+
+* Router starts navigation
+* Resolver runs
+* Resolver subscribes to store selector
+* Navigation is paused until that observable completes
+
+>> If API is slow → <b>resolver keeps waiting.</b>
+>> If API fails → <b>and resolver never completes → user is stuck.</b>
+
+So yes, without extra handling:
+🚨 User would see nothing change.
+<b>That’s unacceptable UX. Application will break.  this is a blocker</b>
+                </pre>
+            <div class="row">
+                <div class="col">
+                    <b>🎯 That’s why enterprise apps ALWAYS add:</b>
+                    <ul>
+                        <li> 1️⃣ Global loading indicator during navigation
+                        </li>
+                        <li> 2️⃣ Timeout / fallback to error page
+                        </li>
+                        <li> 3️⃣ Error routing
+                        </li>
+                        <li> 4️⃣ Cancel navigation
+                        </li>
+                        <li> 5️⃣ Retry UI
+                        </li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <b> 🔥 What Big Apps Usually Do?</b>
+                    <ul>
+                        <li> Show global navigation loader
+                        </li>
+                        <li> Use resolver for critical data
+                        </li>
+                        <li> Complete route even on error
+                        </li>
+                        <li> Component handles error UI
+                        </li>
+                        <li> Retry button dispatches again
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
     </div>
+</div>
+<div class="container card alert alert-secondary">
+    <h5>NgRx caching (Angular state management),</h5>
+    <p>🏗 Real-Time Scenario: Plans Screen</p>
+    <p>Imagine telecom / subscription app:</p>
+    <ol>
+        <li> User selects a Plan
+        </li>
+        <li>call API: GET /api/plans/&#123;planId&#125;
+        </li>
+        <li>Cache key formed</li>
+        <li> If same plan is selected again (will know based on cache key) → don’t refetch
+        </li>
+        <li> If another plan (not in cache key) → fetch the api
+        </li>
+    </ol>
+    <div class="row">
+        <div class="col">
+            <img src="../../../assets/img/screenshots/cache-1.png" alt="cache" height="280x" width="300px">
+        </div>
+        <div class="col">
+            <img src="../../../assets/img/screenshots/cache-2.png" alt="cache" height="280x" width="300px">
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <img src="../../../assets/img/screenshots/cache-3.png" alt="cache" height="350px" width="350px">
+        </div>
+        <div class="col">
+            <img src="../../../assets/img/screenshots/cache-4.png" alt="cache" height="350x" width="350px">
+            <img src="../../../assets/img/screenshots/cache-5.png" alt="cache" height="350x" width="350px">
+            <img src="../../../assets/img/screenshots/cache-6.png" alt="cache" height="250x" width="300px">
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <b>plans.reducer.ts</b>
+            <pre>
+export const initialState: PlansState = &#123;
+  entities: &#123;&#125;,
+  loadingIds: &#123;&#125;,
+  errorIds: &#123;&#125;,
+&#125;;
+
+export const plansReducer = createReducer(
+  initialState,
+
+  on(loadPlan, (state, &#123; planId &#125;) => (&#123;
+    ...state,
+    loadingIds: &#123;
+      ...state.loadingIds,
+      [planId]: true
+    &#125;,
+    errorIds: &#123;
+      ...state.errorIds,
+      [planId]: null
+    &#125;
+  &#125;)),
+
+  on(loadPlanSuccess, (state, &#123; plan &#125;) => (&#123;
+    ...state,
+
+    entities: &#123;
+      ...state.entities,
+      [plan.id]: plan
+    &#125;,
+
+    loadingIds: &#123;
+      ...state.loadingIds,
+      [plan.id]: false
+    &#125;
+  &#125;)),
+
+  on(loadPlanFailure, (state, &#123; planId, error &#125;) => (&#123;
+    ...state,
+
+    loadingIds: &#123;
+      ...state.loadingIds,
+      [planId]: false
+    &#125;,
+
+    errorIds: &#123;
+      ...state.errorIds,
+      [planId]: error
+    &#125;
+  &#125;))
+);
+            </pre>
+        </div>
+        <div class="col">
+            <b>plans.selectors.ts</b>
+            <pre>
+export const selectPlansState = createFeatureSelector&#11164;PlansState>('plans');
+
+export const selectPlanEntities = createSelector(selectPlansState, s => s.entities);
+
+export const selectPlanById = (planId: string) =>
+  createSelector(
+    selectPlanEntities,
+    entities => entities[planId]
+  );
+
+export const selectPlanLoading = (planId: string) =>
+  createSelector(
+    selectPlansState,
+    s => s.loadingIds[planId]
+  );
+            </pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <img src="../../../assets/img/screenshots/cache-7.png" alt="cache" height="350x" width="450px">
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+<div class="container card alert alert-light">
+    <h5>⚡ Effect with Retry Logic</h5>
+    <div class="row">
+        <div class="col">
+            <pre>
+If API succeeds → immediate success.
+
+If API fails:
+Attempt #1 → wait 1s → retry
+Attempt #2 → wait 2s → retry
+Attempt #3 → fail → dispatch failure.
+
+🔍 RxJS Operators Used
+
+| Operator     | Purpose               |
+| ------------ | --------------------- |
+| `retryWhen`  | custom retry logic    |
+| `scan`       | count attempts        |
+| `delayWhen`  | pause between retries |
+| `timer`      | create delay          |
+| `catchError` | final error           |
+
+            </pre>
+        </div>
+        <div class="col">
+            <b>plans.effects.ts</b>
+            <pre>
+&#64;Injectable()
+export class PlansEffects &#123;
+
+  loadPlan$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadPlan),
+
+      switchMap((&#123; planId &#125;) =>
+        this.api.getPlan(planId).pipe(
+
+          // 🔁 RETRY STRATEGY
+          retryWhen(errors =>
+            errors.pipe(
+
+              scan((retryCount, error) => &#123;
+
+                // ❌ don't retry for 400/401
+                if (error.status < 500) &#123;
+                  throw error;
+                &#125;
+
+                if (retryCount >= 2) &#123;
+                  throw error;
+                &#125;
+
+                return retryCount + 1;
+              &#125;, 0),
+
+              // ⏳ wait before next retry
+              delayWhen(retryCount =>
+                timer((retryCount + 1) * 1000)
+              )
+            )
+          ),
+
+          map(plan =>
+            loadPlanSuccess(&#123; plan &#125;)
+          ),
+
+          catchError(err =>
+            of(
+              loadPlanFailure(&#123;
+                planId,
+                error: err.message
+              &#125;)
+            )
+          )
+        )
+      )
+    )
+  );
+
+  constructor(
+    private actions$: Actions,
+    private api: PlansApiService
+  ) &#123;&#125;
+&#125;
+
+    </pre>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-dark">
+    <pre>
+        {{tsCode}}
+    </pre>
 </div>
