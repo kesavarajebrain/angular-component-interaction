@@ -1,0 +1,223 @@
+import {
+  Component,
+  OnDestroy,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
+import {
+  SocketService
+} from '../service/socket/socket.service';
+
+import {
+  ChatMessage,
+  IncomingEvent
+} from '../service/socket/socket.types'
+import { Subscription } from 'rxjs';
+import { RouterModule } from "@angular/router";
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: "app-web-socket",
+  templateUrl: "./web-socket.component.html",
+  styleUrls: ["./web-socket.component.scss"],
+  standalone: true,
+  imports: [RouterModule, FormsModule, CommonModule]
+})
+export class WebSocketComponent implements OnDestroy {
+
+  /* =====================
+     UI STATE
+  ===================== */
+
+  @ViewChild('scrollMe') private scrollContainer!: ElementRef;
+
+  username = '';
+  joined = false;
+
+  message = '';
+  typingUser: string | null = null;
+
+  messages: ChatMessage[] = [];
+
+  private sub!: Subscription;
+  connectionStatus: 'connected' | 'disconnected' | 'reconnecting' = 'disconnected';
+
+  constructor(private socketService: SocketService) { }
+
+  /* =====================
+     CHAT JOIN
+  ===================== */
+
+  joinChat() {
+    if (!this.username.trim()) return;
+
+    this.username = this.username.trim();
+
+    this.socketService.connect();
+
+    this.socketService.statusChanges$().subscribe(status => {
+      this.connectionStatus = status;
+    });
+
+    this.sub = this.socketService.events$().subscribe((ev: IncomingEvent) => {
+
+      // MESSAGE
+      if (ev.type === 'message') {
+
+        if (!ev.id) {
+          console.error('Message without id!', ev);
+          return;
+        }
+
+        this.messages.push({
+          id: ev.id,
+          type: 'message',
+          user: ev.user,
+          text: ev.text,
+          timestamp: ev.timestamp,
+          reactions: ev.reactions ?? {}
+        });
+
+        this.typingUser = null;
+        this.scrollToBottom();
+      }
+      // TYPING
+      if (ev.type === 'typing' && ev.user !== this.username) {
+        this.typingUser = ev.user;
+
+        setTimeout(() => {
+          this.typingUser = null;
+        }, 1500);
+      }
+
+      // REACTION
+      if (ev.type === 'reaction') {
+
+        console.log(
+          'REACTION EVENT:',
+          ev.messageId,
+          'existing ids:',
+          this.messages.map(m => m.id)
+        );
+
+        const msg = this.messages.find(
+          m => m.id === ev.messageId
+        );
+
+        if (!msg) {
+          console.warn('Reaction for unknown message:', ev.messageId);
+          return;
+        }
+
+        msg.reactions ??= {};
+        msg.reactions[ev.emoji] ??= [];
+
+        if (!msg.reactions[ev.emoji].includes(ev.user)) {
+          msg.reactions[ev.emoji].push(ev.user);
+        }
+      }
+
+    });
+
+    this.joined = true;
+  }
+
+  /* =====================
+     SEND MESSAGE
+  ===================== */
+
+  send() {
+    if (!this.message.trim()) return;
+
+    this.socketService.send({
+      type: 'message',
+      user: this.username,
+      text: this.message
+    });
+
+    this.message = '';
+  }
+
+
+  /* =====================
+     TYPING EVENT
+  ===================== */
+
+  notifyTyping() {
+    this.socketService.send({
+      type: 'typing',
+      user: this.username
+    });
+  }
+
+  /* =====================
+     REACT
+  ===================== */
+
+  react(msg: ChatMessage, emoji: string) {
+    this.socketService.send({
+      type: 'reaction',
+      messageId: msg.id,
+      emoji,
+      user: this.username
+    });
+  }
+
+  /* =====================
+     SCROLL
+  ===================== */
+
+  private scrollToBottom() {
+    setTimeout(() => {
+      const el = this.scrollContainer?.nativeElement;
+      if (el) {
+        el.scrollTop = el.scrollHeight;
+      }
+    });
+  }
+
+  /* =====================
+     DAY SEPARATORS
+  ===================== */
+
+  isNewDay(index: number): boolean {
+    if (index === 0) return true;
+
+    const prev = new Date(this.messages[index - 1].timestamp);
+    const curr = new Date(this.messages[index].timestamp);
+
+    return (
+      prev.getDate() !== curr.getDate() ||
+      prev.getMonth() !== curr.getMonth() ||
+      prev.getFullYear() !== curr.getFullYear()
+    );
+  }
+
+  getDayLabel(timestamp: number): string {
+    const date = new Date(timestamp);
+    const today = new Date();
+
+    const diffDays =
+      Math.floor(
+        (today.setHours(0, 0, 0, 0) -
+          new Date(date).setHours(0, 0, 0, 0)) /
+        86400000
+      );
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+
+    return date.toLocaleDateString();
+  }
+
+  /* =====================
+     CLEANUP
+  ===================== */
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+    this.socketService.close();
+  }
+}

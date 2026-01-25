@@ -1,0 +1,230 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"> <-Back </a>
+    </p>
+    <h4>Web Socket</h4>
+    <p>A WebSocket is a protocol that creates a persistent, two-way connection between a client (browser/app) and a
+        server.
+        WebSocket என்பது ஒரு communication protocol (தொடர்பு விதிமுறை).</p>
+    <p>இதன் முக்கிய வேலை: <br>
+        👉 Browser / App (Client) மற்றும் Server இவற்றுக்கு இடையில் ஒரு நீண்ட நேரம் திறந்தே இருக்கும் connection
+        உருவாக்குவது. <br>
+        👉 அதில் இரு பக்கமும் (two-way) எப்போது வேண்டுமானாலும் data அனுப்ப முடியும்.</p>
+    <p>✅ WebSocket என்பது ஒரு protocol - (அதாவது – client மற்றும் server எப்படி பேச வேண்டும் என்பதற்கான விதி) <br>
+        ✅ அது persistent connection உருவாக்கும் - (ஒரு முறை connect ஆன பிறகு close ஆகாமல் தொடர்ந்து open ஆக இருக்கும்)
+        <br>
+        ✅ அது two-way connection - (client → server மட்டுமல்ல, server → client கூட உடனே message அனுப்ப முடியும்)
+    </p>
+</div>
+<div class="container alert alert-info">
+    <div class="row">
+        <div class="col">
+            <pre>
+<b>சாதாரண HTTP:</b>
+    👤 Client: “Update இருக்கா?”
+    🖥 Server: “இல்ல”
+    (Connection close)
+
+மீண்டும்…
+    👤 Client: “Update இருக்கா?”
+    🖥 Server: “இருக்கு!”
+
+👉 இது slow + wasteful.
+            </pre>
+            <hr>
+            <p><b>🌐 HTTP (Traditional Web Requests)</b></p>
+            <p>HTTP works in a request–response model.</p>
+            <p>Flow:</p>
+            <ul>
+                <li>1️⃣ Client sends request
+                </li>
+                <li>2️⃣ Server processes it
+                </li>
+                <li>3️⃣ Server sends response
+                </li>
+                <li>4️⃣ Connection closes
+                </li>
+            </ul>
+            <b>If the client wants new data later → it must send another request.
+            </b>
+            <ul>
+                <li> <b>❌ Problems with HTTP for real-time:</b>
+                </li>
+                <li> Wastes bandwidth
+                </li>
+                <li>Slower updates
+                </li>
+                <li>Creates many requests
+                </li>
+                <li>Server load increases
+                </li>
+                <li>Not truly real-time
+                </li>
+            </ul>
+        </div>
+        <div class="col">
+            <pre>
+<b>WebSocket:</b>
+    👤 Client connect ஆகுறான் 🔌
+    🖥 Server: “OK 👍”
+
+பிறகு…
+    🖥 Server: “New message வந்துச்சு!”
+    👤 Client: உடனே receive பண்ணிக்குறான் 😎
+
+👉 இதுதான் WebSocket magic ✨
+            </pre>
+            <hr>
+            <p><b>🔌 WebSocket</b></p>
+            <p>WebSocket creates a single long-lived connection.</p>
+            <p>Once connected:</p>
+            <ul>
+                <li>✔ Client can send anytime
+                </li>
+                <li>✔ Server can push anytime
+                </li>
+                <li>✔ No need to re-open connection
+                </li>
+                <li>✔ Very low overhead
+                </li>
+                <li>✔ Near-instant delivery
+                </li>
+            </ul>
+            <pre>📌 Example (WebSocket)
+
+Chat app:
+Client connects once.
+
+Then:
+Server → “New message arrived 💬”
+Client receives immediately.
+
+No repeated asking.
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="container alert alert-primary">
+    <div class="row">
+        <div class="col">
+            <h6>🧠 When Should You Use WebSockets?</h6>
+            <p> Use WebSockets when:
+            </p>
+            <ul>
+                <li>✅ You need instant updates
+                </li>
+                <li>✅ Many small messages
+                </li>
+                <li>✅ Live dashboards
+                </li>
+                <li>✅ Multiplayer games
+                </li>
+                <li>✅ Collaboration tools
+                </li>
+                <li>✅ Chat systems
+                </li>
+                <li>✅ IoT telemetry
+                </li>
+            </ul>
+        </div>
+        <div class="col">
+            <p> Don’t use them for:
+            </p>
+            <ul>
+                <li>❌ Simple CRUD APIs
+                </li>
+                <li>❌ Page loads
+                </li>
+                <li>❌ One-time fetch data
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-success">
+    <div class="row">
+        <h4 class="title">💬 Angular WebSocket Demo</h4>
+        <div class="connection-status" [ngClass]="connectionStatus">
+            <span *ngIf="connectionStatus === 'connected'">🟢 Connected</span>
+            <span *ngIf="connectionStatus === 'reconnecting'">🟡 Reconnecting…</span>
+            <span *ngIf="connectionStatus === 'disconnected'">🔴 Disconnected</span>
+        </div>
+        <!-- JOIN -->
+        <div *ngIf="!joined" class="join-box">
+            <div class="row">
+                <div class="col-4">
+                    <input [(ngModel)]="username" class="form-control" placeholder="Enter your name" />
+                </div>
+                <div class="col">
+                    <button class="btn btn-info rounded" (click)="joinChat()">Join Chat</button>
+                </div>
+            </div>
+        </div>
+        <div class="chat-container">
+            <!-- CHAT -->
+            <div *ngIf="joined" class="chat-box">
+                <!-- Messages -->
+                <div class="messages" #scrollMe>
+
+                    <ng-container *ngFor="let msg of messages; let i = index">
+
+                        <!-- Day Separator -->
+                        <div *ngIf="isNewDay(i)" class="day-separator">
+                            {{ getDayLabel(msg.timestamp ?? 0) }}
+                        </div>
+
+                        <!-- Message Wrapper -->
+                        <div class="message-row" [class.mine-row]="msg.user === username">
+
+                            <!-- Bubble -->
+                            <div class="bubble" [class.mine]="msg.user === username">
+
+                                <div class="sender">{{ msg.user }}</div>
+
+                                <div class="text">{{ msg.text }}</div>
+
+                                <div class="meta">
+                                    <span class="time">
+                                        {{ msg.timestamp | date:'shortTime' }}
+                                    </span>
+
+                                    <span class="ticks" *ngIf="msg.user === username">
+                                        ✔✔
+                                    </span>
+                                </div>
+
+                                <!-- Reactions -->
+                                <div class="reactions">
+
+                                    <!-- Existing -->
+                                    <span class="reaction" *ngFor="let r of msg.reactions | keyvalue"
+                                        (click)="react(msg, r.key)">
+                                        {{ r.key }} {{ r.value.length }}
+                                    </span>
+
+                                    <!-- Quick -->
+                                    <span class="reaction add" (click)="react(msg,'👍')">👍</span>
+                                    <span class="reaction add" (click)="react(msg,'❤️')">❤️</span>
+                                    <span class="reaction add" (click)="react(msg,'😂')">😂</span>
+                                    <span class="reaction add" (click)="react(msg,'😮')">😮</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </ng-container>
+
+                </div>
+
+                <!-- Input -->
+                <div class="typing-indicator" *ngIf="typingUser">
+                    {{ typingUser }} is typing...
+                </div>
+                <input class="chat-input" [(ngModel)]="message" placeholder="Type a message" (keydown.enter)="send()"
+                    (input)="notifyTyping()" />
+            </div>
+        </div>
+    </div>
+</div>

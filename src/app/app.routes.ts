@@ -27,6 +27,7 @@ import { Dynamicrender } from './dynamic-rendering/dynamic-render.component';
 import { StandaloneComponent } from './standalone/standalone.component';
 import { NgrxComponent } from './ngrx/ngrx.component';
 import { NgrxExampleComponent } from './ngrx/ngrx-example/ngrx-example.component';
+import { WebSocketComponent } from './web-socket/web-socket.component';
 
 
 export const routes: Routes = [
@@ -146,5 +147,9 @@ export const routes: Routes = [
    {
     path:'ngrx-example',
     component:NgrxExampleComponent
+  },
+  {
+    path:'web-socket',
+    component:WebSocketComponent
   }
 ];
