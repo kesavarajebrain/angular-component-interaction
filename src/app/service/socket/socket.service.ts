@@ -27,7 +27,7 @@ export class SocketService {
     console.log('🔌 Connecting WS...');
 
     this.socket$ = webSocket({
-      url: 'ws://localhost:8080',
+      url: 'wss://web-socket-server-4nt8.onrender.com',
       serializer: msg => JSON.stringify(msg),
       deserializer: msg => JSON.parse(msg.data),
       openObserver: {
