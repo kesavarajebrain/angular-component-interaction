@@ -194,3 +194,32 @@
 .connection-status.disconnected {
   color: #c62828;
 }
+
+.reaction-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.reactor {
+  line-height: 1.4;
+}
+
+.reaction {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Show on hover */
+.reaction:hover .reaction-tooltip {
+  display: block;
+}

@@ -1,0 +1,77 @@
+
+<div class="container card alert alert-success">
+    <div class="row">
+        <h4 class="title">💬 Angular WebSocket Demo</h4>
+        <div class="connection-status" [ngClass]="connectionStatus">
+            <span *ngIf="connectionStatus === 'connected'">🟢 Connected</span>
+            <span *ngIf="connectionStatus === 'reconnecting'">🟡 Reconnecting…</span>
+            <span *ngIf="connectionStatus === 'disconnected'">🔴 Disconnected</span>
+        </div>
+        <!-- JOIN -->
+        <div *ngIf="!joined" class="join-box">
+            <div class="row">
+                <div class="col-4">
+                    <input [(ngModel)]="username" class="form-control" placeholder="Enter your name" />
+                </div>
+                <div class="col">
+                    <button class="btn btn-info rounded" (click)="joinChat()">Join Chat</button>
+                </div>
+            </div>
+        </div>
+        <div class="chat-container">
+            <!-- CHAT -->
+            <div *ngIf="joined" class="chat-box">
+                <!-- Messages -->
+                <div class="messages" #scrollMe>
+                    <ng-container *ngFor="let msg of messages; let i = index">
+                        <!-- Day Separator -->
+                        <div *ngIf="isNewDay(i)" class="day-separator">
+                            {{ getDayLabel(msg.timestamp ?? 0) }}
+                        </div>
+                        <!-- Message Wrapper -->
+                        <div class="message-row" [class.mine-row]="msg.user === username">
+                            <!-- Bubble -->
+                            <div class="bubble" [class.mine]="msg.user === username">
+                                <div class="sender">{{ msg.user }}</div>
+                                <div class="text">{{ msg.text }}</div>
+                                <div class="meta">
+                                    <span class="time">
+                                        {{ msg.timestamp | date:'shortTime' }}
+                                    </span>
+                                    <span class="ticks" *ngIf="msg.user === username">
+                                        ✔✔
+                                    </span>
+                                </div>
+                                <!-- Reactions -->
+                                <div class="reactions">
+                                    <!-- Existing -->
+                                    <span class="reaction" *ngFor="let r of msg.reactions | keyvalue"
+                                        (click)="react(msg, r.key)">
+                                        {{ r.key }} {{ r.value.length }}
+                                        <!-- Hover tooltip -->
+                                        <span class="reaction-tooltip">
+                                            <div class="reactor" *ngFor="let user of r.value">
+                                                {{ user }}
+                                            </div>
+                                        </span>
+                                    </span>
+                                    <!-- Quick -->
+                                    <span class="reaction add" (click)="react(msg,'👍')">👍</span>
+                                    <span class="reaction add" (click)="react(msg,'❤️')">❤️</span>
+                                    <span class="reaction add" (click)="react(msg,'😂')">😂</span>
+                                    <span class="reaction add" (click)="react(msg,'😮')">😮</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <!-- Input -->
+                <div class="typing-indicator" *ngIf="typingUser">
+                    {{ typingUser }} is typing...
+                </div>
+                <input class="chat-input" [(ngModel)]="message" placeholder="Type a message" (keydown.enter)="send()"
+                    (input)="notifyTyping()" />
+            </div>
+        </div>
+    </div>
+</div>

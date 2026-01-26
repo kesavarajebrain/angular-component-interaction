@@ -28,6 +28,7 @@ import { StandaloneComponent } from './standalone/standalone.component';
 import { NgrxComponent } from './ngrx/ngrx.component';
 import { NgrxExampleComponent } from './ngrx/ngrx-example/ngrx-example.component';
 import { WebSocketComponent } from './web-socket/web-socket.component';
+import { SsrComponent } from './ssr/ssr.component';
 
 
 export const routes: Routes = [
@@ -151,5 +152,9 @@ export const routes: Routes = [
   {
     path:'web-socket',
     component:WebSocketComponent
+  },
+  {
+    path:'ssr',
+    component:SsrComponent
   }
 ];

@@ -1,3 +1,4 @@
+
 import {
   Component,
   OnDestroy,
@@ -24,7 +25,7 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
   templateUrl: "./web-socket.component.html",
   styleUrls: ["./web-socket.component.scss"],
   standalone: true,
-  imports: [RouterModule, FormsModule, CommonModule, HttpClientModule]
+  imports: [RouterModule, FormsModule, CommonModule,HttpClientModule]
 })
 export class WebSocketComponent implements OnDestroy {
 
@@ -45,14 +46,11 @@ export class WebSocketComponent implements OnDestroy {
   private sub!: Subscription;
   connectionStatus: 'connected' | 'disconnected' | 'reconnecting' = 'disconnected';
 
-  public tsCode = '';
-  public htmlCode = '';
-  constructor(private socketService: SocketService, private http: HttpClient) {
+  public tsCode ='';
+  constructor(private socketService: SocketService,private http: HttpClient) {
     this.http.get('../../../assets/txtfiles/socket.txt', { responseType: 'text' })
       .subscribe(code => this.tsCode = code);
-    this.http.get('../../../assets/txtfiles/socket-html.txt', { responseType: 'text' })
-      .subscribe(code => this.htmlCode = code);
-  }
+   }
 
   /* =====================
      CHAT JOIN

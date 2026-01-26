@@ -165,59 +165,48 @@ No repeated asking.
             <div *ngIf="joined" class="chat-box">
                 <!-- Messages -->
                 <div class="messages" #scrollMe>
-
                     <ng-container *ngFor="let msg of messages; let i = index">
-
                         <!-- Day Separator -->
                         <div *ngIf="isNewDay(i)" class="day-separator">
                             {{ getDayLabel(msg.timestamp ?? 0) }}
                         </div>
-
                         <!-- Message Wrapper -->
                         <div class="message-row" [class.mine-row]="msg.user === username">
-
                             <!-- Bubble -->
                             <div class="bubble" [class.mine]="msg.user === username">
-
                                 <div class="sender">{{ msg.user }}</div>
-
                                 <div class="text">{{ msg.text }}</div>
-
                                 <div class="meta">
                                     <span class="time">
                                         {{ msg.timestamp | date:'shortTime' }}
                                     </span>
-
                                     <span class="ticks" *ngIf="msg.user === username">
                                         ✔✔
                                     </span>
                                 </div>
-
                                 <!-- Reactions -->
                                 <div class="reactions">
-
                                     <!-- Existing -->
                                     <span class="reaction" *ngFor="let r of msg.reactions | keyvalue"
                                         (click)="react(msg, r.key)">
                                         {{ r.key }} {{ r.value.length }}
+                                        <!-- Hover tooltip -->
+                                        <span class="reaction-tooltip">
+                                            <div class="reactor" *ngFor="let user of r.value">
+                                                {{ user }}
+                                            </div>
+                                        </span>
                                     </span>
-
                                     <!-- Quick -->
                                     <span class="reaction add" (click)="react(msg,'👍')">👍</span>
                                     <span class="reaction add" (click)="react(msg,'❤️')">❤️</span>
                                     <span class="reaction add" (click)="react(msg,'😂')">😂</span>
                                     <span class="reaction add" (click)="react(msg,'😮')">😮</span>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </ng-container>
-
                 </div>
-
                 <!-- Input -->
                 <div class="typing-indicator" *ngIf="typingUser">
                     {{ typingUser }} is typing...
@@ -226,5 +215,821 @@ No repeated asking.
                     (input)="notifyTyping()" />
             </div>
         </div>
+    </div>
+</div>
+<div class="container card alert alert-warning">
+    <div class="row">
+        <h5>How it works?</h5>
+        <div class="col">
+            <pre>
+<b>🧠 Big Picture First (When you click “Send” in Angular)</b> 
+ Component
+   ↓
+SocketService
+   ↓
+Browser WebSocket
+   ↓
+Node WS Server
+   ↓
+Broadcast loop
+   ↓
+All connected browser sockets
+   ↓
+SocketService (each tab)
+   ↓
+Component subscriptions
+   ↓
+UI updates
+        </pre>
+            <b>🚀 STEP 1 — Component sends message</b><br>
+            In your component:
+            <pre>
+
+send() &#123;
+  this.socketService.send(&#123;
+    type: 'message',
+    user: this.username,
+    text: this.message
+  &#125;);
+&#125;
+What happens:
+• You click Enter
+• send() runs
+• calls service method
+• passes a JS object
+<b>At this point it is not WebSocket yet — just a normal function call.</b>
+</pre>
+
+            <b>🔌 STEP 2 — Service receives that object</b><br>
+            Inside SocketService:
+            <pre>
+
+send(event: OutgoingEvent) &#123;
+  this.socket$.next(event);
+&#125;
+This is crucial.
+<b>socket$ is an RxJS WebSocketSubject.</b>
+
+means:
+👉 serialize the object
+👉 push it into browser WebSocket
+👉 send it over network to server
+</pre>
+            <b>🌐 STEP 3 — Browser sends frame to Node</b><br>
+            The browser’s WebSocket connection sends that frame to: ws://localhost:8080
+            <pre>
+
+No HTTP.
+No REST.
+No polling.
+
+Just a live TCP connection.
+</pre>
+            <b>🖥️ STEP 4 — Node server receives message</b><br>
+            In server.js:
+            <pre>
+socket.on&lpar;'message', data => &#123;
+<b>This fires only because the browser sent something.</b>
+<b>data</b> is raw bytes.
+</pre>
+            <hr>
+            <pre>
+🔥 One sentence you should remember forever:
+
+socket$.next() = send to server.
+socket.on('message') = receive at server.
+client.send() = server sending back.
+socket$.subscribe() = receive in browser.
+</pre>
+        </div>
+        <div class="col">
+            <b>🔎 STEP 5 — Server parses payload</b>
+            <pre>
+const payload = JSON.parse(data.toString());
+
+Now server has the same object:
+&#123; type:'message', user:'Raj', text:'Hi' &#125;
+ </pre>
+            <b>🧠 STEP 6 — Server enriches message</b><br>
+            Server adds authority fields:
+            <pre>
+payload.id = crypto.randomUUID();
+payload.timestamp = Date.now();
+
+Now message becomes:
+&#123; type:'message', id:'123', user:'Raj', text:'Hi', timestamp:... &#125;
+ </pre>
+            <b>📡 STEP 7 — Server broadcasts</b>
+            <pre>
+wss.clients.forEach(client => &#123;
+  client.send(JSON.stringify(payload));
+&#125;);
+This loops through:
+👉 every connected browser socket.
+
+Important:
+The sender also receives their own message back.
+That’s how delivery ticks work.
+ </pre>
+            <b>🌐 STEP 8 — Browser receives message</b><br>
+            In every tab, the RxJS socket fires:
+            <pre>
+this.socket$.subscribe( &#123; next: ev => ...  &#125;)
+<b>That ev is the parsed object from server.</b>
+ </pre>
+            <b>🔁 STEP 9 — Service pushes into stream$</b>
+            <pre>
+this.stream$.next(ev);
+Now the service broadcasts to all Angular components.
+ </pre>
+            <b>🧩 STEP 10 — Component subscription runs</b><br>
+            In your component:
+            <pre>
+    this.socketService.events$().subscribe(ev =>  &#123; ...  &#125;);
+
+This triggers instantly.
+Now Angular:
+• pushes message into messages[]
+• scrolls UI
+• shows reaction counts
+• updates ticks
+ </pre>
+            <b>🎯 THAT IS THE FULL LOOP.</b>
+            <p>One message: Component → Service → Browser Websocket → Server → All WebSocket → Service → Component → UI.
+            </p>
+            <pre>
+<b>🧠 KEY INSIGHT YOU JUST UNLOCKED</b>
+* There is no REST call here.
+* No HttpClient.
+* No request/response.
+* It is a continuous pipe.
+* Server is listening.
+* Clients are listening.
+* Anyone can push at any time.
+
+🔐 Why This Works for Multiple Tabs
+
+Each tab:
+✔ opens its own socket (each browser has own sockets)
+✔ server stores all sockets in wss.clients
+✔ broadcast sends to all , So two tabs behave like two phones.
+</pre>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-light">
+    <div class="row">
+        <h4>Code Breakup</h4>
+        <div class="col">
+            <b>Server.js</b>
+            <pre>
+
+const WebSocket = require('ws');
+const crypto = require('crypto');
+
+const wss = new WebSocket.Server(&#123; port: 8080 &#125; );
+
+console.log('✅ WS Chat Server running on ws://localhost:8080');
+
+wss.on('connection', socket => &#123; 
+
+socket.on('message', data => &#123; 
+
+const payload = JSON.parse(data.toString());
+
+// Add id + timestamp for messages
+if (payload.type === 'message') &#123; 
+payload.id = crypto.randomUUID();
+payload.timestamp = Date.now();
+&#125; 
+
+// Broadcast EVERYTHING
+wss.clients.forEach(client => &#123; 
+if (client.readyState === WebSocket.OPEN) &#123; 
+client.send(JSON.stringify(payload));
+&#125; 
+&#125; );
+&#125; );
+&#125; );
+        </pre>
+            <hr>
+            <p><b class="text-danger"> 🧠 Step 7</b> - Smart Logic Block — Message Enrichment - <b>This is SUPER
+                    important.</b></p>
+            <pre>
+if (payload.type === 'message') &#123;
+  payload.id = crypto.randomUUID();
+  payload.timestamp = Date.now();
+&#125;
+</pre>
+            <pre>
+<b>Client sends:</b>
+&#123; type:'message', user:'Raj', text:'Hi' &#125;
+
+<b>Server upgrades it into:</b>
+&#123;
+  type:'message',
+  id:'uuid',
+  user:'Raj',
+  text:'Hi',
+  timestamp: 1723...
+&#125;
+
+Why server does this?
+Because: <b>👉 server is the source of truth</b>
+</pre>
+            <p><b class="text-danger">📡 Step 8</b> - Broadcast to ALL connected clients
+                <b>wss.clients.forEach&lpar;client => &#123;</b>
+            </p>
+            <b>wss.clients = Set of every connected socket.</b>
+            <pre>
+Think: we opened multiple socket connections:
+[ tab1, tab2, mobile, desktop ]
+
+🟢 And Only send if connection open
+if (client.readyState === WebSocket.OPEN) &#123;
+</pre>
+        </div>
+        <div class="col">
+            <p><b class="text-danger">📦 Step 1</b> — Import WebSocket library - <b>const WebSocket = require('ws');</b>
+            </p>
+            <pre>
+Imports the ws npm package — a WebSocket implementation for Node.js.
+
+Why we need it:
+Node doesn’t have built-in WebSocket servers like browsers.
+Without this → ❌ no real-time server.</pre>
+            <p><b class="text-danger">🔐 Step 2</b> — Import crypto - <b>const crypto = require('crypto');</b></p>
+            <pre>
+We use it only for:
+crypto.randomUUID()
+Which generates: 👉 globally unique message IDs.
+</pre>
+            <b> Why IDs matter:
+            </b>
+            <ul>
+                <li>reactions attach to right message</li>
+                <li>read receipts</li>
+                <li>edits</li>
+                <li>deletes</li>
+            </ul>
+            <p><b class="text-danger">🏗️ Step 3</b> — Create WebSocket Server - <b>const wss = new
+                    WebSocket.Server(&#123; port: 8080 &#125;);</b>
+            </p>
+            <p>wss = WebSocket Server.</p>
+            <p><b class="text-danger">🔌 Step 4</b> - Listen for new client connections - <b> wss.on &lpar;'connection',
+                    socket => &#123;</b></p>
+            <b>What is this?</b>
+            <ul>
+                <li>This fires every time: 👉 a browser/tab/app connects via WebSocket.</li>
+                <li><b>Each browser tab = one socket.</b></li>
+            </ul>
+            <pre>
+• socket = that specific client
+• you can listen to events from it
+• send data to it
+• close it</pre>
+            <p><b class="text-danger">🔐 Step 5</b> - Listen for messages from THAT client -
+                <b>socket.on&lpar;'message', data => &#123;</b>
+            </p>
+            <pre>
+What is this? - Triggered whenever this client sends something.
+* Not polling.
+* Not HTTP.
+* Not refresh.
+<b>>>Pure push.</b>
+</pre>
+            <p><b class="text-danger">🔐 Step 6</b> - Parse JSON <b>const payload = JSON.parse(data.toString());</b></p>
+            <pre>
+Why? - Clients send:
+JSON.stringify(&#123;...&#125;)
+Server receives bytes.
+We convert: Buffer → string → object
+Now we can inspect:
+• payload.type
+• payload.user
+• payload.text
+        </pre>
+            <p><b class="text-danger"> 🚀 Step 9</b> - Send payload <b>client.send(JSON.stringify(payload));</b></p>
+            <pre>
+Turn object → JSON → push to socket.
+This instantly delivers to:
+• sender
+• receiver
+• all others
+</pre>
+        </div>
+        <div>
+            <pre>
+🔐 MEMORY HOOK (Never Forget This)
+Remember WebSocket servers like:
+
+🔌 Accept → Listen → Enrich → Broadcast
+
+Every real WS backend does:
+1️⃣ on connection
+2️⃣ on message
+3️⃣ validate / enrich
+4️⃣ send to others
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="container alert alert-secondary">
+    <div class="row">
+        <b>Socket.service.ts</b>
+        <div class="col">
+            <pre>
+import &#123; Injectable  &#125; from '&#64;angular/core';
+import &#123; webSocket, WebSocketSubject  &#125; from 'rxjs/webSocket';
+import &#123; Subject, Observable, timer  &#125; from 'rxjs';
+import  &#123;
+OutgoingEvent,
+IncomingEvent
+&#125; from './socket.types';
+
+&#64;Injectable( &#123; providedIn: 'root'  &#125;)
+export class SocketService  &#123;
+
+private socket$!: WebSocketSubject&lpar;any>;
+
+private stream$ = new Subject&lpar;IncomingEvent>();
+
+private reconnectDelay = 2000;
+private connected = false;
+private status$ = new Subject&lpar;'connected' | 'disconnected' | 'reconnecting'>();
+
+statusChanges$()  &#123;
+return this.status$.asObservable();
+&#125;
+
+connect()  &#123;
+if (this.connected) return;
+
+console.log('🔌 Connecting WS...');
+
+this.socket$ = webSocket( &#123;
+url: 'ws://localhost:8080',
+serializer: msg => JSON.stringify(msg),
+deserializer: msg => JSON.parse(msg.data),
+openObserver:  &#123;
+next: () =>  &#123;
+    console.log('✅ WS connected');
+    this.connected = true;
+    this.reconnectDelay = 2000;
+    this.status$.next('connected');   // 👈
+    &#125;
+&#125;,
+closeObserver:  &#123;
+next: () =>  &#123;
+    console.warn('⚠️ WS closed');
+    this.connected = false;
+    this.status$.next('reconnecting');  // 👈
+    this.scheduleReconnect();
+    &#125;
+&#125;
+&#125;);
+
+this.socket$.subscribe( &#123;
+next: ev => this.stream$.next(ev as IncomingEvent),
+error: err =>  &#123;
+console.error('WS error', err);
+this.connected = false;
+this.status$.next('reconnecting');   // 👈
+this.scheduleReconnect();
+&#125;
+&#125;);
+&#125;
+
+private scheduleReconnect()  &#123;
+console.log(`🔁 Reconnecting in $ &#123;this.reconnectDelay &#125;ms...`);
+
+timer(this.reconnectDelay).subscribe(() =>  &#123;
+this.connect()
+&#125;);
+
+// backoff up to 10s
+this.reconnectDelay = Math.min(
+this.reconnectDelay * 1.5,
+10000
+);
+&#125;
+
+send(event: OutgoingEvent)  &#123;
+if (!this.socket$ || !this.connected)  &#123;
+console.warn('⚠️ Not connected yet');
+return;
+&#125;
+
+this.socket$.next(event);
+&#125;
+
+events$(): Observable&lpar;IncomingEvent>  &#123;
+return this.stream$.asObservable();
+&#125;
+
+close()  &#123;
+this.socket$?.complete();
+this.connected = false;
+this.status$.next('disconnected');   // 👈
+&#125;
+&#125;
+</pre>
+            <hr>
+            <p><b>Error handler</b></p>
+            <pre> error: err => &#123;
+
+If connection fails:
+• mark disconnected
+• show UI
+• retry later
+</pre>
+            <p><b>🔁 scheduleReconnect()</b></p>
+            <b>This is the resilience (மீள்தன்மை) engine. (if the connection is lost again its trying to reconnect)</b>
+            <pre>
+
+timer(this.reconnectDelay).subscribe(() => &#123;
+  this.connect();
+&#125;);
+
+Wait → then retry.
+</pre>
+            <p><b>📤 send()</b></p>
+            <pre>
+send(event: OutgoingEvent)
+Only sends client → server events.
+
+if (!this.socket$ || !this.connected)
+Guard:
+✔ avoid crash
+✔ avoid silent fail
+✔ show warning
+</pre>
+            <p><b>📥 events$()</b></p>
+            <pre>
+events$(): Observable&#11164;IncomingEvent>
+Components subscribe here.
+They never touch socket directly.
+</pre>
+            <p><b>🧹 close()</b></p>
+            <pre>
+this.socket$?.complete();
+Closes connection intentionally.
+
+this.status$.next('disconnected');
+Update UI.
+</pre>
+        </div>
+        <div class="col">
+            <p>If server.js is the engine… <b>👉 SocketService is the driver + airbag + GPS + recovery system.
+                </b></p>
+            <pre>
+🧠 Big Picture Role of SocketService
+This service is:
+👉 a singleton WebSocket manager
+👉 shared by all components
+👉 hides raw socket complexity
+👉 exposes clean APIs:
+</pre>
+            <p><b class="text-danger">Step 1</b>📦 Imports Explained - <b>import &#123; webSocket, WebSocketSubject
+                    &#125; from 'rxjs/webSocket';</b></p>
+            <pre>
+This gives:
+✔ observable stream
+✔ automatic JSON handling
+✔ lifecycle hooks
+✔ retry potential
+✔ easy integration
+</pre>
+            <p><b class="text-danger">Step 2</b>📦 Imports Explained - <b>import &#123; Subject, Observable, timer
+                    &#125; from 'rxjs';</b></p>
+            <pre>
+• Subject = manual event emitter
+• Observable = read-only stream for UI
+• timer() = delayed execution (used for reconnect)
+</pre>
+            <p><b class="text-danger">Step 3</b>📦 Imports Explained - <b>import &#123;
+                    OutgoingEvent,
+                    IncomingEvent
+                    &#125; from './socket.types';</b></p>
+            <pre>This is a very professional pattern:
+👉 types live in one place
+👉 shared across app
+👉 prevents duplication
+👉 avoids mismatch bugs
+</pre>
+            <p><b class="text-danger">Step 4</b>🧠 Fields Explained : <b> <br>🔌 private socket$!:
+                    WebSocketSubject&#11164;any>;</b></p>
+            <pre>
+<b>This is the actual live connection.</b> 
+We typed it any on purpose:
+• outgoing events ≠ incoming events
+• transport layer should be flexible
+• typing enforced at API layer instead
+</pre>
+            <p><b>📡 private stream$ = new Subject&#11164;IncomingEvent>();</b></p>
+            <pre>
+Socket → Service → Components.
+All messages from server go here.
+</pre>
+            <p><b>🔁 reconnectDelay : private reconnectDelay = 2000;</b></p>
+            <pre>
+Start reconnecting after 2 seconds.
+Prevents hammering the server.
+</pre>
+            <p><b>🔵 connected flag : private connected = false;</b></p>
+            <pre>
+Simple guard:
+✔ prevents duplicate connections
+✔ blocks sending when offline
+✔ helps UI state
+</pre>
+            <p><b>📊 status$ : private status$ = new Subject&#11164;'connected' | 'disconnected' |
+                    'reconnecting'>();</b></p>
+            <pre>
+ This drives UI badges:
+🟢 Connected
+🟡 Reconnecting
+🔴 Disconnected
+Again: Service emits → UI subscribes.
+</pre>
+            <p><b>📤 statusChanges$()</b></p>
+            <pre>
+statusChanges$() &#123;
+  return this.status$.asObservable();
+ &#125;
+ Why .asObservable()?
+👉 prevents UI from calling .next()
+👉 only service controls state
+</pre>
+            <p><b>🔌 connect()</b></p>
+            <pre>
+🛑 Prevent duplicate sockets
+<b>if (this.connected) return;</b>
+
+Without this:
+❌ multiple sockets open
+❌ duplicate messages
+❌ weird UI bugs
+❌ server overload
+</pre>
+            <p><b>🌐 Create RxJS socket</b></p>
+            <pre>
+this.socket$ = webSocket&lpar;&#123;
+  url: 'ws://localhost:8080',
+<b>Connects to Node server.</b>
+</pre>
+            <p><b>🔄 Serializer / Deserializer</b></p>
+            <pre>
+serializer: msg => JSON.stringify(msg),
+deserializer: msg => JSON.parse(msg.data),
+
+Transforms:
+Angular object ⇄ WebSocket frame.
+</pre>
+            <p><b>🟢 openObserver</b></p>
+            <pre>
+openObserver: &#123;
+  next: () => &#123;
+
+<b>Runs when socket opens successfully.</b>
+Used to:
+    ✔ mark connected
+    ✔ reset delay
+    ✔ update UI
+</pre>
+            <p><b>🔴 closeObserver</b></p>
+            <pre>
+closeObserver:  &#123;
+  next: () =>  &#123;
+
+<b>Runs when socket closes.</b>
+This is the trigger for:
+👉 auto-reconnect.
+</pre>
+            <p><b>📩 Subscribe to raw socket</b></p>
+            <pre>
+    this.socket$.subscribe &lpar;&#123;
+
+Why subscribe here?
+Because:
+👉 RxJS sockets are lazy
+👉 subscription activates them
+Without this, nothing flows.
+</pre>
+            <p><b>Next handler</b></p>
+            <pre>
+next: ev => this.stream$.next(ev as IncomingEvent),
+<b>Push server data into app stream.</b>
+</pre>
+        </div>
+    </div>
+</div>
+<div class="container alert alert-primary card">
+    <div class="row">
+        <b>Web-socket.component.ts</b>
+        <div class="col">
+            <pre>
+                {{tsCode}}
+            </pre>
+        </div>
+        <div class="col">
+            <p>If server.js is the engine <br>
+                and SocketService is the transmission… <br>
+                <b>👉 this Component is the driver.</b>
+            </p>
+            <pre>
+🧠 ROLE OF THIS COMPONENT
+This component:
+
+✅ shows chat UI
+✅ keeps UI state
+✅ sends user actions to server
+✅ listens to server events
+✅ updates messages
+✅ shows typing
+✅ handles reactions
+✅ scrolls view
+✅ groups days
+✅ shows connection status
+✅ cleans up socket
+
+It never talks directly to WebSocket.
+Only to SocketService.
+            </pre>
+            <p><b>
+                    import &#123; Component, OnDestroy, ViewChild, ElementRef &#125; from '&#64;angular/core';</b></p>
+            <pre>
+• Component → defines Angular component
+• OnDestroy → cleanup hook
+• ViewChild → access DOM
+• ElementRef → wrapper around DOM element
+                    </pre>
+            <p><b>import &#123; SocketService &#125; from '../service/socket/socket.service';</b></p>
+            <pre>
+This is your WebSocket gateway.
+Component never touches raw sockets.
+</pre>
+            <p><b>import &#123; ChatMessage, IncomingEvent &#125; from '../service/socket/socket.types'
+                </b></p>
+            <pre>
+Strong typing for messages/events.
+</pre>
+            <p><b>import &#123; Subscription &#125; from 'rxjs';</b></p>
+            <pre>
+    Used so we can unsubscribe on destroy.
+</pre>
+            <p><b>RouterModule, FormsModule, CommonModule</b></p>
+            <pre>
+Needed for:
+• routing
+• ngModel
+• ngFor/ngIf
+</pre>
+            <p><b class="text-danger">Step 1</b> 🧠 UI STATE FIELDS </p>
+            <b>📜 scrollContainer</b><br>
+            <b>&#64;ViewChild('scrollMe') private scrollContainer!: ElementRef;</b>
+            <pre>
+Refers to:
+&#11164;div #scrollMe>
+Lets TS scroll the chat to bottom.
+Without it → chat stays at top.
+</pre>
+            <p><b>👤 username / joined</b></p>
+            <pre>
+username = '';
+joined = false;
+Controls login UI vs chat UI.
+</pre>
+            <p><b>💬 message
+                    <br>
+                    Current input box value.</b></p>
+            <pre>
+<b>✍️ typingUser</b>
+Shows:
+"Raj is typing..."
+Cleared after timeout.
+</pre>
+            <p><b>📦 messages</b></p>
+            <pre>
+messages: ChatMessage[] = [];
+Holds all chat history.
+<b>UI renders this with *ngFor.</b>
+</pre>
+            <p><b>🔗 sub</b> : RxJS subscription reference for cleanup.</p>
+            <p><b>📡 connectionStatus</b></p>
+            <pre>
+Drives:
+🟢 connected
+🟡 reconnecting
+🔴 offline
+</pre>
+            <p><b class="text-danger">Step 2</b> 🚪 joinChat()</p>
+            <p>This is called when user enters name and clicks Join. <br>
+                This is where the socket comes alive.</p>
+            <pre>
+ 🛑 Guard empty name
+if (!this.username.trim()) return;
+Prevents anonymous user.
+
+✂ Trim whitespace
+Small UX polish.
+</pre>
+            <p>🔌 connect socket <b>this.socketService.connect();</b><br>
+                Opens WebSocket connection.</p>
+            <p><b>📊 subscribe to status</b></p>
+            <p>this.socketService.statusChanges$().subscribe(...) <br>
+                Updates banner.</p>
+            <p><b class="text-danger">Step 3</b> <b>📥 subscribe to events
+                    this.sub = this.socketService.events$().subscribe(...)</b></p>
+            <p><b>This is the most important line. <br>
+                    Everything server sends flows here.</b></p>
+            <p><b class="text-danger">Step 4 </b> <b>📩 EVENT HANDLING</b></p>
+            <pre>
+🟢 MESSAGE
+if (ev.type === 'message') &#123;
+Server sent a chat message.
+
+We:
+✔ validate id
+✔ push to array
+✔ clear typing
+✔ scroll
+Why id check?
+    Because reactions depend on it.
+</pre>
+            <pre>
+✍️ TYPING
+if (ev.type === 'typing' && ev.user !== this.username)
+
+Ignore own typing.
+Show only others.
+Clear after 1.5s.
+</pre>
+            <pre>
+😀 REACTION
+Find message by id:
+this.messages.find(m => m.id === ev.messageId)
+
+Never by index.
+Update reactions map.
+</pre>
+            <pre>
+📤 send()
+Called when Enter pressed.
+Sends minimal payload to server.
+<b>Server adds id/time.</b>
+</pre>
+            <pre>
+✍️ notifyTyping()
+Fires typing event.
+Pure UX event.
+</pre>
+            <pre>
+😀 react()
+Sends reaction event.
+Server broadcasts.
+Everyone updates.
+</pre>
+            <pre>
+📜 scrollToBottom()
+Uses DOM access to move scroll.
+Wrapped in setTimeout so DOM finishes rendering first.
+Without timeout → wrong scroll height.
+</pre>
+            <pre>
+📅 Day separators
+Two helpers:
+
+isNewDay()
+Compares previous and current timestamps.
+Decides whether to render: ---- Today ----
+
+getDayLabel()
+Returns:
+• Today
+• Yesterday
+• date string
+</pre>
+            <pre>
+🧹 ngOnDestroy()
+this.sub?.unsubscribe();
+this.socketService.close();
+Critical.
+
+Prevents:
+❌ memory leaks
+❌ zombie sockets
+❌ duplicate listeners
+Runs when component leaves page.
+</pre>
+        </div>
+    </div>
+</div>
+<div class="container alert alert-dark card">
+    <div class="row">
+        <b>Websocket-component.html</b>
+        <pre>
+            {{htmlCode}}
+        </pre>
     </div>
 </div>
