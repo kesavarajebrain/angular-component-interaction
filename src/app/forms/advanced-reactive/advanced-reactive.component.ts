@@ -453,7 +453,7 @@ export class AdvancedReactiveComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.autoSaveSub.unsubscribe();
+    this.autoSaveSub?.unsubscribe();
   }
 
   // PATCH VALUE - we can patch single data also, no need to configure all the data what ever we patched that only going to remaining all will be remains the same

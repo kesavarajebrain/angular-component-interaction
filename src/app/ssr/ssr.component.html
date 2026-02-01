@@ -3,4 +3,299 @@
         <a class="pe-auto text-secondary text-decoration-none"> <-Back </a>
     </p>
     <h4>Server-Side Rendering (SSR)</h4>
+    <p>Server renders HTML first, sends it to browser.</p>
+    <div class="row">
+        <div class="col">
+            <b>SSR - Server Side Rendering</b>
+            <ul>
+                <li>Browser requests /products
+                </li>
+                <li>Node server runs Angular (✅Backend will do below the process)
+                </li>
+                <li>✅Fetches data
+                </li>
+                <li>✅Builds HTML
+                </li>
+                <li>✅Sends fully rendered page
+                </li>
+                <li>Browser shows instantly (Backend will gives the HTML)
+                </li>
+                <li>Angular hydrates & becomes interactive
+                </li>
+            </ul>
+            <b> 👉 This is called hydration.
+            </b>
+            <pre class="alert alert-warning">                    <b>📊 SSR vs CSR</b>
+                
+| Feature          | CSR      | SSR        |
+| ---------------- | -------- | ---------- |
+| First paint      | Slow     | Fast       |
+| SEO              | Weak     | Excellent  |
+| Social preview   | ❌        | ✅       |
+| Performance      | JS heavy | HTML first |
+| Works without JS | Partial  | Better     |
+| Infra complexity | Simple   | More       | </pre>
+        </div>
+        <div class="col">
+            <b>CSR - Client Side Rendering (default Angular)</b>
+            <p>Normal Angular app:</p>
+            Browser downloads:
+            <ul>
+                <li>index.html
+                </li>
+                <li>JS bundles
+                </li>
+                <li>JS runs
+                </li>
+                <li>Angular bootstraps
+                </li>
+                <li>API calls happen
+                </li>
+                <li>DOM is created
+                </li>
+            </ul>
+            <p>
+                User initially sees: <b>Blank page or spinner → then will content appears</b></p>
+            <pre>
+ ⚠️ Problems:
+SEO bots may not execute JS fully
+Slow first paint on bad networks
+Bad for social sharing previews
+Feels sluggish (மந்தமான)</pre>
+            <hr>
+            <pre>
+🧠 What SSR Actually Solves
+SSR improves:
+✔ First Contentful Paint
+✔ SEO
+✔ Social previews
+✔ Perceived speed
+
+<b>It does not remove JavaScript bundles or client logic.</b>
+            </pre>
+        </div>
+    </div>
+    <div class="container card alert alert-info">
+        <div class="row">
+            <h5>Why Companies Use SSR (Real World)?</h5>
+            <div class="row">
+                <div class="col">
+                    <ul>
+                        <b>SSR is used when:</b>
+                        <li>✅ Marketing pages : Landing pages, blogs, docs.
+                        </li>
+                        <li>✅ E-commerce : Product listings, SEO critical.
+                        </li>
+                        <li>✅ News sites : Indexable content.
+                        </li>
+                        <li>✅ Public portals : Gov portals, content heavy.
+                        </li>
+                    </ul>
+                    <pre>
+    <b>SSR Works in Angular (Architecture)</b>
+
+    Browser ──▶ Node SSR Server
+    │
+    ├─ runs Angular app
+    ├─ executes resolvers / services
+    ├─ renders HTML
+    ▼
+HTML Response
+    │
+    ▼
+Browser Hydration (End User View)
+
+            </pre>
+                </div>
+                <div class="col">
+                    <ul>
+                        <b> Real world:</b>
+                        <li>Amazon → hybrid SSR</li>
+                        <li> Airbnb → SSR</li>
+                        <li>Netflix landing pages → SSR</li>
+                        <li> Angular official docs → SSR</li>
+                    </ul>
+                    <pre>
+                        <b>📊 Before SSR vs After SSR</b>
+
+| விஷயம்                | SSR இல்லாமல்         | SSR உடன்    
+| --------------------    | --------------------    | ----------- 
+| முதல் திரை வேகம்     | மெது                  | வேகமானது    
+| SEO                     | குறைவு                 | சிறப்பு     
+| பகிரும் போது preview  | இல்லை                | உள்ளது      
+| பயனர் உணர்வு        | காத்திருக்க வேண்டும்  | உடனடி தகவல் 
+| சேவையக வேலை      | குறைவு                | அதிகம்      
+                    </pre>
+                    <p><b>👉 Angular still loads in the browser.</b> <br> SSR only changes the first response. <br> ✅
+                        “Angular runs first on server, then again in browser to
+                        hydrate”</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container card alert alert-warning">
+        <h5>Installation</h5>
+        <div class="row">
+            <div class="col">
+                <code>
+            ng add &#64;angular/ssr
+        </code>
+                <pre>
+
+What this does:
+✔ adds Node server (server.ts)
+✔ configures build targets
+✔ enables hydration
+✔ adds SSR scripts
+✔ updates main.ts
+        </pre>
+            </div>
+            <div class="col">
+                <b>Package.json</b>
+                <img src="../../assets/img/screenshots/ssr-1.png" alt="ssr" height="150px" width="300px">
+            </div>
+            <div class="col">
+                <b>After install ssr - creates below files</b>
+                <img src="../../assets/img/screenshots/ssr-2.png" alt="ssr" height="150px" width="300px">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <b>Run in SSR Mode: </b> <br>
+                <code>npm run build:ssr</code><br>
+                <code>npm run start:ssr</code>
+                <p>It will create a dist folder inside that we will have 2 folders </p>
+                <pre>
+dist/
+ ├── browser/
+ └── server/
+                </pre>
+                <div class="row">
+                    <div class="col">
+                        <b>📂 dist/browser</b>
+                        <ul>
+                            <li>JS bundles</li>
+                            <li>CSS</li>
+                            <li>assets</li>
+                            <li>index.html</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <b>📂 dist/server</b>
+                        <ul>
+                            <li> main.server.mjs</li>
+                            <li> index.server.html</li>
+                            <li>server chunks</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <b>Run in CSR Mode: </b> <br>
+                <code>npm run start:csr</code>
+                <div class="mt-5">
+                    <b>Folder structure:</b><br>
+                    <img src="../../assets/img/screenshots/ssr-4.png" height="250px" alt="ssr">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container card alert alert-primary">
+        <h5>CSR Vs SSR</h5>
+        <div class="row">
+            <div class="col mt-3">
+                <b>Client Side Rendering : </b> <span>On page loads its loads the required js files from the
+                    sources</span>
+                <br><br>
+                <img src="../../assets/img/screenshots/csr.png" height="400px" alt="csr">
+            </div>
+            <div class="col mt-3">
+                <b>Server Side Rendering : </b> <span>Source files are already available in the server folder so, no
+                    more extra files loded on page load.</span> <br><br>
+                <img src="../../assets/img/screenshots/ssr-3.png" height="400px" alt="csr">
+            </div>
+        </div>
+    </div>
+    <div class="container card alert alert-secondary">
+        <h5>SSR Deployment</h5>
+        <div class="row">
+            <h6>🚀 Step-by-Step: Deploy Angular SSR to Firebase Hosting</h6>
+            <pre>
+                
+🔵 STEP 1 — Install Firebase CLI
+Globally:
+
+<b>npm install -g firebase-tools</b>
+
+Login: <b>firebase login</b>
+
+🔵 STEP 2 — Initialize Firebase in Project
+From Angular root:
+
+<b>firebase init</b>
+
+Choose:
+✔ Hosting
+✔ Functions ❌ (skip unless needed)
+✔ Use existing project or create new
+
+When asked:
+<b>Public directory?</b>
+➡️ dist/angular-interaction/browser
+
+<b>Configure as SPA?</b>
+➡️ ❌ No (because SSR handles routing)
+
+🔵 STEP 3 — Create SSR Container for Cloud Run
+<b>Create file at project root:</b>
+
+📄 Dockerfile
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --omit=dev
+
+COPY dist/angular-interaction ./dist/angular-interaction
+
+EXPOSE 8080
+
+CMD ["node", "dist/angular-interaction/server/server.mjs"]
+
+🔵 STEP 4 — Build Before Deploy
+Run:
+<b>ng build</b>
+
+dist/angular-interaction/browser
+dist/angular-interaction/server
+Make sure above folders exist.
+
+🔵 STEP 5 — Configure Firebase Rewrite to Cloud Run
+<b>Open firebase.json.</b>
+
+&#123;
+  "hosting": &#123;
+    "public": "dist/angular-interaction/browser",
+    "rewrites": [
+      &#123;
+        "source": "**",
+        "run": &#123;
+          "serviceId": "angular-ssr",
+          "region": "asia-south1"
+        &#125;
+      &#125;
+    ]
+  &#125;
+&#125;
+
+🔵 STEP 6 — Deploy to Cloud Run via Firebase
+Run:
+
+<b>firebase deploy</b></pre>
+
+<a href="https://angular-ssr-4b55e.web.app/" target="_blank"> Angular SSR App</a>
+        </div>
+    </div>
 </div>

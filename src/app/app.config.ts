@@ -10,6 +10,7 @@ import { ProgramsEffects } from './store/effects/programs.effects';
 import { userReducer } from './store/reducers/users.reducer';
 import { UserEffects } from './store/effects/users.effects';
 import { provideHttpClient } from '@angular/common/http';
+import { provideClientHydration } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideStore(
@@ -19,5 +20,5 @@ export const appConfig: ApplicationConfig = {
     }
   ), provideEffects(
     [ProgramsEffects,UserEffects]
-  ), provideHttpClient(), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
+  ), provideHttpClient(), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }), provideClientHydration()]
 };

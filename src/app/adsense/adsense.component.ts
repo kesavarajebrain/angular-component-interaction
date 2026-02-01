@@ -2,6 +2,12 @@ import { Component, Input, AfterViewInit } from '@angular/core';
 
 declare var adsbygoogle: any;
 
+declare global {
+  interface Window {
+    adsbygoogle: any;
+  }
+}
+
 @Component({
   selector: 'app-adsense',
   standalone:true,
