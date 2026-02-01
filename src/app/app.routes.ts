@@ -29,6 +29,7 @@ import { NgrxComponent } from './ngrx/ngrx.component';
 import { NgrxExampleComponent } from './ngrx/ngrx-example/ngrx-example.component';
 import { WebSocketComponent } from './web-socket/web-socket.component';
 import { SsrComponent } from './ssr/ssr.component';
+import { JwtComponent } from './jwt/jwt.component';
 
 
 export const routes: Routes = [
@@ -156,5 +157,9 @@ export const routes: Routes = [
   {
     path:'ssr',
     component:SsrComponent
+  },
+  {
+    path:'jwt',
+    component:JwtComponent
   }
 ];
