@@ -9,8 +9,9 @@ import { programsReducer } from './store/reducers/programs.reducer';
 import { ProgramsEffects } from './store/effects/programs.effects';
 import { userReducer } from './store/reducers/users.reducer';
 import { UserEffects } from './store/effects/users.effects';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
+import { jwtInterceptor } from './interceptor/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideStore(
@@ -19,6 +20,8 @@ export const appConfig: ApplicationConfig = {
       users: userReducer,
     }
   ), provideEffects(
-    [ProgramsEffects,UserEffects]
-  ), provideHttpClient(), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }), provideClientHydration()]
+    [ProgramsEffects, UserEffects]
+  ), provideHttpClient(
+    withInterceptors([jwtInterceptor])
+  ), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }), provideClientHydration()]
 };

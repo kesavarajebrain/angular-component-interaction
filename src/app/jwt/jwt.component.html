@@ -2,5 +2,221 @@
     <p routerLink="/">
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
-    <h4>JWT</h4>
+    <h4>JSON Web Token (JWT)</h4>
+    <p>A compact, URL-safe string that represents claims about a user, signed by the server so it can’t be tampered
+        with. (மாற்ற முடியாதது)</p>
+    <div class="container card alert alert-dark mb-2 mt-2">
+        <p>JWT is not securing the frontend <br> JWT is:
+            <b> A backend mechanism</b> to safely identify the caller and decide what they are allowed to access.
+            Frontend just helps in transporting it.
+        </p>
+    </div>
+    <h5>JWT Structure</h5>
+    <div class="row">
+        <div class="col">
+            <p>A JWT always looks like: <br>
+                <b>xxxxx.yyyyy.zzzzz</b>
+            </p>
+        </div>
+        <div class="col">
+            <p>Three Base64-encoded parts separated by dots: <br>
+                <code>HEADER.PAYLOAD.SIGNATURE</code>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p><b>▶ Header</b> <br>
+                Metadata about the token: <br></p>
+            <pre>
+&#123;
+  "alg": "HS256",
+  "typ": "JWT"
+&#125;
+Means:
+alg → signing algorithm
+typ → token type
+</pre>
+        </div>
+        <div class="col">
+            <p><b>▶ Payload (Claims)</b><br>
+                This contains the actual data:</p>
+            <pre>
+&#123;
+  "sub": "12345",
+  "email": "kesava&#64;example.com",
+  "role": "USER",
+  "iat": 1700000000,
+  "exp": 1700003600
+&#125;
+                </pre>
+        </div>
+        <div class="col">
+            <p><b>▶ Signature (the protection)</b> <br>Created like:</p>
+            <pre>
+HMACSHA256(
+  base64(header) + "." + base64(payload),
+  SECRET_KEY
+)</pre>
+            <p>Only the server knows <b>SECRET_KEY</b> <br>
+                So if someone edits the payload: <b>"role": "ADMIN"</b> <br>
+                → signature becomes invalid <br>
+                → server rejects the token 💥
+            </p>
+        </div>
+    </div>
+    <div class="container card alert alert-info">
+        <h5>How JWT Works on the Server?</h5>
+        <div class="row">
+            <div class="col">
+                <p><b>Step 1 – User logs in</b></p>
+                <pre>
+POST /login
+&#123; email, password  &#125;
+                </pre>
+            </div>
+            <div class="col">
+                <p><b>Step 2 – Server verifies credentials</b></p>
+                <pre>
+If OK:
+* creates JWT
+* signs it
+* sends it back
+
+&#123;
+  accessToken: "eyJhbGciOi..."
+&#125;
+                </pre>
+            </div>
+            <div class="col">
+                <p><b>Step 3 – Browser stores token</b></p>
+                <pre>
+Usually:
+* HttpOnly cookie ✅ (best)
+* OR memory
+* OR localStorage (less secure)
+                </pre>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p><b>Step 4 – Browser sends token on every API call</b></p>
+                <pre>
+ Authorization: Bearer eyJhbGciOi...
+                </pre>
+            </div>
+            <div class="col">
+                <p><b>Step 5 – Server middleware validates:</b></p>
+                <pre>
+* signature
+* expiry
+* issuer
+* audience
+
+If valid → continue
+If not → 401 Unauthorized
+                </pre>
+            </div>
+        </div>
+    </div>
+    <div class="container card alert alert-warning">
+        <div class="row">
+            <div class="col-4">
+                <p>Assume we have genuine users in the database as below : <br>
+                    <b>test&#64;test.com</b> / <b>1234</b> &nbsp; <span class="btn btn-secondary btn-sm"
+                        (click)="setFormValues()"> Set to form</span> <br>Since this is authenticated from backend so,
+                    we will get the <b>Access token</b> in response,<br> wrong credentials treat as unauthorized
+                    <b>401</b>.
+                </p>
+
+                <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+                    <!-- EMAIL -->
+                    <div>
+                        <label>Email:</label>
+                        <input type="email" name="email" class="form-control" [(ngModel)]="model.email" #email="ngModel"
+                            required email />
+                        <span class="text-danger" *ngIf="email.invalid && (email.touched || loginForm.submitted)">
+                            Valid email is required
+                        </span>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div>
+                        <label>Password:</label>
+                        <input type="password" class="form-control" name="password" [(ngModel)]="model.password"
+                            #password="ngModel" required minlength="4" />
+                        <span class="text-danger" *ngIf="password.invalid && (password.touched || loginForm.submitted)">
+                            Minimum 4 characters required
+                        </span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">
+                        Login
+                    </button> &nbsp;
+                    <button type="button" class="btn btn-dark mt-3" (click)="clearFormValues(loginForm)">Clear</button>
+
+                </form>
+            </div>
+            <div class="col-4">
+                @if (authData && !errorMessage) {
+                <p class="alert alert-success">Authenticated User <b>200</b></p>
+                } @else if(errorMessage) {
+                <div class="alert alert-danger">Unauthorized User <b>401</b></div>
+                }
+                <div *ngIf="authData && !errorMessage">
+                    {{ authData | json }}
+                </div>
+                <div class="text-danger" *ngIf="errorMessage">
+                    {{ errorMessage }}
+                </div>
+                <hr>
+                <p>Backend give the JWT token along with the login api response, we will store that token and send to
+                    further protected API calls. <br> <b>Token will expires after 2mins</b> as per backend
+                    configuration.</p>
+            </div>
+            <div class="col-4">
+                <p>Protected API (UI to send the valid jwt token in headers)</p>
+                <button type="button" class="btn btn-dark mt-3" (click)="getUser()">Get User </button>
+                <p>Public Access API</p>
+                <button type="button" class="btn btn-dark mt-3" (click)="getPublic()">Get Common</button>
+            </div>
+        </div>
+    </div>
+    <div class="container alert alert-primary">
+        <div class="row">
+            <div class="col">
+                <h5>Authentication Vs Authorization</h5>
+                <p><b>Authentication:</b><br>
+                    👉 உங்களுடைய அடையாளத்தை உறுதி செய்வது<br>
+                    (Verifying who you are)</p>
+
+                <p><b>Authorization:</b><br>
+                    👉 உங்களுக்கு என்ன செய்ய அனுமதி இருக்கிறது என்பதை தீர்மானிப்பது <br>
+                    (Deciding what you are allowed to access)</p>
+            </div>
+            <div class="col">
+                <h5>Interceptor</h5>
+                <b> Interceptor = A central place to control all HTTP requests and responses.
+                </b>
+                <h6>🔐 Why We Use It in JWT?</h6>
+                <pre>
+
+Without interceptor ❌
+Every API call:
+
+this.http.get('/api/profile', &#123;
+headers: &#123; Authorization: 'Bearer token' &#125;
+&#125;);
+Repeat in 50 places 😵
+</pre>
+
+                
+            </div>
+        </div>
+    </div>
+    <div class="card container alert alert-success">
+        <pre>
+            {{tsCode}}
+        </pre>
+    </div>
 </div>
