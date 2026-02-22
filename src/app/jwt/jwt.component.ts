@@ -10,7 +10,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   selector: "app-jwt",
   standalone: true,
   imports: [RouterModule, FormsModule, CommonModule, HttpClientModule],
-  providers: [AuthService],
   templateUrl: "./jwt.component.html",
   styleUrls: ["./jwt.component.scss"]
 })
