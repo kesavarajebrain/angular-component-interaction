@@ -1,0 +1,158 @@
+<div class="container alert alert-info">
+    <h5>Signal Practical Example</h5>
+    <p>What exact signals? is the same like redux or ngrx?</p>
+    <p>Signals can replace NgRx in small/medium apps,
+        but not always in very large enterprise apps.</p>
+    <table class="table table-striped table-hover">
+        <thead class="table-warning">
+            <tr>
+                <td>Feature</td>
+                <td>Signals</td>
+                <td>useState</td>
+                <td>NgRx</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>scope</td>
+                <td>component/service</td>
+                <td>component</td>
+                <td>global</td>
+            </tr>
+            <tr>
+                <td>complexity</td>
+                <td>simple</td>
+                <td>simple</td>
+                <td>complex</td>
+            </tr>
+            <tr>
+                <td> best for</td>
+                <td>UI + shared state</td>
+                <td>UI state</td>
+                <td>large app state</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container alert alert-success">
+    <div class="row">
+        <div class="col">
+            <ul>
+                <li>Step 1 — Create Signal Store (Service) task.store.ts - <b>similar to NgRx Store State</b></li>
+                <li>Step 2 — Create Computed Selectors - <b>Just like NgRx selectors.</b></li>
+                <li>Step 3 — Add Store Actions - <b>Equivalent to NgRx actions + reducers.</b></li>
+                <li>Step 4 — Use Store in Component</li>
+                <li>Step 5 — Template UI </li>
+            </ul>
+        </div>
+        <div class="col">
+            <p>
+                Now our signal store looks like:
+            </p>
+            <pre>
+State
+signals()
+
+Selectors
+computed()
+
+Actions
+methods()
+<b>Exactly like NgRx but 10x simpler. </b>
+        </pre>
+        </div>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="col">
+            <b>What Happens Internally?</b>
+            <pre>
+
+
+User adds task:
+
+addTask()
+   ↓
+tasks.update()
+   ↓
+visibleTasks recompute
+pendingCount recompute
+completedCount recompute
+   ↓
+Error displaying
+   ↓
+UI updates automatically
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+No:
+subscribe()
+dispatch()
+selectors boilerplate
+
+<b>Why This Pattern is Powerful?</b>
+Benefits:
+✔ No RxJS complexity
+✔ No NgRx boilerplate
+✔ Automatic UI updates
+✔ Simple debugging
+✔ Type safe
+
+Large companies now use: Signal Store Pattern
+<b>instead of heavy NgRx in many cases.</b>
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="container alert alert-light">
+    <div class="row">
+        <h6>Real-World Example: Task Manager App</h6>
+        <div class="col-6">
+            <div class="d-flex gap-2">
+                <input [(ngModel)]="newTask" class="form-control" placeholder="Task name">
+                <button class="btn btn-secondary" (click)="add()">
+                    Add Task
+                </button>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-primary" (click)="store.setFilter('all')">All</button>
+                <button class="btn btn-warning" (click)="store.setFilter('pending')">Pending</button>
+                <button class="btn btn-success" (click)="store.setFilter('completed')">Completed</button>
+            </div>
+        </div>
+        <div class="col-3">
+            @for(task of store.visibleTasks(); track task.id){
+            <div>
+                <input type="checkbox" [checked]="task.completed" (change)="store.toggleTask(task.id)">
+                {{task.title}} &nbsp;
+                <span class="btn" (click)="store.removeTask(task.id)">❌</span>
+            </div>
+            }
+            @if(store.errors()){
+            <p class="text-danger">{{store.errors()?.message}}</p>
+            }
+        </div>
+        <div class="col-3">
+            <h6>
+                Pending Tasks: {{store.pendingCount()}}
+            </h6>
+            <h6>
+                Completed Tasks: {{store.completedCount()}}
+            </h6>
+            <div class="card alert alert-secondary mt-3">
+                <p>
+                    <b>signal - Reactive state (Initial State)</b><br>
+                    <b>computed - Used to alter the state</b><br>
+                    <b>effect - Runs on during state updates </b>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container alert alert-primary">
+    <pre>
+        {{tsCode}}
+    </pre>
+</div>

@@ -1,11 +1,12 @@
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { Component, signal } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { SignalExampleComponent } from "./signal-example/signal-example.component";
 
 @Component({
   selector: "app-signal",
   standalone: true,
-  imports: [RouterModule,HttpClientModule],
+  imports: [RouterModule,HttpClientModule,SignalExampleComponent],
   templateUrl: "./signal.component.html",
   styleUrls: ["./signal.component.scss"]
 })
