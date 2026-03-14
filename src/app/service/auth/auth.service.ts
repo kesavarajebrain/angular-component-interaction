@@ -25,16 +25,12 @@ export class AuthService {
     });
   }
 
-  saveToken(token: string) {
+  saveAccessToken(token: string) {
     localStorage.setItem('access_token', token);
   }
 
-  getToken() {
+  getAccessToken() {
     return localStorage.getItem('access_token');
-  }
-
-  logout() {
-    localStorage.removeItem('access_token');
   }
 
   getProfile() {
@@ -43,5 +39,27 @@ export class AuthService {
 
   getPublic() {
     return this.http.get<AuthResponse>(`${this.api}/public`,);
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem('refresh_token');
+  }
+
+  saveRefreshToken(token: string) {
+    localStorage.setItem('refresh_token', token);
+  }
+
+
+  refreshToken() {
+    return this.http.post<any>(`${this.api}/refresh`, {
+      refreshToken: this.getRefreshToken()
+    });
+  }
+
+  logout() {
+    let refreshToken = this.getRefreshToken();
+    return this.http.post<AuthResponse>(`${this.api}/logout`, {
+      refreshToken
+    });
   }
 }

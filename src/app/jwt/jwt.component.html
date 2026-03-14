@@ -117,6 +117,22 @@ If valid → continue
 If not → 401 Unauthorized
                 </pre>
             </div>
+            <div class="col">
+                <p><b>Step 6 – Refresh token:</b></p>
+                <pre>
+Now You have:
+1️⃣ Login → get access token (2 min)
+2️⃣ Store in localStorage
+3️⃣ Interceptor sends it for protected APIs
+
+All good for learning ✅
+</pre><span>Now the problem: <br>
+                    ⏱ After 2 minutes → token expires → user should NOT be forced to login again,<br> in real world
+                    application once user loggged in , untill they manually logout the application, still we have to
+                    keep their session in particular timing based on their activity since that is the secure application
+                    means. <br>
+                    <b>That’s where refresh token comes in.</b></span>
+            </div>
         </div>
     </div>
     <div class="container card alert alert-warning">
@@ -179,7 +195,128 @@ If not → 401 Unauthorized
                 <button type="button" class="btn btn-dark mt-3" (click)="getUser()">Get User </button>
                 <p>Public Access API</p>
                 <button type="button" class="btn btn-dark mt-3" (click)="getPublic()">Get Common</button>
+                <p>Logout API</p>
+                <button type="button" class="btn btn-dark mt-3" (click)="logout()">Logout</button>
             </div>
+        </div>
+    </div>
+    <div class="container card alert alert-info">
+        <h5>Refresh Token</h5>
+        <b>When should refresh token API be called?</b>
+        <pre>
+
+| Strategy                   | Used in real apps?   | Description                        |
+| -------------------------- | -------------------  | ---------------------------------- |
+| Call before expiry (timer) | ❌ Rare             | Check expiry & refresh proactively |
+| Call after 401             | ✅ MOST COMMON      | Refresh only when API fails        |
+        </pre>
+        <div class="row">
+            <div class="col">
+                <p>👉 Enterprise standard = refresh on 401 <br>
+                    Why?</p>
+                <ul>
+                    <li>no unnecessary API calls
+                    </li>
+                    <li>simpler logic
+                    </li>
+                    <li>scalable (இது செயல்திறன் குறையாமல் பெரிய அளவிலான தேவைகளைக் கையாளுவதை உறுதி செய்கிறது)</li>
+                </ul>
+            </div>
+            <div class="col">
+                <pre>
+⭐ Real Enterprise Flow
+
+User is working normally:
+API call → access token valid → ✅
+
+After 2 minutes:
+API call → 401 Unauthorized
+
+Interceptor catches it:
+→ calls /refresh
+→ gets new access token
+→ retries original API automatically
+
+User doesn’t notice anything 😄
+                </pre>
+            </div>
+            <div class="col">
+                <pre>
+🧠 Why This Is Better?
+
+Imagine:
+10,000 users
+
+token refresh every 1 minute
+💥 huge unnecessary load
+
+Instead:
+Refresh only when API is actually used.
+                </pre>
+            </div>
+        </div>
+        <div class="row alert alert-warning">
+            <pre>
+LOGIN API
+   ↓
+User sends credentials (email/password)
+   ↓
+Server validates the user
+   ↓
+Server generates two tokens
+      • accessToken  (short lifetime – 2 min in your case)
+      • refreshToken (long lifetime – hours/days)
+   ↓
+Server returns accessToken + refreshToken
+   ↓
+Frontend (Angular) stores them
+      accessToken  → used for API authentication
+      refreshToken → used only for refreshing the session
+   ↓
+User calls protected APIs
+   ↓
+Interceptor attaches accessToken automatically
+Authorization: Bearer accessToken
+   ↓
+Server verifies JWT
+   ↓
+If token valid → API works normally
+   ↓
+After 2 minutes → accessToken expires
+   ↓
+Next protected API call sends expired token
+   ↓
+Server detects expired token
+   ↓
+Server returns 401 Unauthorized
+   ↓
+Angular interceptor catches the 401 error
+   ↓
+Interceptor calls /refresh API (IF refresh API fails → logout user)
+   ↓
+Payload contains stored refreshToken
+   ↓
+Server verifies refreshToken
+      • check if token exists
+      • check if token is valid
+      • check if token belongs to user
+   ↓
+If valid → server generates NEW accessToken
+   ↓
+Server returns new accessToken
+   ↓
+Interceptor stores the new accessToken
+   ↓
+Interceptor retries the original failed request
+   ↓
+Retry request now includes the new accessToken
+   ↓
+Server verifies new token
+   ↓
+Protected API succeeds
+   ↓
+User never notices this entire process 
+    </pre>
         </div>
     </div>
     <div class="container alert alert-primary">
@@ -210,7 +347,7 @@ headers: &#123; Authorization: 'Bearer token' &#125;
 Repeat in 50 places 😵
 </pre>
 
-                
+
             </div>
         </div>
     </div>

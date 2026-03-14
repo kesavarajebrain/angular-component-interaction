@@ -18,10 +18,10 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 export class JwtComponent {
   authData?: AuthResponse;
   errorMessage = '';
-  public tsCode ='';
+  public tsCode = '';
 
-  constructor(private auth: AuthService,private http: HttpClient) {
-  this.http.get('../../../assets/txtfiles/jwt.txt', { responseType: 'text' })
+  constructor(private auth: AuthService, private http: HttpClient) {
+    this.http.get('../../../assets/txtfiles/jwt.txt', { responseType: 'text' })
       .subscribe(code => this.tsCode = code);
   }
 
@@ -53,7 +53,8 @@ export class JwtComponent {
         .subscribe(
           {
             next: res => {
-              this.auth.saveToken(res.accessToken);
+              this.auth.saveAccessToken(res.accessToken);
+              this.auth.saveRefreshToken(res.refreshToken);
               this.authData = res;
               this.errorMessage = '';
             },
@@ -68,22 +69,30 @@ export class JwtComponent {
 
   //Call Protected API
   getUser() {
+    // Reset previous state
+    this.authData = undefined;
+    this.errorMessage = '';
     this.auth.getProfile().subscribe({
       next: res => {
         console.log(res)
-        this.authData = res;
-        this.errorMessage = '';
+        if (res) {
+          console.log(res)
+          this.authData = res;
+          this.errorMessage = '';
+        }
       },
       error: err => {
-        console.log(err);
-        this.errorMessage = err.error.message;
-
+        console.log(err)
+        this.errorMessage = err?.error?.message || 'API Error';
       },
     })
   }
 
   //Call Non Protected API
   getPublic() {
+    // Reset previous state
+    this.authData = undefined;
+    this.errorMessage = '';
     this.auth.getPublic().subscribe({
       next: res => {
         console.log(res)
@@ -92,9 +101,25 @@ export class JwtComponent {
       },
       error: err => {
         console.log(err);
-        this.errorMessage = err.error.message;
-
+        this.errorMessage = err?.error?.message || 'Unauthorized';
+        this.authData = undefined;
       },
+    })
+  }
+
+  logout() {
+    // Reset previous state
+    this.authData = undefined;
+    this.errorMessage = '';
+    this.auth.logout().subscribe({
+      next: res => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        this.authData = res;
+      },
+      error: err => {
+        this.errorMessage = err?.error?.message;
+      }
     })
   }
 
