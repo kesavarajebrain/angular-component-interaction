@@ -7,11 +7,10 @@ import { AuthResponse } from "../modals/auth-response.modal";
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: "app-jwt",
-  standalone: true,
-  imports: [RouterModule, FormsModule, CommonModule],
-  templateUrl: "./jwt.component.html",
-  styleUrls: ["./jwt.component.scss"]
+    selector: "app-jwt",
+    imports: [RouterModule, FormsModule, CommonModule],
+    templateUrl: "./jwt.component.html",
+    styleUrls: ["./jwt.component.scss"]
 })
 
 

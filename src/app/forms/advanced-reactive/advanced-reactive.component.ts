@@ -16,11 +16,10 @@ import { emailExistsValidator } from './async-validators/email-exists.validator'
 
 import { debounceTime, Subscription } from 'rxjs';
 @Component({
-  selector: "app-advanced-reactive",
-  templateUrl: "./advanced-reactive.component.html",
-  styleUrls: ["./advanced-reactive.component.scss"],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    selector: "app-advanced-reactive",
+    templateUrl: "./advanced-reactive.component.html",
+    styleUrls: ["./advanced-reactive.component.scss"],
+    imports: [CommonModule, ReactiveFormsModule, RouterModule]
 })
 
 export class AdvancedReactiveComponent implements OnInit {

@@ -93,3 +93,39 @@ Operating System  : win32 x64
 Step 2 :
 Inside your project folder, run:
 ng update @angular/core@latest @angular/cli@latest
+
+Step 3 : 
+Fetching dependency metadata from registry...
+Updating multiple major versions of '@angular/core' at once is not supported. Please migrate each major version individually.
+HERE We need to upgrade version by version , not single upgrade to jump more versions
+
+Step 4 :
+
+version upgrade tree
+
+17 → 18
+18 → 19
+19 → 20
+
+So you may run:
+ng update @angular/core@18 @angular/cli@18
+
+=================
+Angular CLI: 18.2.21
+Node: 22.22.1
+Package Manager: npm 10.9.4
+OS: win32 x64
+
+Angular: 18.2.14
+====================
+
+Next : ng update @angular/core@19 @angular/cli@19 
+if any error 
+ng update @angular/core@19 @angular/cli@19 --force
+
+=========================
+Angular CLI: 19.2.22
+Node: 22.22.1
+Package Manager: npm 10.9.4
+OS: win32 x64
+=========================

@@ -10,11 +10,10 @@ import { fromEvent, throttleTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-go-to-top',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './go-to-top.component.html',
-  styleUrls: ['./go-to-top.component.scss'],
+    selector: 'app-go-to-top',
+    imports: [CommonModule],
+    templateUrl: './go-to-top.component.html',
+    styleUrls: ['./go-to-top.component.scss']
 })
 export class GoToTopComponent implements AfterViewInit {
   private document = inject(DOCUMENT);

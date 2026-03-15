@@ -3,11 +3,10 @@ import { RouterModule } from '@angular/router';
 import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 import { HttpClient } from "@angular/common/http";
 @Component({
-  selector: "app-ngoninit",
-  imports: [RouterModule, HooksOrderComponent],
-  standalone: true,
-  templateUrl: "./ngoninit.component.html",
-  styleUrls: ["./ngoninit.component.scss"]
+    selector: "app-ngoninit",
+    imports: [RouterModule, HooksOrderComponent],
+    templateUrl: "./ngoninit.component.html",
+    styleUrls: ["./ngoninit.component.scss"]
 })
 
 export class NgoninitComponent implements OnInit {

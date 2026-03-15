@@ -9,11 +9,10 @@ import { GlobalModalService } from '../global-modal.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: "app-common-modal",
-  templateUrl: "./common-modal.component.html",
-  styleUrls: ["./common-modal.component.scss"],
-  standalone: true,
-  imports: [CommonModule]
+    selector: "app-common-modal",
+    templateUrl: "./common-modal.component.html",
+    styleUrls: ["./common-modal.component.scss"],
+    imports: [CommonModule]
 })
 
 export class CommonModalComponent implements AfterViewInit {

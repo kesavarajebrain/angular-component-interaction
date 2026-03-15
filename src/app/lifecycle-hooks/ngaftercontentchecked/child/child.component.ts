@@ -2,11 +2,10 @@ import { Component, AfterContentChecked, ContentChild, ElementRef,AfterContentIn
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-child',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './child.component.html',
-  styleUrls: ['./child.component.scss']
+    selector: 'app-child',
+    imports: [CommonModule],
+    templateUrl: './child.component.html',
+    styleUrls: ['./child.component.scss']
 })
 export class ChildComponent implements AfterContentChecked, AfterContentInit {
 

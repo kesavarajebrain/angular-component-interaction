@@ -7,11 +7,10 @@ import { HttpClient } from '@angular/common/http';
 // import hook order
 import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 @Component({
-  selector: "app-constructor",
-  standalone: true,
-  imports: [RouterModule,HooksOrderComponent],
-  templateUrl: "./constructor.component.html",
-  styleUrls: ["./constructor.component.scss"]
+    selector: "app-constructor",
+    imports: [RouterModule, HooksOrderComponent],
+    templateUrl: "./constructor.component.html",
+    styleUrls: ["./constructor.component.scss"]
 })
 
 export class ConstructorComponent implements OnInit {

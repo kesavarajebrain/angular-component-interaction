@@ -9,12 +9,11 @@ import { SharedService } from "../service/shared-service.service";
 import { DependencyInjectionService } from "./dependency-injection.service";
 
 @Component({
-  selector: "app-dependency-injection",
-  templateUrl: "./dependency-injection.component.html",
-  imports: [RouterModule],
-  standalone: true,
-  providers: [DependencyInjectionService], // if not add inside the provider IT WILL THOROW NullInjectorError: No provider for _DependencyInjectionService!
-  styleUrls: ["./dependency-injection.component.scss"]
+    selector: "app-dependency-injection",
+    templateUrl: "./dependency-injection.component.html",
+    imports: [RouterModule],
+    providers: [DependencyInjectionService], // if not add inside the provider IT WILL THOROW NullInjectorError: No provider for _DependencyInjectionService!
+    styleUrls: ["./dependency-injection.component.scss"]
 })
 
 export class DependencyInjectionComponent implements OnInit {

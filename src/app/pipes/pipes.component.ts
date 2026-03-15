@@ -15,11 +15,10 @@ import { TimeAgoPipe } from "./impure-pipe/time-ago.pipe";
 import { AdsenseComponent } from "../adsense/adsense.component";
 
 @Component({
-  selector: "app-pipes",
-  standalone: true,
-  templateUrl: "./pipes.component.html",
-  imports: [RouterModule, CommonModule,FormsModule, SearchPipe, TruncatePipe, ClockPipe, TimeAgoPipe,AdsenseComponent],
-  styleUrls: ["./pipes.component.scss"]
+    selector: "app-pipes",
+    templateUrl: "./pipes.component.html",
+    imports: [RouterModule, CommonModule, FormsModule, SearchPipe, TruncatePipe, ClockPipe, TimeAgoPipe, AdsenseComponent],
+    styleUrls: ["./pipes.component.scss"]
 })
 
 export class PipesComponent {

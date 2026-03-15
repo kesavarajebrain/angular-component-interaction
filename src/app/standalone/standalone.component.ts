@@ -4,11 +4,10 @@ import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 
 @Component({
-  selector: "app-standalone",
-  standalone: true,
-  imports: [RouterModule, FormsModule],
-  templateUrl: "./standalone.component.html",
-  styleUrls: ["./standalone.component.scss"],
+    selector: "app-standalone",
+    imports: [RouterModule, FormsModule],
+    templateUrl: "./standalone.component.html",
+    styleUrls: ["./standalone.component.scss"]
 })
 
 export class StandaloneComponent {

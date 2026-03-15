@@ -4,11 +4,10 @@ import { RouterModule } from "@angular/router";
 import { SignalExampleComponent } from "./signal-example/signal-example.component";
 
 @Component({
-  selector: "app-signal",
-  standalone: true,
-  imports: [RouterModule,SignalExampleComponent],
-  templateUrl: "./signal.component.html",
-  styleUrls: ["./signal.component.scss"]
+    selector: "app-signal",
+    imports: [RouterModule, SignalExampleComponent],
+    templateUrl: "./signal.component.html",
+    styleUrls: ["./signal.component.scss"]
 })
 
 export class SignalComponent {

@@ -20,11 +20,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: "app-web-socket",
-  templateUrl: "./web-socket.component.html",
-  styleUrls: ["./web-socket.component.scss"],
-  standalone: true,
-  imports: [RouterModule, FormsModule, CommonModule]
+    selector: "app-web-socket",
+    templateUrl: "./web-socket.component.html",
+    styleUrls: ["./web-socket.component.scss"],
+    imports: [RouterModule, FormsModule, CommonModule]
 })
 export class WebSocketComponent implements OnDestroy {
 

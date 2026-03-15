@@ -3,12 +3,11 @@ import { RouterModule } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: "app-sub-component",
-  standalone: true,
-  imports: [RouterModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: "./sub-component.component.html",
-  styleUrls: ["./sub-component.component.scss"]
+    selector: "app-sub-component",
+    imports: [RouterModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: "./sub-component.component.html",
+    styleUrls: ["./sub-component.component.scss"]
 })
 
 export class SubComponentComponent implements OnInit {

@@ -7,11 +7,10 @@ import {MenuItemsComponent} from "../shared/menu-items/menu-items.component"
 import { AdsenseComponent } from '../adsense/adsense.component';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [FormsModule, RouterModule,MenuItemsComponent,AdsenseComponent],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    selector: 'app-home',
+    imports: [FormsModule, RouterModule, MenuItemsComponent, AdsenseComponent],
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss']
 })
 
 export class HomeComponent {

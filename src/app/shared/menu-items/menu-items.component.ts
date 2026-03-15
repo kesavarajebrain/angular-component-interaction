@@ -2,11 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
 @Component({
-  selector: "app-menu-items",
-  standalone:true,
-  imports:[RouterModule],
-  templateUrl: "./menu-items.component.html",
-  styleUrls: ["./menu-items.component.scss"]
+    selector: "app-menu-items",
+    imports: [RouterModule],
+    templateUrl: "./menu-items.component.html",
+    styleUrls: ["./menu-items.component.scss"]
 })
 
 export class MenuItemsComponent implements OnInit {

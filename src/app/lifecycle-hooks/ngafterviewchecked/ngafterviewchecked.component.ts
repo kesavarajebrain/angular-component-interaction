@@ -6,11 +6,10 @@ import { ChildComponent } from "./child/child.component";
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: "app-ngafterviewchecked",
-  standalone: true,
-  imports: [RouterModule,HooksOrderComponent,ChildComponent],
-  templateUrl: "./ngafterviewchecked.component.html",
-  styleUrls: ["./ngafterviewchecked.component.scss"]
+    selector: "app-ngafterviewchecked",
+    imports: [RouterModule, HooksOrderComponent, ChildComponent],
+    templateUrl: "./ngafterviewchecked.component.html",
+    styleUrls: ["./ngafterviewchecked.component.scss"]
 })
 
 export class NgafterviewcheckedComponent implements AfterViewInit,AfterViewChecked {

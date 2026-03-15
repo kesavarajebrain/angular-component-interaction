@@ -6,11 +6,10 @@ import { ChildComponent } from "./child/child.component";
 import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: "app-ngaftercontentchecked",
-  standalone: true,
-  imports: [RouterModule, HooksOrderComponent, ChildComponent],
-  templateUrl: "./ngaftercontentchecked.component.html",
-  styleUrls: ["./ngaftercontentchecked.component.scss"]
+    selector: "app-ngaftercontentchecked",
+    imports: [RouterModule, HooksOrderComponent, ChildComponent],
+    templateUrl: "./ngaftercontentchecked.component.html",
+    styleUrls: ["./ngaftercontentchecked.component.scss"]
 })
 
 export class NgaftercontentcheckedComponent {

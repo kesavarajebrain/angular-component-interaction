@@ -12,11 +12,10 @@ import { HttpClient } from "@angular/common/http";
 import { AdsenseComponent } from "../adsense/adsense.component";
 
 @Component({
-  selector: "app-directives",
-  standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, HasRoleDirective, HighlightDirective,AdsenseComponent],
-  templateUrl: "./directives.component.html",
-  styleUrls: ["./directives.component.scss"]
+    selector: "app-directives",
+    imports: [RouterModule, CommonModule, FormsModule, HasRoleDirective, HighlightDirective, AdsenseComponent],
+    templateUrl: "./directives.component.html",
+    styleUrls: ["./directives.component.scss"]
 })
 
 export class DirectivesComponent {

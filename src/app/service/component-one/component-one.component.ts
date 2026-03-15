@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { SharedService } from '../shared-service.service';
 
 @Component({
-  selector: 'app-component-one',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './component-one.component.html',
-  styleUrl: './component-one.component.scss'
+    selector: 'app-component-one',
+    imports: [FormsModule],
+    templateUrl: './component-one.component.html',
+    styleUrl: './component-one.component.scss'
 })
 export class ComponentOneComponent {
   message !:string;

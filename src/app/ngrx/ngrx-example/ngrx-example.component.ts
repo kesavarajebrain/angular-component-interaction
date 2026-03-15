@@ -12,11 +12,10 @@ import { HttpClient } from "@angular/common/http";
 
 
 @Component({
-  selector: "app-ngrx-example",
-  templateUrl: "./ngrx-example.component.html",
-  styleUrls: ["./ngrx-example.component.scss"],
-  standalone: true,
-  imports: [RouterModule, CommonModule]
+    selector: "app-ngrx-example",
+    templateUrl: "./ngrx-example.component.html",
+    styleUrls: ["./ngrx-example.component.scss"],
+    imports: [RouterModule, CommonModule]
 })
 
 export class NgrxExampleComponent implements OnInit {

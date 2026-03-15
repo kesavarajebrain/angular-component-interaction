@@ -5,11 +5,10 @@ import programsSelectors from "../store/selectors/programs.selectors";
 import * as ProgramsActions from "../store/actions/programs.actions";
 
 @Component({
-  selector: "app-ngrx",
-  templateUrl: "./ngrx.component.html",
-  styleUrls: ["./ngrx.component.scss"],
-  standalone: true,
-  imports: [RouterModule]
+    selector: "app-ngrx",
+    templateUrl: "./ngrx.component.html",
+    styleUrls: ["./ngrx.component.scss"],
+    imports: [RouterModule]
 })
 
 export class NgrxComponent {

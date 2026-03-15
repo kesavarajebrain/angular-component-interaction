@@ -5,11 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { AdsenseComponent } from '../adsense/adsense.component';
 
 @Component({
-  selector: 'app-input',
-  standalone: true,
-  imports: [RouterModule, SonComponent, FormsModule,AdsenseComponent],
-  templateUrl: './input.component.html',
-  styleUrl: './input.component.scss',
+    selector: 'app-input',
+    imports: [RouterModule, SonComponent, FormsModule, AdsenseComponent],
+    templateUrl: './input.component.html',
+    styleUrl: './input.component.scss'
 })
 export class InputComponent {
   parent_message: any;

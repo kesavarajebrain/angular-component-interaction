@@ -13,11 +13,10 @@ import { GlobalModalService } from '../global-modal/global-modal.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 @Component({
-  selector: "app-dynamic-render",
-  templateUrl: "./dynamic-render.component.html",
-  styleUrls: ["./dynamic-render.component.scss"],
-  standalone: true,
-  imports: [RouterModule, ChildComponentComponent, FormsModule,CommonModule],
+    selector: "app-dynamic-render",
+    templateUrl: "./dynamic-render.component.html",
+    styleUrls: ["./dynamic-render.component.scss"],
+    imports: [RouterModule, ChildComponentComponent, FormsModule, CommonModule]
 })
 
 export class Dynamicrender implements AfterViewInit {

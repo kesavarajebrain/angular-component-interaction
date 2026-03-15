@@ -6,11 +6,10 @@ import { HttpClient } from '@angular/common/http';
 // child 
 import { ChildComponent } from "./child/child.component";
 @Component({
-  selector: "app-ngonchanges",
-  standalone: true,
-  imports: [RouterModule,HooksOrderComponent,ChildComponent],
-  templateUrl: "./ngonchanges.component.html",
-  styleUrls: ["./ngonchanges.component.scss"]
+    selector: "app-ngonchanges",
+    imports: [RouterModule, HooksOrderComponent, ChildComponent],
+    templateUrl: "./ngonchanges.component.html",
+    styleUrls: ["./ngonchanges.component.scss"]
 })
 
 export class NgonchangesComponent  {

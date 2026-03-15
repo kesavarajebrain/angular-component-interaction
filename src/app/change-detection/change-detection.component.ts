@@ -4,11 +4,10 @@ import { RouterModule } from '@angular/router';
 import { SubComponentComponent } from "./sub-component/sub-component.component";
 import { HttpClient } from "@angular/common/http";
 @Component({
-  selector: "app-change-detection",
-  standalone: true,
-  imports: [RouterModule, SubComponentComponent],
-  templateUrl: "./change-detection.component.html",
-  styleUrls: ["./change-detection.component.scss"]
+    selector: "app-change-detection",
+    imports: [RouterModule, SubComponentComponent],
+    templateUrl: "./change-detection.component.html",
+    styleUrls: ["./change-detection.component.scss"]
 })
 
 export class ChangeDetectionComponent implements OnInit {

@@ -4,11 +4,10 @@ import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common"; // ✅ Import this
 
 @Component({
-  selector: "app-hooks-order",
-  standalone: true,
-  imports: [RouterModule, CommonModule],
-  templateUrl: "./hooks-order.component.html",
-  styleUrls: ["./hooks-order.component.scss"]
+    selector: "app-hooks-order",
+    imports: [RouterModule, CommonModule],
+    templateUrl: "./hooks-order.component.html",
+    styleUrls: ["./hooks-order.component.scss"]
 })
 
 export class HooksOrderComponent implements OnInit {

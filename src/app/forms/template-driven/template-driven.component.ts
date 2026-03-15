@@ -6,11 +6,10 @@ import { RouterModule } from "@angular/router";
 
 
 @Component({
-  selector: "app-template-driven",
-  templateUrl: "./template-driven.component.html",
-  styleUrls: ["./template-driven.component.scss"],
-  standalone: true,
-  imports: [RouterModule, FormsModule, CommonModule]
+    selector: "app-template-driven",
+    templateUrl: "./template-driven.component.html",
+    styleUrls: ["./template-driven.component.scss"],
+    imports: [RouterModule, FormsModule, CommonModule]
 })
 
 export class TemplateDrivenComponent {

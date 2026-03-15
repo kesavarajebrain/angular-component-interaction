@@ -7,11 +7,10 @@ import { ChildComponent } from "./child/child.component";
 import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: "app-ngaftercontentinit",
-  standalone: true,
-  imports: [RouterModule, HooksOrderComponent, ChildComponent],
-  templateUrl: "./ngaftercontentinit.component.html",
-  styleUrls: ["./ngaftercontentinit.component.scss"]
+    selector: "app-ngaftercontentinit",
+    imports: [RouterModule, HooksOrderComponent, ChildComponent],
+    templateUrl: "./ngaftercontentinit.component.html",
+    styleUrls: ["./ngaftercontentinit.component.scss"]
 })
 
 export class NgaftercontentinitComponent implements OnInit {

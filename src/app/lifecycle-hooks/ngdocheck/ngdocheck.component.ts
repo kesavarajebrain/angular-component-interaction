@@ -9,11 +9,10 @@ import { HttpClient } from '@angular/common/http';
 
 
 @Component({
-  selector: "app-ngdocheck",
-  standalone: true,
-  imports: [RouterModule, HooksOrderComponent, ChildComponent, FormsModule],
-  templateUrl: "./ngdocheck.component.html",
-  styleUrls: ["./ngdocheck.component.scss"]
+    selector: "app-ngdocheck",
+    imports: [RouterModule, HooksOrderComponent, ChildComponent, FormsModule],
+    templateUrl: "./ngdocheck.component.html",
+    styleUrls: ["./ngdocheck.component.scss"]
 })
 
 export class NgdocheckComponent {
