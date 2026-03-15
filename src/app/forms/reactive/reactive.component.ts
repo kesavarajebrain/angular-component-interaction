@@ -2,14 +2,14 @@ import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-reactive",
   templateUrl: "./reactive.component.html",
   styleUrls: ["./reactive.component.scss"],
   standalone: true,
-  imports: [RouterModule, CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
 })
 
 export class ReactiveComponent {

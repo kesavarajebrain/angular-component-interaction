@@ -4,12 +4,12 @@ import { AuthService } from "../service/auth/auth.service";
 import { FormsModule, NgForm } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { AuthResponse } from "../modals/auth-response.modal";
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: "app-jwt",
   standalone: true,
-  imports: [RouterModule, FormsModule, CommonModule, HttpClientModule],
+  imports: [RouterModule, FormsModule, CommonModule],
   templateUrl: "./jwt.component.html",
   styleUrls: ["./jwt.component.scss"]
 })

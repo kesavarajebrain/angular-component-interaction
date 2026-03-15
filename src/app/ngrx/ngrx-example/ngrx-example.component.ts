@@ -8,7 +8,7 @@ import * as ProgramsActions from "../../store/actions/programs.actions";
 import * as UsersActions from "../../store/actions/users.actions";
 import { take } from "rxjs";
 import usersSelectors from "../../store/selectors/users.selector";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 
 @Component({
@@ -16,7 +16,7 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
   templateUrl: "./ngrx-example.component.html",
   styleUrls: ["./ngrx-example.component.scss"],
   standalone: true,
-  imports: [RouterModule, CommonModule,HttpClientModule]
+  imports: [RouterModule, CommonModule]
 })
 
 export class NgrxExampleComponent implements OnInit {

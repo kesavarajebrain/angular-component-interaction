@@ -2,11 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { RouterModule } from '@angular/router';
 // import sub component
 import { SubComponentComponent } from "./sub-component/sub-component.component";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 @Component({
   selector: "app-change-detection",
   standalone: true,
-  imports: [RouterModule, SubComponentComponent, HttpClientModule],
+  imports: [RouterModule, SubComponentComponent],
   templateUrl: "./change-detection.component.html",
   styleUrls: ["./change-detection.component.scss"]
 })

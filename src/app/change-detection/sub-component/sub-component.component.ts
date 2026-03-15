@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-sub-component",
   standalone: true,
-  imports: [RouterModule, HttpClientModule],
+  imports: [RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./sub-component.component.html",
   styleUrls: ["./sub-component.component.scss"]

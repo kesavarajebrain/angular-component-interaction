@@ -3,12 +3,12 @@ import { RouterModule } from "@angular/router";
 import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 // import child
 import { ChildComponent } from "./child/child.component";
-import { HttpClient , HttpClientModule} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: "app-ngafterviewchecked",
   standalone: true,
-  imports: [RouterModule,HooksOrderComponent,ChildComponent,HttpClientModule],
+  imports: [RouterModule,HooksOrderComponent,ChildComponent],
   templateUrl: "./ngafterviewchecked.component.html",
   styleUrls: ["./ngafterviewchecked.component.scss"]
 })

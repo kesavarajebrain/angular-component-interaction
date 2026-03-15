@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { ChildComponentComponent } from "./child-component/child-component.component";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 // global modal
 import { GlobalModalService } from '../global-modal/global-modal.service';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: "./dynamic-render.component.html",
   styleUrls: ["./dynamic-render.component.scss"],
   standalone: true,
-  imports: [RouterModule, ChildComponentComponent, HttpClientModule, FormsModule,CommonModule],
+  imports: [RouterModule, ChildComponentComponent, FormsModule,CommonModule],
 })
 
 export class Dynamicrender implements AfterViewInit {

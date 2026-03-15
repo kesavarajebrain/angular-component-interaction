@@ -3,13 +3,13 @@ import { RouterModule } from '@angular/router';
 // service imports here
 import { SharedService } from "../../service/shared-service.service";
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 // import hook order
 import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 @Component({
   selector: "app-constructor",
   standalone: true,
-  imports: [RouterModule,HttpClientModule,HooksOrderComponent],
+  imports: [RouterModule,HooksOrderComponent],
   templateUrl: "./constructor.component.html",
   styleUrls: ["./constructor.component.scss"]
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { HttpClient , HttpClientModule} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 // root level service
 import { SharedService } from "../service/shared-service.service";
@@ -11,7 +11,7 @@ import { DependencyInjectionService } from "./dependency-injection.service";
 @Component({
   selector: "app-dependency-injection",
   templateUrl: "./dependency-injection.component.html",
-  imports: [RouterModule,HttpClientModule],
+  imports: [RouterModule],
   standalone: true,
   providers: [DependencyInjectionService], // if not add inside the provider IT WILL THOROW NullInjectorError: No provider for _DependencyInjectionService!
   styleUrls: ["./dependency-injection.component.scss"]

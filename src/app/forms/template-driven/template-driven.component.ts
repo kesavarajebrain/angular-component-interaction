@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -10,7 +10,7 @@ import { RouterModule } from "@angular/router";
   templateUrl: "./template-driven.component.html",
   styleUrls: ["./template-driven.component.scss"],
   standalone: true,
-  imports: [RouterModule, FormsModule, CommonModule, HttpClientModule]
+  imports: [RouterModule, FormsModule, CommonModule]
 })
 
 export class TemplateDrivenComponent {

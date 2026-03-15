@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -6,7 +6,7 @@ import { RouterModule } from "@angular/router";
 @Component({
   selector: "app-standalone",
   standalone: true,
-  imports: [RouterModule, FormsModule, HttpClientModule],
+  imports: [RouterModule, FormsModule],
   templateUrl: "./standalone.component.html",
   styleUrls: ["./standalone.component.scss"],
 })

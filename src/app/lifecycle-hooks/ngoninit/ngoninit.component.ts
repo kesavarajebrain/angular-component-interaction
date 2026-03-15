@@ -1,10 +1,10 @@
 import { Component, OnInit,Input } from "@angular/core";
 import { RouterModule } from '@angular/router';
 import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 @Component({
   selector: "app-ngoninit",
-  imports: [RouterModule, HooksOrderComponent,HttpClientModule],
+  imports: [RouterModule, HooksOrderComponent],
   standalone: true,
   templateUrl: "./ngoninit.component.html",
   styleUrls: ["./ngoninit.component.scss"]

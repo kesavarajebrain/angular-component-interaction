@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { of } from "rxjs";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 // custom search pipe - pure pipe
 import { SearchPipe } from "./custom-pipe/search.pipe";
@@ -18,7 +18,7 @@ import { AdsenseComponent } from "../adsense/adsense.component";
   selector: "app-pipes",
   standalone: true,
   templateUrl: "./pipes.component.html",
-  imports: [RouterModule, CommonModule, HttpClientModule, FormsModule, SearchPipe, TruncatePipe, ClockPipe, TimeAgoPipe,AdsenseComponent],
+  imports: [RouterModule, CommonModule,FormsModule, SearchPipe, TruncatePipe, ClockPipe, TimeAgoPipe,AdsenseComponent],
   styleUrls: ["./pipes.component.scss"]
 })
 

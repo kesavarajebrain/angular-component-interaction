@@ -4,12 +4,12 @@ import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 // import child component
 import { ChildComponent } from "./child/child.component";
 // 
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-ngaftercontentinit",
   standalone: true,
-  imports: [RouterModule, HooksOrderComponent, ChildComponent, HttpClientModule],
+  imports: [RouterModule, HooksOrderComponent, ChildComponent],
   templateUrl: "./ngaftercontentinit.component.html",
   styleUrls: ["./ngaftercontentinit.component.scss"]
 })

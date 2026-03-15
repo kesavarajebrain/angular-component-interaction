@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 // async validators
 import { UserApiService } from './async-validators/user-api.service';
@@ -20,7 +20,7 @@ import { debounceTime, Subscription } from 'rxjs';
   templateUrl: "./advanced-reactive.component.html",
   styleUrls: ["./advanced-reactive.component.scss"],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
 })
 
 export class AdvancedReactiveComponent implements OnInit {

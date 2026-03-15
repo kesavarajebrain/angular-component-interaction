@@ -5,13 +5,13 @@ import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 import { ChildComponent } from "./child/child.component";
 
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
   selector: "app-ngdocheck",
   standalone: true,
-  imports: [RouterModule, HooksOrderComponent, ChildComponent, FormsModule, HttpClientModule],
+  imports: [RouterModule, HooksOrderComponent, ChildComponent, FormsModule],
   templateUrl: "./ngdocheck.component.html",
   styleUrls: ["./ngdocheck.component.scss"]
 })

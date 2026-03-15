@@ -4,11 +4,11 @@ import { HooksOrderComponent } from "../hooks-order/hooks-order.component";
 // import child
 import { ChildComponent } from "./child/child.component";
 import { CommonModule } from "@angular/common";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 @Component({
   selector: "app-ngondestroy",
   standalone: true,
-  imports: [RouterModule, HooksOrderComponent, ChildComponent, CommonModule, HttpClientModule],
+  imports: [RouterModule, HooksOrderComponent, ChildComponent, CommonModule],
   templateUrl: "./ngondestroy.component.html",
   styleUrls: ["./ngondestroy.component.scss"]
 })

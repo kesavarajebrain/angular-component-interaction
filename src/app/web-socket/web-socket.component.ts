@@ -17,14 +17,14 @@ import { Subscription } from 'rxjs';
 import { RouterModule } from "@angular/router";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-web-socket",
   templateUrl: "./web-socket.component.html",
   styleUrls: ["./web-socket.component.scss"],
   standalone: true,
-  imports: [RouterModule, FormsModule, CommonModule, HttpClientModule]
+  imports: [RouterModule, FormsModule, CommonModule]
 })
 export class WebSocketComponent implements OnDestroy {
 
