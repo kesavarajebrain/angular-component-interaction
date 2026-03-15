@@ -10,6 +10,8 @@ export class ApiService {
 
   private readonly backEndURL = 'https://us-central1-firenodeapp-84a3f.cloudfunctions.net/app';
 
+  public mockTaskUrl ='https://jsonplaceholder.typicode.com/todos?_limit=5';
+
   getPrograms() {
     return this.http.get<{
       status: boolean;

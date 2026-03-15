@@ -1,5 +1,5 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
-
+import { Injectable, signal, computed, effect, resource } from '@angular/core';
+import { ApiService } from '../../service/API/api.service';
 /*
  Task interface
  Task structure definition
@@ -34,7 +34,7 @@ export class TaskStore {
     errors = signal<Error | null>(null);
 
 
-    constructor() {
+    constructor(private apiService:ApiService) {
 
         // if user refresh the page, signal store data will disappear, for overcome this one So we save tasks to localStorage automatically.
         // THAT IS THE USE OF EFFECTS
@@ -229,7 +229,12 @@ export class TaskStore {
     }
 
     // Resource API 
-    
+    tasksResource = resource({
+        loader: async () => {
+            const response = await fetch(this.apiService.mockTaskUrl);
+            return response.json();
+        }
+    });
 }
 
 // Now our store looks like:

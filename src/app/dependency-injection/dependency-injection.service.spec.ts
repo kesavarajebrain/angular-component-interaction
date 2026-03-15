@@ -10,7 +10,7 @@ describe("DependencyInjectionService", () => {
         DependencyInjectionService
       ]
     });
-    service = TestBed.get(DependencyInjectionService);
+    service = TestBed.inject(DependencyInjectionService);
 
   });
 

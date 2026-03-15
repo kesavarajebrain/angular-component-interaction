@@ -4,8 +4,9 @@ import {
   inject,
   DestroyRef,
   AfterViewInit,
+  DOCUMENT
 } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { fromEvent, throttleTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 

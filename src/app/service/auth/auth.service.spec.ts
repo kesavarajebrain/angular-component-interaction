@@ -10,7 +10,7 @@ describe("AuthService", () => {
         AuthService
       ]
     });
-    service = TestBed.get(AuthService);
+    service = TestBed.inject(AuthService);
 
   });
 

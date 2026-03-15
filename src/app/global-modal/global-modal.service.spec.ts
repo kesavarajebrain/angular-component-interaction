@@ -10,7 +10,7 @@ describe("GlobalModalService", () => {
         GlobalModalService
       ]
     });
-    service = TestBed.get(GlobalModalService);
+    service = TestBed.inject(GlobalModalService);
 
   });
 
