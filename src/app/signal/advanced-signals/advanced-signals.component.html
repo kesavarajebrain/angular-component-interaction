@@ -3,4 +3,49 @@
         <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
     </p>
     <h4>Advanced Signal</h4>
+    <ol>
+        <li><b>resource()</b> – Signals for Async Data (HTTP)</li>
+        <li><b>linkedSignal()</b> – Dependent Signals</li>
+        <li><b>Signal Inputs</b> - (Component Communication)</li>
+    </ol>
+</div>
+<div class="card container alert alert-warning">
+    <h5>1️⃣ resource() – Signals for Async Data (HTTP)</h5>
+    <div class="row">
+        <div class="col">
+            <p>Problem Before Signals <br>
+                Fetching API data in Angular traditionally:</p>
+            <code>
+ this.http.get('/api/tasks').subscribe(tasks => &#123;
+  this.tasks = tasks;
+&#125;);
+                </code>
+        </div>
+        <div class="col">
+            <pre>
+Problems:
+manual subscribe
+manual loading state
+manual error handling
+unsubscribe issues
+            </pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h6>With resource()</h6>
+            <p> Angular created resource() to manage async data with signals.
+            </p>
+            <ul>
+                <b> It automatically handles:</b>
+                <li>loading</li>
+                <li>error</li>
+                <li>data</li>
+                <li> re-fetch</li>
+            </ul>
+        </div>
+        <div class="col">
+            <h6>API calling with signal</h6>
+        </div>
+    </div>
 </div>

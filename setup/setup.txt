@@ -11,3 +11,85 @@ after install edit the angular.json file -> projects->architect
 
 angulardemoprjs@gmail.com - angular tutorial , rxjs tutorial
 sigaiapp070@gmail.com - js tutorial
+
+// angular version upgrade from angular 17 to angular 20
+
+// current configuration : 15/03/2026
+
+Angular CLI: 17.3.11
+Node: 20.12.2
+Package Manager: npm 10.5.0
+OS: win32 x64
+
+Angular: 17.3.12
+
+// upgrade steps
+
+New Angular versions require newer Node.
+Typical requirements:
+
+| Angular | Node         |
+| ------- | ------------ |
+| 17      | Node 18+     |
+| 18–19   | Node 18 / 20 |
+| 20+     | Node 20+     |
+
+STEP 1 - Update Angular CLI Globally, open powershell run as adminstrator
+npm install -g @angular/cli@latest
+
+Check again:
+ng version
+
+Now while checking the ng version we can see below node issue :
+Node.js version v20.12.2 detected.
+The Angular CLI requires a minimum Node.js version of v20.19 or v22.12. (ITS A TIME TO UPGRADE NODEJS ALSO)
+
+install nvm 
+https://github.com/coreybutler/nvm-windows/releases
+
+Install nvm-setup.exe
+After installation open new terminal.
+Check nvm : nvm version -> Running version 1.2.2.
+
+STEP 2 :
+
+Install Node.js 22
+Cmd : nvm install 22
+
+STEP 3
+Use Node 22
+Activate the installed version: nvm use 22
+
+STEP 4 : now check node version - now its changed to node 22
+node -v
+v22.22.1
+npm -v
+10.9.4
+ 
+<------------------------------>
+CHECK NODE IN TERMINAL
+PS C:\WINDOWS\system32> node
+Welcome to Node.js v22.22.1.
+Type ".help" for more information.
+> console.log("node working")
+node working
+undefined
+> .exit
+PS C:\WINDOWS\system32>
+<------------------------------>
+
+NOW BACK TO ANGULAR UPGRADE STEPS
+
+Step 1 : 
+npm install -g @angular/cli@latest
+
+Now : while check ng v on c folder
+
+Angular CLI       : 21.2.2
+Node.js           : 22.22.1
+Package Manager   : npm 10.9.4
+Operating System  : win32 x64
+
+Step 2 :
+Inside your project folder, run:
+ng update @angular/core@latest @angular/cli@latest

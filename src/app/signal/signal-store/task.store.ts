@@ -227,6 +227,9 @@ export class TaskStore {
             return task.filter(e => e.id !== id)
         })
     }
+
+    // Resource API 
+    
 }
 
 // Now our store looks like:
