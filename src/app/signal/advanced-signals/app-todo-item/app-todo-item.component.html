@@ -1,0 +1,12 @@
+<div class="alert alert-light">
+    @if(todo()){
+    <h5> {{todo()?.title}}</h5>
+    <p>Status: {{todo()?.completed ? 'Done' : 'Pending'}}</p>
+    <button class="btn btn-sm btn-danger" (click)="onDelete('todo')">Delete</button>
+    }
+    @if(task()){
+        <h5>{{task()?.title}}</h5>
+         <p>Status: {{task()?.completed ? 'Done' : 'Pending'}}</p>
+         <button class="btn btn-sm btn-danger" (click)="onDelete('task')">Delete</button>
+    }
+</div>

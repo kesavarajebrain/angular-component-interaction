@@ -31,6 +31,7 @@ import { WebSocketComponent } from './web-socket/web-socket.component';
 import { SsrComponent } from './ssr/ssr.component';
 import { JwtComponent } from './jwt/jwt.component';
 import { AdvancedSignalsComponent } from './signal/advanced-signals/advanced-signals.component';
+import { SignalFormComponent } from './signal/signal-form/signal-form.component';
 
 
 export const routes: Routes = [
@@ -166,5 +167,9 @@ export const routes: Routes = [
    {
     path:'signal/advanced-signal',
     component:AdvancedSignalsComponent
+  },
+  {
+    path:'signal/signal-form',
+    component:SignalFormComponent
   }
 ];

@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, effect, resource } from '@angular/core';
+import { Injectable, signal, computed, effect, resource, linkedSignal } from '@angular/core';
 import { ApiService } from '../../service/API/api.service';
 /*
  Task interface
@@ -17,6 +17,13 @@ export interface Error {
     message: string;
 }
 
+export interface Todos {
+    id: number;
+    title: string;
+    completed: boolean;
+    userId: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TaskStore {
 
@@ -32,9 +39,10 @@ export class TaskStore {
     */
     tasks = signal<Task[]>([]);
     errors = signal<Error | null>(null);
+    todos = signal<Todos[]>([]);
 
 
-    constructor(private apiService:ApiService) {
+    constructor(private apiService: ApiService) {
 
         // if user refresh the page, signal store data will disappear, for overcome this one So we save tasks to localStorage automatically.
         // THAT IS THE USE OF EFFECTS
@@ -232,9 +240,44 @@ export class TaskStore {
     tasksResource = resource({
         loader: async () => {
             const response = await fetch(this.apiService.mockTaskUrl);
-            return response.json();
+            console.log('response', response)
+            const data = await response.json()
+            this.todos.set(data)
+            return data;
         }
     });
+
+    // get todos by id
+    setSelectedTask(id: number) {
+        this.selectedTaskId.set(id);
+    }
+
+    // linked signal
+    selectedTaskId = signal<number | null>(null);
+
+    selectedTask = linkedSignal({
+        source: () => ({
+            todos: this.todos(),
+            id: this.selectedTaskId()
+        }),
+        computation: ({ todos, id }) =>
+            todos.find(t => t.id === id) ?? null
+    });
+
+    //OUTPUT :delete item based on id 
+
+    removeTaskByName(name: string, id: number) {
+        if (name == 'task') {
+            this.tasks.update(task => {
+                return task.filter(e => e.id !== id)
+            })
+        }else{
+            this.todos.update(todo=>{
+                return todo.filter(e => e.id !== id)
+            })
+        }
+
+    }
 }
 
 // Now our store looks like:

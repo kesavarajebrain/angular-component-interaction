@@ -1,0 +1,184 @@
+<-----------------------HTML FILE---------------------->
+
+ <form (submit)="submit($event)" class="p-4">
+    <!-- NAME -->
+    <input class="form-control mb-2" placeholder="Name" [value]="form().name"
+        (input)="updateField('name', $any($event.target).value)">
+    <div class="text-danger">{{nameError()}}</div>
+
+    <!-- EMAIL -->
+    <input class="form-control mb-2" placeholder="Email" [value]="form().email"
+        (input)="updateField('email', $any($event.target).value)">
+    <div class="text-danger">{{emailError()}}</div>
+
+    <!-- MOBILE -->
+    <input class="form-control mb-2" placeholder="Mobile" [value]="form().mobile"
+        (input)="updateField('mobile', $any($event.target).value)">
+    <div class="text-danger">{{mobileError()}}</div>
+
+    <!-- AGE -->
+    <input type="number" class="form-control mb-2" placeholder="Age" [value]="form().age"
+        (input)="updateField('age', $any($event.target).value)">
+    <div class="text-danger">{{ageError()}}</div>
+
+    <!-- GENDER -->
+    <select class="form-control mb-2" (change)="updateField('gender', $any($event.target).value)">
+        <option value="">Select Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+    </select>
+    <div class="text-danger">{{genderError()}}</div>
+
+    <!-- PASSWORD -->
+    <input type="password" class="form-control mb-2" placeholder="Password" [value]="form().password"
+        (input)="updateField('password', $any($event.target).value)">
+    <div class="text-danger">{{passwordError()}}</div>
+
+    <!-- CONFIRM PASSWORD -->
+    <input type="password" class="form-control mb-2" placeholder="Confirm Password"
+        [value]="form().confirmPassword"
+        (input)="updateField('confirmPassword', $any($event.target).value)">
+    <div class="text-danger">{{confirmPasswordError()}}</div>
+
+    <!-- TERMS -->
+    <div class="form-check mb-2">
+        <input type="checkbox" class="form-check-input"
+            (change)="updateField('terms', $any($event.target).checked)">
+        <label class="form-check-label">Accept Terms</label>
+    </div>
+    <div class="text-danger">{{termsError()}}</div>
+
+    <!-- SUBMIT -->
+    <button class="btn btn-primary mt-3" type="submit">
+        Register
+    </button>
+</form>
+
+<---------------------------------TS FILE---------------------------->
+
+import { Component, signal, computed } from "@angular/core";
+import { RouterModule } from "@angular/router";
+
+@Component({
+  selector: "app-signal-form",
+  imports: [RouterModule],
+  templateUrl: "./signal-form.component.html",
+  styleUrls: ["./signal-form.component.scss"]
+})
+
+export class SignalFormComponent {
+
+  // 🧠 Form state
+  //Step 1 — Form State (Signal)
+  form = signal({
+    name: '',
+    email: '',
+    mobile: '',
+    age: '',
+    gender: '',
+    password: '',
+    confirmPassword: '',
+    terms: false
+  });
+
+  // 🧠 UI Flags
+  submitted = signal(false);
+
+
+  //Step 2 — Update Inputs
+ updateField(
+  field: keyof ReturnType<typeof this.form>,
+  value: any
+) {
+  this.form.update(f => ({ ...f, [field]: value }));
+}
+
+  //Step 3 — Validation (Computed)
+  nameError = computed(() => {
+    if (!this.submitted()) return null;
+    return this.form().name ? null : 'Name is required';
+  });
+
+  emailError = computed(() => {
+    if (!this.submitted()) return null;
+
+    const email = this.form().email;
+    if (!email) return 'Email required';
+    if (!email.includes('@')) return 'Invalid email';
+
+    return null;
+  });
+
+  mobileError = computed(() => {
+    if (!this.submitted()) return null;
+
+    const m = this.form().mobile;
+    if (!m) return 'Mobile required';
+    if (m.length !== 10) return 'Must be 10 digits';
+
+    return null;
+  });
+
+  ageError = computed(() => {
+    if (!this.submitted()) return null;
+
+    const age = Number(this.form().age);
+    if (!age) return 'Age required';
+    if (age < 18) return 'Must be 18+';
+
+    return null;
+  });
+
+  genderError = computed(() => {
+    if (!this.submitted()) return null;
+    return this.form().gender ? null : 'Select gender';
+  });
+
+  passwordError = computed(() => {
+    if (!this.submitted()) return null;
+
+    const p = this.form().password;
+    if (!p) return 'Password required';
+    if (p.length < 6) return 'Min 6 chars';
+
+    return null;
+  });
+
+  confirmPasswordError = computed(() => {
+    if (!this.submitted()) return null;
+
+    if (this.form().password !== this.form().confirmPassword) {
+      return 'Passwords do not match';
+    }
+
+    return null;
+  });
+
+  termsError = computed(() => {
+    if (!this.submitted()) return null;
+    return this.form().terms ? null : 'Accept terms';
+  });
+
+  //Step 4 — Form Valid State
+  isFormValid = computed(() =>
+    !this.nameError() &&
+    !this.emailError() &&
+    !this.mobileError() &&
+    !this.ageError() &&
+    !this.genderError() &&
+    !this.passwordError() &&
+    !this.confirmPasswordError() &&
+    !this.termsError()
+  );
+
+  // Step 5 — Submit Logic
+  submit(event: Event) {
+    event.preventDefault(); // 🔥 prevent refresh
+
+    this.submitted.set(true);
+
+    if (!this.isFormValid()) return;
+
+    console.log('Form Submitted:', this.form());
+  }
+}

@@ -6,7 +6,7 @@
     <ol>
         <li><b>resource()</b> – Signals for Async Data (HTTP)</li>
         <li><b>linkedSignal()</b> – Dependent Signals</li>
-        <li><b>Signal Inputs</b> - (Component Communication)</li>
+        <li><b>Signal Inputs & Outputs</b> - (Component Communication)</li>
     </ol>
 </div>
 <div class="card container alert alert-warning">
@@ -16,9 +16,11 @@
             <p>Problem Before Signals <br>
                 Fetching API data in Angular traditionally:</p>
             <code>
- this.http.get('/api/tasks').subscribe(tasks => &#123;
+                <pre>
+this.http.get('/api/tasks').subscribe(tasks => &#123;
   this.tasks = tasks;
 &#125;);
+                </pre>
                 </code>
         </div>
         <div class="col">
@@ -43,9 +45,211 @@ unsubscribe issues
                 <li>data</li>
                 <li> re-fetch</li>
             </ul>
+            <code>
+                <pre>
+tasksResource = resource(&#123;
+    loader: async () => &#123;
+        const response = await fetch(this.apiService.mockTaskUrl);
+        console.log('response',response)
+        return response.json();
+    &#125;
+&#125;);
+                </pre>
+            </code>
         </div>
         <div class="col">
             <h6>API calling with signal</h6>
+            @if(store.tasksResource.isLoading()){
+            <p>Loading tasks...</p>
+            }
+            @if(store.tasksResource.error()){
+            <p>Error loading tasks</p>
+            }
+            <div>
+                <table class="table table-striped table-hover">
+                    <thead class="table-info">
+                        <tr>
+                            <td>Id</td>
+                            <td>Title</td>
+                            <td>Status</td>
+                            <td>Action</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(task of store.tasksResource.value(); track task.id){
+                        <tr>
+                            <td>{{task.id}}</td>
+                            <td>{{task.title}}</td>
+                            <td>{{task.completed}}</td>
+                            <td><span class="btn btn-sm btn-success"
+                                    (click)="store.setSelectedTask(task.id)">Click</span></td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        (click)="getTxtFile('resource-signal')" data-bs-target="#flush-collapseOne"
+                        aria-expanded="false" aria-controls="flush-collapseOne">
+                        Code breakup
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <pre>
+                            {{tsCode}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-info">
+    <h5>2️⃣ linkedSignal() – Dependent Signals</h5>
+    <p>This is used when one signal depends on another signal’s state.</p>
+    <div class="row">
+        <div class="col">
+            <code>
+            <pre>
+// get todos by id
+
+    setSelectedTask(id: number) &#123;
+        this.selectedTaskId.set(id);
+    &#125;
+
+// linked signal
+
+    selectedTaskId = signal < number | null>(null);
+
+    selectedTask = linkedSignal(&#123;
+        source: () => (&#123;
+            todos: this.todos(),
+            id: this.selectedTaskId()
+        &#125;),
+        computation: (&#123; todos, id &#125;) =>
+            todos.find(t => t.id === id) ?? null
+    &#125;);
+
+            </pre>
+          </code>
+        </div>
+        <div class="col">
+            <p>Click any data above the table, will see the data </p>
+            @if(store.selectedTask()){
+            <h4>{{store.selectedTask()?.id}} - {{store.selectedTask()?.title}}</h4>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        (click)="getTxtFile('linked-signal')" data-bs-target="#flush-collapseTwo" aria-expanded="false"
+                        aria-controls="flush-collapseTwo">
+                        Code breakup
+                    </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <pre>
+                            {{tsCode}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-success">
+    <h5>3️⃣ Signal Inputs & Outputs – Component Communication</h5>
+    <p>Problem Before Signals</p>
+    <p>Old Angular: &nbsp; @Input() todo!: Todo; <br> New Angular: &nbsp; todo = input< Todo>();</p>
+    <p>Parent sends todo → Child displays it.</p>
+    <div class="row">
+        <p>Input :</p>
+        <p> <b class="text-danger">Delete wont work here</b></p>
+        <div class="col">
+            @for(task of store.tasks(); track task.id){
+            <app-app-todo-item [task]="task"></app-app-todo-item>
+            }
+        </div>
+        <div class="col">
+            @for(todo of store.todos(); track todo.id){
+            <app-app-todo-item [todo]="todo"></app-app-todo-item>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <p>Output :</p>
+        <div class="col">
+            @for(task of store.tasks(); track task.id){
+            <app-app-todo-item [task]="task" (deleteTask)="store.removeTaskByName('task', task.id)"></app-app-todo-item>
+            }
+        </div>
+        <div class="col">
+            @for(todo of store.todos(); track todo.id){
+            <app-app-todo-item [todo]="todo" (deleteTask)="store.removeTaskByName('todo',todo.id)"></app-app-todo-item>
+            }
+        </div>
+        <p><b>Note :</b> Why delete not affected resoure ?</p>
+        <div class="row">
+            <div class="col">
+                <pre>
+resource() → separate state (read-only)
+
+signal()   → your mutable state
+
+&#64;for(task of tasksResource.value(); track task.id)&#123; -> <b>You CANNOT mutate resource data directly</b>
+
+if original also needs to update, USE LIKE BELOW,
+
+👉 Then in UI: &#64;for(todo of store.todos(); track todo.id)&#123;
+
+👉 NOT: tasksResource.value() ❌
+                </pre>
+            </div>
+            <div class="col">
+                <pre>
+💥 Why Delete is NOT Reflecting :
+
+delete happens → todos signal updates
+       ↓
+tasksResource still holds OLD API data
+       ↓
+UI using resource() → shows old data
+       </pre>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        (click)="getTxtFile('signals-outputs')" data-bs-target="#flush-collapseThree"
+                        aria-expanded="false" aria-controls="flush-collapseThree">
+                        Code breakup
+                    </button>
+                </h2>
+                <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <pre>
+                            {{tsCode}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

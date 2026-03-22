@@ -1,0 +1,57 @@
+<------------------------HTML FILE----------------------->
+  <div class="col">
+            <p>Click any data above the table, will see the data </p>
+            @if(store.selectedTask()){
+            <h4>{{store.selectedTask()?.id}} - {{store.selectedTask()?.title}}</h4>
+            }
+  </div>
+
+  <----------------------TS FILE------------------------>
+
+import { Component, OnInit, inject } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { TaskStore } from "../signal-store/task.store";
+import { HttpClient } from "@angular/common/http";
+
+@Component({
+  selector: "app-advanced-signals",
+  imports: [RouterModule],
+  templateUrl: "./advanced-signals.component.html",
+  styleUrls: ["./advanced-signals.component.scss"]
+})
+
+export class AdvancedSignalsComponent {
+
+  tsCode = ''
+  store = inject(TaskStore);
+  constructor(private http: HttpClient) {}
+
+  getTxtFile(fileName:string) {
+    this.http.get('../../../assets/txtfiles/'+fileName+'.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+}
+
+<------------------STORE FILE------------------------>
+
+import { Injectable, signal, computed, effect, resource } from '@angular/core';
+import { ApiService } from '../../service/API/api.service';
+
+constructor(private apiService:ApiService) {}
+
+   // get todos by id
+    setSelectedTask(id: number) {
+        this.selectedTaskId.set(id);
+    }
+
+    // linked signal
+    selectedTaskId = signal<number | null>(null);
+
+    selectedTask = linkedSignal({
+        source: () => ({
+            todos: this.todos(),
+            id: this.selectedTaskId()
+        }),
+        computation: ({ todos, id }) =>
+            todos.find(t => t.id === id) ?? null
+    });

@@ -1,0 +1,45 @@
+<---------------HTML FILE----------------->
+
+<div class="row">
+        <div class="col">
+              @for(task of store.tasks(); track task.id){
+                <app-app-todo-item [task]="task"></app-app-todo-item>
+            }
+        </div>
+        <div class="col">
+            @for(todo of store.todos(); track todo.id){
+                <app-app-todo-item [todo]="todo"></app-app-todo-item>
+            }
+        </div>
+</div>
+
+<-------------------CHILD HTML FILE-------------------->
+
+<div class="alert alert-light">
+    @if(todo()){
+    <h5> {{todo()?.title}}</h5>
+    <p>Status: {{todo()?.completed ? 'Done' : 'Pending'}}</p>
+    }
+    @if(task()){
+        <h5>{{task()?.title}}</h5>
+         <p>Status: {{task()?.completed ? 'Done' : 'Pending'}}</p>
+    }
+</div>
+
+<-------------------CHILD TS FILE-------------------->
+
+import { Component, input } from "@angular/core";
+import { Task, Todos } from "../../signal-store/task.store";
+
+@Component({
+  selector: "app-app-todo-item",
+  standalone:true,
+  templateUrl: "./app-todo-item.component.html",
+  styleUrls: ["./app-todo-item.component.scss"]
+})
+
+export class AppTodoItemComponent {
+  // 🔥 Signal Input
+  todo = input<Todos>();
+  task = input<Task>();
+}

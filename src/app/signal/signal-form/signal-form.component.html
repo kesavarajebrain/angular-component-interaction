@@ -1,0 +1,201 @@
+<div class="container mt-3">
+    <p routerLink="/signal">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Signal Form</h4>
+    <p>🧠 1️⃣ Why Signal Forms? (Problem First)</p>
+    <div class="row">
+        <div class="col">
+            <p>Old Angular Forms (Reactive Forms) :</p>
+            <pre>
+form = new FormGroup(&#123;
+  email: new FormControl(''),
+  password: new FormControl('')
+&#125;);
+            </pre>
+        </div>
+        <div class="col">
+            <ul>
+                Problems:
+                <li>❌ verbose</li>
+                <li> ❌ valueChanges subscriptions
+                </li>
+                <li> ❌ patchValue / setValue confusion
+                </li>
+                <li> ❌ difficult state tracking
+                </li>
+                <li> ❌ heavy abstraction
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-info">
+    <div class="row">
+        <div class="col">
+            <form (submit)="submit($event)" class="p-4">
+
+                <!-- NAME -->
+                <input class="form-control" placeholder="Name" [value]="form().name"
+                    (input)="updateField('name', $any($event.target).value)">
+                <div class="text-danger mb-2">{{nameError()}}</div>
+
+                <!-- EMAIL -->
+                <input class="form-control" placeholder="Email" [value]="form().email"
+                    (input)="updateField('email', $any($event.target).value)">
+                <div class="text-danger mb-2">{{emailError()}}</div>
+
+                <!-- MOBILE -->
+                <input class="form-control" placeholder="Mobile" [value]="form().mobile"
+                    (input)="updateField('mobile', $any($event.target).value)">
+                <div class="text-danger mb-2">{{mobileError()}}</div>
+
+                <!-- AGE -->
+                <input type="number" class="form-control" placeholder="Age" [value]="form().age"
+                    (input)="updateField('age', $any($event.target).value)">
+                <div class="text-danger mb-2">{{ageError()}}</div>
+
+                <!-- GENDER -->
+                <select class="form-control" (change)="updateField('gender', $any($event.target).value)">
+                    <option value="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+                <div class="text-danger mb-2">{{genderError()}}</div>
+
+                <!-- PASSWORD -->
+                <input type="password" class="form-control" placeholder="Password" [value]="form().password"
+                    (input)="updateField('password', $any($event.target).value)">
+                <div class="text-danger mb-2">{{passwordError()}}</div>
+
+                <!-- CONFIRM PASSWORD -->
+                <input type="password" class="form-control" placeholder="Confirm Password"
+                    [value]="form().confirmPassword"
+                    (input)="updateField('confirmPassword', $any($event.target).value)">
+                <div class="text-danger mb-2">{{confirmPasswordError()}}</div>
+
+                <!-- TERMS -->
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input"
+                        (change)="updateField('terms', $any($event.target).checked)">
+                    <label class="form-check-label">Accept Terms</label>
+                </div>
+                <div class="text-danger mb-2">{{termsError()}}</div>
+
+                <!-- SUBMIT -->
+                <button class="btn btn-primary mt-3" type="submit">
+                    Register
+                </button>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-light">
+    <div class="row">
+        <h5>Difference between this multiple forms?</h5>
+        <div class="col">
+            <pre>
+
+| Feature        | Template | Reactive    | Signal    |
+| -------------- | -------- | ----------- | --------- |
+| Logic location | HTML     | TS          | TS        |
+| State type     | ngModel  | FormControl | signal    |
+| Validation     | HTML     | Validators  | computed  |
+| Reactivity     | implicit | RxJS        | signals   |
+| Boilerplate    | low      | high        | medium    |
+| Debugging      | hard     | medium      | easy      |
+| Performance    | ok       | good        | excellent |
+
+        </pre>
+        </div>
+        <div class="col">
+            <pre>
+1️⃣ Template-driven : HTML driven
+2️⃣ Reactive Forms : FormGroup driven
+3️⃣ Signal Forms : State driven
+
+You said:
+“validation per field is confusing”
+
+That’s because:
+Reactive Forms → validation centralized
+Signal Forms   → validation distributed</pre>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col">
+            <pre>
+| Feature      | Reactive Forms | SignalGroup API   |
+| ------------ | -------------- | ----------------- |
+| FormGroup    | FormGroup      | signalGroup       |
+| FormControl  | FormControl    | signalControl     |
+| Validators   | Validators     | signal validators |
+| valueChanges | observable     | signals           |
+
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+👉 This looks like:
+Reactive Forms + Signals combined
+
+🚨 Why it is still experimental?
+Because Angular team is still deciding:
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-primary">
+    <div class="row">
+        <form (submit)="skilFormSubmit($event)" class="p-3 border rounded">
+
+            <!-- NAME -->
+            <input class="form-control mb-2" placeholder="Name" [value]="skilForm().name"
+                (input)="updateSkilFormField('name', $any($event.target).value)">
+            <div class="text-danger">{{nameError1()}}</div>
+
+            <!-- EMAIL -->
+            <input class="form-control mb-2" placeholder="Email" [value]="skilForm().email"
+                (input)="updateSkilFormField('email', $any($event.target).value)">
+            <div class="text-danger">{{emailError1()}}</div>
+
+            <!-- SKILLS (Dynamic) -->
+            <h5>Skills</h5>
+
+            @for(skill of skilForm().skills; track $index){
+
+            <div class="d-flex mb-2">
+                <input class="form-control" [value]="skill.name"
+                    (input)="updateSkill($index, $any($event.target).value)">
+
+                <button type="button" class="btn btn-danger ms-2" (click)="removeSkill($index)">
+                    X
+                </button>
+            </div>
+
+            }
+
+            <button type="button" class="btn btn-secondary mb-2" (click)="addSkill()">
+                Add Skill
+            </button>
+
+            <div class="text-danger">{{skillsError()}}</div>
+
+            <!-- SUBMIT -->
+            <button class="btn btn-primary">
+                Register
+            </button>
+        </form>
+    </div>
+</div>
+<div class="container card alert alert-warning">
+    <div class="row">
+        <div class="col">
+            <pre>
+                {{tsCode}}
+            </pre>
+        </div>
+    </div>
+</div>

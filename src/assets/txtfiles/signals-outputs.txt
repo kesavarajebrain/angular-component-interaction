@@ -1,0 +1,74 @@
+<----------------------PARENT HTML ------------------------>
+
+ <div class="col">
+            @for(task of store.tasks(); track task.id){
+            <app-app-todo-item [task]="task" (deleteTask)="store.removeTaskByName('task', task.id)"></app-app-todo-item>
+            }
+        </div>
+        <div class="col">
+            @for(todo of store.todos(); track todo.id){
+            <app-app-todo-item [todo]="todo" (deleteTask)="store.removeTaskByName('todo',todo.id)"></app-app-todo-item>
+            }
+ </div>
+
+ <-------------------CHILD HTML --------------------------->
+
+ <div class="alert alert-light">
+    @if(todo()){
+    <h5> {{todo()?.title}}</h5>
+    <p>Status: {{todo()?.completed ? 'Done' : 'Pending'}}</p>
+    <button class="btn btn-sm btn-danger" (click)="onDelete('todo')">Delete</button>
+    }
+    @if(task()){
+        <h5>{{task()?.title}}</h5>
+         <p>Status: {{task()?.completed ? 'Done' : 'Pending'}}</p>
+         <button class="btn btn-sm btn-danger" (click)="onDelete('task')">Delete</button>
+    }
+</div>
+
+<-------------------CHILD TS FILE ----------------------->
+
+import { Component, input, output } from "@angular/core";
+import { Task, Todos } from "../../signal-store/task.store";
+
+@Component({
+  selector: "app-app-todo-item",
+  standalone: true,
+  templateUrl: "./app-todo-item.component.html",
+  styleUrls: ["./app-todo-item.component.scss"]
+})
+
+export class AppTodoItemComponent {
+  // 🔥 Signal Input
+  todo = input<Todos>();
+  task = input<Task>();
+
+  // 🔥 Signal Output
+  deleteTask = output<number>();
+
+  onDelete(name: string) {
+    if (name == 'task') {
+      this.deleteTask.emit(this.task()?.id!);
+    } else {
+      this.deleteTask.emit(this.todo()?.id!);
+    }
+  }
+
+}
+
+<-------------------------SIGNAL STORE ---------------------> 
+
+  //OUTPUT :delete item based on id 
+
+    removeTaskByName(name: string, id: number) {
+        if (name == 'task') {
+            this.tasks.update(task => {
+                return task.filter(e => e.id !== id)
+            })
+        }else{
+            this.todos.update(todo=>{
+                return todo.filter(e => e.id !== id)
+            })
+        }
+
+    }
