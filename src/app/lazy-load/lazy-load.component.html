@@ -1,0 +1,252 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Lazy Load</h4>
+    <p>When you use lazy loading in Angular, you're basically telling the browser: <br>
+        <b>“Don’t download everything now. Download only when needed.”</b>
+    </p>
+    <div class="row">
+        <div class="col">
+            <ul>
+                <li> Lazy loading = load component/module only when route is accessed
+                </li>
+                <li><b>loadComponent
+                    </b>replaces static import</li>
+                <li><b>loadChildren
+                    </b> loads separate route files</li>
+                <li> Helps reduce initial bundle size
+                </li>
+                <li> Improves initial load time
+                </li>
+                <li> Useful for large apps (100+ components) ✅
+                </li>
+            </ul>
+            <p><b>Lazy Loading என்ன? </b><br>
+                👉 Application open ஆகும் போது எல்லா components-யும் load பண்ணாமல் <br>
+                👉 User எந்த page open பண்ணுறானோ அதுக்குத்தான் load பண்ணுவது</p>
+
+            <h6>Single app.routes.ts is enough for everything?</h6>
+            <pre>
+Technically yes, but ❌ not scalable
+
+🧠 Real-world:
+We split routes like:
+
+app.routes.ts
+admin.routes.ts
+client.routes.ts
+forms.routes.ts
+
+👉 This is still lazy loading — just better architecture
+                </pre>
+        </div>
+        <div class="col">
+            <div class="alert alert-warning">
+                <p>Old method : <b>app.routing.module.ts</b> </p>
+                <code>
+                <pre>
+&#123;
+    path:'home'
+    component: HomeComponent
+&#125;
+   </pre>
+            </code>
+                <pre>
+Angular bundles all imported component into main.js (File size is big)
+Browser downloads that JS (on application starts)
+
+எல்லா component code-மும் main.js-ல வரும்
+App open ஆகும் போது எல்லாம் download ஆகும் 😓
+            </pre>
+            </div>
+            <div class="alert alert-info">
+                <p>New Method : <b>app.routes.ts</b> </p>
+                <code>
+                <pre>
+&#123;
+    path: 'home',
+    loadComponent: () =>
+    import('./home/home.component')
+    .then(c => c.HomeComponent)
+&#125;
+                </pre>
+            </code>
+                <pre>
+Angular bundles imported few components into main.js 
+(For the supporting initial components, file size is less)
+Browser downloads the chunk.js file when user route to the component
+
+அந்த component மட்டும் load ஆகும்
+Initial load fast ஆகும் ⚡
+            </pre>
+            </div>
+        </div>
+    </div>
+    <div class="row card container alert alert-success">
+        <div class="row">
+            <div class="col">
+                <h5>1. loadComponent (Small Unit Lazy Loading)</h5>
+                <code>
+                    <pre>
+<b>app.routes.ts</b>
+
+&#123;
+  path: 'profile',
+  loadComponent: () =>
+    import('./profile/profile.component')
+      .then(c => c.ProfileComponent)
+&#125;
+                    </pre>
+                </code>
+                <pre>
+Only ProfileComponent is loaded
+Creates small chunk
+Loads when user visits /profile
+
+📦 Output:
+main.js
+profile.chunk.js
+                </pre>
+                <hr>
+                <pre>
+🟢 loadComponent (Simple)
+👉 ஒரு single component மட்டும் lazy load
+
+🔵 loadChildren (Important)
+👉 ஒரு முழு feature (group of components) lazy load
+
+loadComponent → One screen
+loadChildren  → One feature (contains multiple screens)
+                </pre>
+            </div>
+            <div class="col">
+                <h5>2. loadChildren (Feature Lazy Loading)</h5>
+                <code>
+    <pre>
+<b>app.routes.ts</b>
+
+&#123;
+  path: 'admin',
+  loadChildren: () =>
+    import('./admin/admin.routes')
+      .then(r => r.ADMIN_ROUTES)
+&#125;
+
+<b>admin.routes.ts</b>
+
+export const ADMIN_ROUTES = [
+  &#123;
+    path: '',
+    loadComponent: () =>
+      import('./admin.component').then(c => c.AdminComponent)
+  &#125;,
+  &#123;
+    path: 'adminusers',
+    loadComponent: () =>
+      import('./adminusers.component').then(c => c.AdminUsersComponent)
+  &#125;
+];
+    </pre>
+</code>
+                <pre>
+User visits /admin
+Angular loads:
+👉 admin.routes.ts
+Registers child routes
+Then loads components as needed
+
+📦 Output:
+main.js
+admin.chunk.js (contains all admin routes)
+</pre>
+            </div>
+        </div>
+        <div class="card alert alert-light">
+            <h5>Bonus: Lazy Loading + NgRx Together</h5>
+            <div class="row">
+                <div class="col">
+                    <pre>
+<b>Problem without lazy loading:</b>
+All reducers/effects loaded at startup ❌
+Store becomes heavy ❌
+
+Route loads → Feature loads → Store registers → UI renders
+
+👉 Store is NOT global anymore
+👉 It becomes feature-based
+                </pre>
+                <hr>
+<b>Example :</b>
+<p>⚙️ Step 1: Lazy Route (loadChildren)</p>
+<code>
+    <pre>
+&#123;
+  path: 'admin',
+  loadChildren: () =>
+    import('./admin/admin.routes').then(r => r.ADMIN_ROUTES)
+&#125;
+</pre>
+</code>
+<pre>
+❌ பழைய முறை:
+App start → எல்லா reducer + effects load 😓
+
+✅ புதிய முறை:
+/admin open → admin store மட்டும் load 🔥
+
+⚡ Why This is Powerful
+✅ Performance: Smaller initial bundle , Faster startup
+✅ Scalability: Each feature isolated
+✅ Maintainability: Admin logic stays inside admin
+</pre>
+                </div>
+                <div class="col">
+                    <pre>
+<b>With lazy loading:</b>
+Load feature only when route is opened ✅
+Register reducers/effects on demand ✅
+ </pre> 
+ <hr>
+<p>⚙️ Step 2: Feature Routes + Store</p>
+<b>admin.routes.ts</b>
+<code>
+    <pre>
+import &#123; Routes &#125; from '@angular/router';
+import &#123; provideState, provideEffects &#125; from '@ngrx/store';
+import &#123; adminReducer &#125; from './store/admin.reducer';
+import &#123; AdminEffects &#125; from './store/admin.effects';
+
+export const ADMIN_ROUTES: Routes = [
+  &#123;
+    path: '',
+    providers: [
+      provideState('admin', adminReducer),
+      provideEffects([AdminEffects])
+    ],
+    children: [
+      &#123;
+        path: '',
+        loadComponent: () =>
+          import('./admin.component').then(c => c.AdminComponent)
+      &#125;,
+      &#123;
+        path: 'users',
+        loadComponent: () =>
+          import('./users.component').then(c => c.UsersComponent)
+      &#125;
+    ]
+  &#125;
+];
+</pre>
+</code>   
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row card container alert alert-primary">
+        <pre>
+            {{tsCode}}
+        </pre>
+    </div>
+</div>

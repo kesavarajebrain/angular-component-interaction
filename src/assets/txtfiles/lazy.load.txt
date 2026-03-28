@@ -1,0 +1,234 @@
+<----------------------------APP.ROUTES.TS------------------------------>
+
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./home/home.component').then(a => a.HomeComponent)
+  },
+  {
+    path: 'viewchild',
+    loadComponent: () =>
+      import('./view-child/view-child.component').then(a => a.ViewChildComponent)
+  },
+  {
+    path: 'input',
+    loadComponent: () =>
+      import('./input-decorator/input.component').then(a => a.InputComponent)
+  },
+  {
+    path: 'output',
+    loadComponent: () =>
+      import('./output-decorator/output.component').then(a => a.OutputComponent)
+  },
+  {
+    path: 'service',
+    loadComponent: () =>
+      import('./service/service.component').then(a => a.ServiceComponent)
+  },
+  {
+    path: 'lifecycle-hooks',
+    loadChildren: () =>
+      import('./routes/lifecycle.routes').then(m => m.LIFE_CYCLE_ROUTES)
+  },
+
+  {
+    path: 'change-detection',
+    loadComponent: () =>
+      import('./change-detection/change-detection.component')
+        .then(c => c.ChangeDetectionComponent)
+  },
+  {
+    path: 'signal',
+    loadComponent: () =>
+      import('./signal/signal.component')
+        .then(c => c.SignalComponent),
+
+    children: [
+      {
+        path: 'advanced-signal',
+        loadComponent: () =>
+          import('./signal/advanced-signals/advanced-signals.component')
+            .then(c => c.AdvancedSignalsComponent),
+      },
+      {
+        path: 'signal-form',
+        loadComponent: () =>
+          import('./signal/signal-form/signal-form.component')
+            .then(c => c.SignalFormComponent),
+      }
+    ]
+  },
+  {
+    path: 'dependency-injection',
+    loadComponent: () =>
+      import('./dependency-injection/dependency-injection.component')
+        .then(c => c.DependencyInjectionComponent)
+  },
+  {
+    path: 'pipe',
+    loadComponent: () =>
+      import('./pipes/pipes.component')
+        .then(c => c.PipesComponent)
+  },
+  {
+    path: 'directives',
+    loadComponent: () =>
+      import('./directives/directives.component')
+        .then(c => c.DirectivesComponent)
+  },
+  {
+    path: 'forms',
+    loadChildren: () =>
+      import('./routes/form.routes').then(m => m.FORM_ROUTES)
+  },
+  {
+    path: 'dynamic-rendering',
+    loadComponent: () =>
+      import('./dynamic-rendering/dynamic-render.component')
+        .then(c => c.Dynamicrender)
+  },
+  {
+    path: 'standalone',
+    loadComponent: () =>
+      import('./standalone/standalone.component')
+        .then(c => c.StandaloneComponent)
+  },
+  {
+    path: 'ngrx',
+    loadComponent: () =>
+      import('./ngrx/ngrx.component')
+        .then(c => c.NgrxComponent)
+  },
+  {
+    path: 'ngrx-example',
+    loadComponent: () =>
+      import('./ngrx/ngrx-example/ngrx-example.component')
+        .then(c => c.NgrxExampleComponent)
+  },
+  {
+    path: 'web-socket',
+    loadComponent: () =>
+      import('./web-socket/web-socket.component')
+        .then(c => c.WebSocketComponent)
+  },
+  {
+    path: 'ssr',
+    loadComponent: () =>
+      import('./ssr/ssr.component')
+        .then(c => c.SsrComponent)
+  },
+  {
+    path: 'jwt',
+    loadComponent: () =>
+      import('./jwt/jwt.component')
+        .then(c => c.JwtComponent)
+  },
+   {
+    path: 'lazy-load',
+    loadComponent: () =>
+      import('./lazy-load/lazy-load.component')
+        .then(c => c.LazyLoadComponent)
+  },
+];
+
+<-----------------------FORM.ROUTES.TS------------------------------->
+
+import { Routes } from '@angular/router';
+
+export const FORM_ROUTES: Routes = [
+    {
+        path: '',
+        loadComponent: () =>
+            import('../forms/forms.component')
+                .then(c => c.FormsComponent)
+    },
+    {
+        path: 'template-driven',
+        loadComponent: () =>
+            import('../forms/template-driven/template-driven.component')
+                .then(c => c.TemplateDrivenComponent)
+    },
+    {
+        path: 'reactive',
+        loadComponent: () =>
+            import('../forms/reactive/reactive.component')
+                .then(c => c.ReactiveComponent)
+    },
+    {
+        path: 'advanced-reactive',
+        loadComponent: () =>
+            import('../forms/advanced-reactive/advanced-reactive.component')
+                .then(c => c.AdvancedReactiveComponent)
+    },
+]
+
+<----------------------------LIFE.CYCLE.ROUTES.TS----------------------->
+
+import { Routes } from "@angular/router";
+
+export const LIFE_CYCLE_ROUTES: Routes = [
+    {
+        path: '',
+        loadComponent: () =>
+            import('../lifecycle-hooks/lifecycle-hooks.component')
+                .then(c => c.LifecycleHooksComponent)
+    },
+    {
+        path: 'ngOnInit',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngoninit/ngoninit.component')
+                .then(c => c.NgoninitComponent)
+    },
+    {
+        path: 'constructor',
+        loadComponent: () =>
+            import('../lifecycle-hooks/constructor/constructor.component')
+                .then(c => c.ConstructorComponent)
+    },
+    {
+        path: 'ngOnChanges',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngonchanges/ngonchanges.component')
+                .then(c => c.NgonchangesComponent)
+    },
+    {
+        path: 'ngDoCheck',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngdocheck/ngdocheck.component')
+                .then(c => c.NgdocheckComponent)
+    },
+    {
+        path: 'ngAfterContentInit',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngaftercontentinit/ngaftercontentinit.component')
+                .then(c => c.NgaftercontentinitComponent)
+    },
+    {
+        path: 'ngAfterContentChecked',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngaftercontentchecked/ngaftercontentchecked.component')
+                .then(c => c.NgaftercontentcheckedComponent)
+    },
+    {
+        path: 'ngAfterViewInit',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngafterviewinit/ngafterviewinit.component')
+                .then(c => c.NgafterviewinitComponent)
+    },
+    {
+        path: 'ngAfterViewChecked',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngafterviewchecked/ngafterviewchecked.component')
+                .then(c => c.NgafterviewcheckedComponent)
+    },
+    {
+        path: 'ngOnDestroy',
+        loadComponent: () =>
+            import('../lifecycle-hooks/ngondestroy/ngondestroy.component')
+                .then(c => c.NgondestroyComponent)
+    },
+]

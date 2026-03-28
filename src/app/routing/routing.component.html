@@ -1,0 +1,102 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none">&lt;-Back </a>
+    </p>
+    <h4>Routing</h4>
+    <p>Routing is not just navigation anymore:</p>
+    <b>Route = Navigation + Security + Data + Control + UX</b>
+</div>
+<div class="card mt-2 container alert alert-secondary">
+    <h5>1. Navigation from HTML (Template)</h5>
+    <p>🔹 routerLink (MOST USED) <br><b> &lt; a routerLink="/home">Go to Home &lt;/a>
+            👉 Click → navigates to /home</b></p>
+    <p>🔹 Dynamic route: <br>
+        <b>&lt;a [routerLink]="['/user', userId]">User &lt;/a>
+            👉 If userId = 5 → /user/5 </b>
+    </p>
+    <p>🔹 Query params: <br>
+        <b>&lt;a [routerLink]="['/search']" [queryParams]="&#123; q: 'angular' &#125;">
+            Search
+            &lt;/a>👉 URL:
+            /search?q=angular</b>
+    </p>
+    <p>
+        🔹 Active link highlight: <br>
+        <b>&lt;a routerLink="/home" routerLinkActive="active">Home&lt;/a>
+
+            👉 Adds class when active</b>
+    </p>
+</div>
+<div class="card container mt-2 alert alert-warning">
+    <h5>2. Navigation from TypeScript (Programmatic)</h5>
+    <p>✅ Import Router <br>
+        <b>import &#123; Router &#125; from '@angular/router';<br>
+            constructor(private router: Router) &#123;&#125;</b>
+    </p>
+    <p>🔹 Method 1: navigate() <br>
+        <b>this.router.navigate(['/home']);</b>
+    </p>
+    <p>🔹 With params: <br>
+        <b>this.router.navigate(['/user', 10]);
+            👉 /user/10</b>
+    </p>
+    <p>🔹 With query params: <br>
+        <b>
+            this.router.navigate(['/search'], &#123;
+            queryParams: &#123; q: 'angular' &#125;
+            &#125;);</b>
+    </p>
+    <p>
+        🔹 Relative navigation: <br>
+        <b>this.router.navigate(['details'], &#123; relativeTo: this.route &#125;); </b>
+    </p>
+    <pre class="alert alert-light">
+Normally when you do:
+this.router.navigate(['/details']);
+
+👉 Angular treats it as absolute path
+👉 It always starts from root (/)
+
+✅ Relative Navigation means:
+“Navigate based on the current route”
+
+Current URL: <b>/forms</b>
+
+Now you write:
+this.router.navigate(['reactive'], &#123; relativeTo: this.route &#125;);
+
+👉 Result: <b>/forms/reactive</b>
+relativeTo → current route-ஐ base ஆக்கி navigate பண்ணு
+    </pre>
+    <p>
+        🔹 Replace URL (no back history): <br>
+        <b>this.router.navigate(['/login'], &#123; replaceUrl: true &#125;);</b>
+    </p>
+    <pre class="alert alert-light">
+Normally:
+this.router.navigate(['/home']);
+
+👉 Browser history: /login → /home
+👉 If user clicks BACK: /home → /login ❌
+
+<b>✅ With replaceUrl</b>
+this.router.navigate(['/home'], &#123; replaceUrl: true &#125;);
+
+👉 It replaces current URL in history
+/login → replaced by /home
+
+👉 Now BACK button:
+/home → (no login page) ✅
+
+<b>🔐 Login flow:</b>
+loginSuccess() &#123;
+  this.router.navigate(['/dashboard'], &#123; replaceUrl: true &#125;);
+&#125;
+<b>👉 Prevent user from going back to login page</b>
+    </pre>
+    <p>
+        🔹 navigateByUrl() <br>
+        <b>this.router.navigateByUrl('/home');
+            👉 Simple string-based navigation</b>
+    </p>
+</div>

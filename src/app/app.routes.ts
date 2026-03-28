@@ -1,175 +1,141 @@
 import { Routes } from '@angular/router';
-import { ViewChildComponent } from './view-child/view-child.component';
-import { HomeComponent } from './home/home.component';
-import { InputComponent } from './input-decorator/input.component';
-import { OutputComponent } from './output-decorator/output.component';
-import { ServiceComponent } from './service/service.component';
-import { LifecycleHooksComponent } from './lifecycle-hooks/lifecycle-hooks.component';
-import { ConstructorComponent } from './lifecycle-hooks/constructor/constructor.component';
-import { NgoninitComponent } from './lifecycle-hooks/ngoninit/ngoninit.component';
-import { NgonchangesComponent } from './lifecycle-hooks/ngonchanges/ngonchanges.component';
-import { NgdocheckComponent } from './lifecycle-hooks/ngdocheck/ngdocheck.component';
-import { NgaftercontentinitComponent } from './lifecycle-hooks/ngaftercontentinit/ngaftercontentinit.component';
-import { NgaftercontentcheckedComponent } from './lifecycle-hooks/ngaftercontentchecked/ngaftercontentchecked.component';
-import { NgafterviewinitComponent } from './lifecycle-hooks/ngafterviewinit/ngafterviewinit.component';
-import { NgafterviewcheckedComponent } from './lifecycle-hooks/ngafterviewchecked/ngafterviewchecked.component';
-import { NgondestroyComponent } from './lifecycle-hooks/ngondestroy/ngondestroy.component';
-import { ChangeDetectionComponent } from './change-detection/change-detection.component';
-import { SignalComponent } from './signal/signal.component';
-import { DependencyInjectionComponent } from './dependency-injection/dependency-injection.component';
-import { PipesComponent } from './pipes/pipes.component';
-import { DirectivesComponent } from './directives/directives.component';
-import { FormsComponent } from './forms/forms.component';
-import { TemplateDrivenComponent } from './forms/template-driven/template-driven.component';
-import { ReactiveComponent } from './forms/reactive/reactive.component';
-import { AdvancedReactiveComponent } from './forms/advanced-reactive/advanced-reactive.component';
-import { Dynamicrender } from './dynamic-rendering/dynamic-render.component';
-import { StandaloneComponent } from './standalone/standalone.component';
-import { NgrxComponent } from './ngrx/ngrx.component';
-import { NgrxExampleComponent } from './ngrx/ngrx-example/ngrx-example.component';
-import { WebSocketComponent } from './web-socket/web-socket.component';
-import { SsrComponent } from './ssr/ssr.component';
-import { JwtComponent } from './jwt/jwt.component';
-import { AdvancedSignalsComponent } from './signal/advanced-signals/advanced-signals.component';
-import { SignalFormComponent } from './signal/signal-form/signal-form.component';
-
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: HomeComponent,
-  },
-  {
-    path: 'home',
-    component: HomeComponent,
+    loadComponent: () =>
+      import('./home/home.component').then(a => a.HomeComponent)
   },
   {
     path: 'viewchild',
-    component: ViewChildComponent,
+    loadComponent: () =>
+      import('./view-child/view-child.component').then(a => a.ViewChildComponent),
+    
   },
   {
     path: 'input',
-    component: InputComponent,
+    loadComponent: () =>
+      import('./input-decorator/input.component').then(a => a.InputComponent)
   },
   {
     path: 'output',
-    component: OutputComponent,
+    loadComponent: () =>
+      import('./output-decorator/output.component').then(a => a.OutputComponent)
   },
   {
     path: 'service',
-    component: ServiceComponent,
+    loadComponent: () =>
+      import('./service/service.component').then(a => a.ServiceComponent)
   },
-   {
+  {
     path: 'lifecycle-hooks',
-    component: LifecycleHooksComponent,
+    loadChildren: () =>
+      import('./routes/lifecycle.routes').then(m => m.LIFE_CYCLE_ROUTES)
   },
-    {
-    path: 'lifecycle-hooks/constructor',
-    component: ConstructorComponent
+
+  {
+    path: 'change-detection',
+    loadComponent: () =>
+      import('./change-detection/change-detection.component')
+        .then(c => c.ChangeDetectionComponent)
   },
-    {
-    path: 'lifecycle-hooks/ngOnInit',
-    component: NgoninitComponent
+  {
+    path: 'signal',
+    loadComponent: () =>
+      import('./signal/signal.component')
+        .then(c => c.SignalComponent),
+
+    children: [
+      {
+        path: 'advanced-signal',
+        loadComponent: () =>
+          import('./signal/advanced-signals/advanced-signals.component')
+            .then(c => c.AdvancedSignalsComponent),
+      },
+      {
+        path: 'signal-form',
+        loadComponent: () =>
+          import('./signal/signal-form/signal-form.component')
+            .then(c => c.SignalFormComponent),
+      }
+    ]
   },
-    {
-    path: 'lifecycle-hooks/ngOnChanges',
-    component: NgonchangesComponent
+  {
+    path: 'dependency-injection',
+    loadComponent: () =>
+      import('./dependency-injection/dependency-injection.component')
+        .then(c => c.DependencyInjectionComponent)
   },
-    {
-    path: 'lifecycle-hooks/ngDoCheck',
-    component: NgdocheckComponent
+  {
+    path: 'pipe',
+    loadComponent: () =>
+      import('./pipes/pipes.component')
+        .then(c => c.PipesComponent)
+  },
+  {
+    path: 'directives',
+    loadComponent: () =>
+      import('./directives/directives.component')
+        .then(c => c.DirectivesComponent)
+  },
+  {
+    path: 'forms',
+    loadChildren: () =>
+      import('./routes/form.routes').then(m => m.FORM_ROUTES)
+  },
+  {
+    path: 'dynamic-rendering',
+    loadComponent: () =>
+      import('./dynamic-rendering/dynamic-render.component')
+        .then(c => c.Dynamicrender)
+  },
+  {
+    path: 'standalone',
+    loadComponent: () =>
+      import('./standalone/standalone.component')
+        .then(c => c.StandaloneComponent)
+  },
+  {
+    path: 'ngrx',
+    loadComponent: () =>
+      import('./ngrx/ngrx.component')
+        .then(c => c.NgrxComponent)
+  },
+  {
+    path: 'ngrx-example',
+    loadComponent: () =>
+      import('./ngrx/ngrx-example/ngrx-example.component')
+        .then(c => c.NgrxExampleComponent)
+  },
+  {
+    path: 'web-socket',
+    loadComponent: () =>
+      import('./web-socket/web-socket.component')
+        .then(c => c.WebSocketComponent)
+  },
+  {
+    path: 'ssr',
+    loadComponent: () =>
+      import('./ssr/ssr.component')
+        .then(c => c.SsrComponent)
+  },
+  {
+    path: 'jwt',
+    loadComponent: () =>
+      import('./jwt/jwt.component')
+        .then(c => c.JwtComponent)
   },
    {
-    path: 'lifecycle-hooks/ngAfterContentInit',
-    component: NgaftercontentinitComponent
-  },
-  {
-    path: 'lifecycle-hooks/ngAfterContentChecked',
-    component: NgaftercontentcheckedComponent
+    path: 'lazy-load',
+    loadComponent: () =>
+      import('./lazy-load/lazy-load.component')
+        .then(c => c.LazyLoadComponent)
   },
    {
-    path: 'lifecycle-hooks/ngAfterViewInit',
-    component: NgafterviewinitComponent
+    path: 'routing',
+    loadComponent: () =>
+      import('./routing/routing.component')
+        .then(c => c.RoutingComponent)
   },
-   {
-    path: 'lifecycle-hooks/ngAfterViewChecked',
-    component: NgafterviewcheckedComponent
-  },
-   {
-    path: 'lifecycle-hooks/ngOnDestroy',
-    component: NgondestroyComponent
-  },
-  {
-    path:'change-detection',
-    component:ChangeDetectionComponent
-  },
-  {
-    path:'signal',
-    component:SignalComponent
-  },
-   {
-    path:'dependency-injection',
-    component:DependencyInjectionComponent
-  },
-  {
-    path:'pipe',
-    component:PipesComponent
-  },
-   {
-    path:'directives',
-    component:DirectivesComponent
-  },
-   {
-    path:'forms',
-    component:FormsComponent
-  },
-   {
-    path:'forms/template-driven',
-    component:TemplateDrivenComponent
-  },
-  {
-    path:'forms/reactive',
-    component:ReactiveComponent
-  },
-  {
-    path:'forms/advanced-reactive',
-    component:AdvancedReactiveComponent
-  },
-   {
-    path:'dynamic-rendering',
-    component:Dynamicrender
-  },
-  {
-    path:'standalone',
-    component:StandaloneComponent
-  },
-  {
-    path:'ngrx',
-    component:NgrxComponent
-  },
-   {
-    path:'ngrx-example',
-    component:NgrxExampleComponent
-  },
-  {
-    path:'web-socket',
-    component:WebSocketComponent
-  },
-  {
-    path:'ssr',
-    component:SsrComponent
-  },
-  {
-    path:'jwt',
-    component:JwtComponent
-  },
-   {
-    path:'signal/advanced-signal',
-    component:AdvancedSignalsComponent
-  },
-  {
-    path:'signal/signal-form',
-    component:SignalFormComponent
-  }
 ];

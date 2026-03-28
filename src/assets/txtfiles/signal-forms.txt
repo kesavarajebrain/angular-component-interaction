@@ -54,19 +54,86 @@
     </button>
 </form>
 
+
+***************************SKILL FORM********************
+
+   <div class="row">
+        <form (submit)="skilFormSubmit($event)" class="p-3 border rounded">
+
+            <!-- NAME -->
+            <input class="form-control mb-2" placeholder="Name" [value]="skilForm().name"
+                (input)="updateSkilFormField('name', $any($event.target).value)">
+            <div class="text-danger">{{nameError1()}}</div>
+
+            <!-- EMAIL -->
+            <input class="form-control mb-2" placeholder="Email" [value]="skilForm().email"
+                (input)="updateSkilFormField('email', $any($event.target).value)">
+            <div class="text-danger">{{emailError1()}}</div>
+
+            <!-- SKILLS (Dynamic) -->
+            <h5>Skills</h5>
+
+            @for(skill of skilForm().skills; track $index){
+
+            <div class="d-flex mb-2">
+                <input class="form-control" [value]="skill.name"
+                    (input)="updateSkill($index, $any($event.target).value)">
+
+                <button type="button" class="btn btn-danger ms-2" (click)="removeSkill($index)">
+                    X
+                </button>
+            </div>
+
+            }
+
+            <button type="button" class="btn btn-secondary mb-2" (click)="addSkill()">
+                Add Skill
+            </button>
+
+            <div class="text-danger">{{skillsError()}}</div>
+
+            <!-- SUBMIT -->
+            <button class="btn btn-primary">
+                Register
+            </button>
+        </form>
+    </div>
+
+
 <---------------------------------TS FILE---------------------------->
 
-import { Component, signal, computed } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Component, signal, computed, resource } from "@angular/core";
 import { RouterModule } from "@angular/router";
+
+
+// ✅ Types MUST be outside class
+type Skill = { name: string };
+
+type FormModel = {
+  name: string;
+  email: string;
+  skills: Skill[];
+};
+
 
 @Component({
   selector: "app-signal-form",
   imports: [RouterModule],
+  standalone: true,
   templateUrl: "./signal-form.component.html",
   styleUrls: ["./signal-form.component.scss"]
 })
 
+
 export class SignalFormComponent {
+  tsCode = '';
+  constructor(private http: HttpClient) {
+    this.http.get('../../../assets/txtfiles/signal-forms.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+
+
 
   // 🧠 Form state
   //Step 1 — Form State (Signal)
@@ -86,12 +153,12 @@ export class SignalFormComponent {
 
 
   //Step 2 — Update Inputs
- updateField(
-  field: keyof ReturnType<typeof this.form>,
-  value: any
-) {
-  this.form.update(f => ({ ...f, [field]: value }));
-}
+  updateField(
+    field: keyof ReturnType<typeof this.form>,
+    value: any
+  ) {
+    this.form.update(f => ({ ...f, [field]: value }));
+  }
 
   //Step 3 — Validation (Computed)
   nameError = computed(() => {
@@ -181,4 +248,111 @@ export class SignalFormComponent {
 
     console.log('Form Submitted:', this.form());
   }
+
+
+  // 2nd example form
+  //Form State
+  skilForm = signal<FormModel>({
+    name: '',
+    email: '',
+    skills: [{ name: '' }]
+  });
+
+  // 2nd form flag
+  skillFormSubmitted = signal(false);
+
+
+  // Update Methods
+  updateSkilFormField(field: keyof FormModel, value: any) {
+    this.skilForm.update(f => ({ ...f, [field]: value }));
+  }
+
+  updateSkill(index: number, value: string) {
+    this.skilForm.update(f => {
+      const skills = [...f.skills];
+      skills[index] = { name: value };
+      return { ...f, skills };
+    });
+  }
+
+  addSkill() {
+    this.skilForm.update(f => ({
+      ...f,
+      skills: [...f.skills, { name: '' }]
+    }));
+  }
+
+  removeSkill(index: number) {
+    this.skilForm.update(f => ({
+      ...f,
+      skills: f.skills.filter((_, i) => i !== index)
+    }));
+  }
+
+  // Validation (Computed)
+  // =========================
+  // 🧠 VALIDATIONS
+  // =========================
+
+  nameError1 = computed(() => {
+    if (!this.skillFormSubmitted()) return null;
+    return this.skilForm().name ? null : 'Name is required';
+  });
+
+  emailError1 = computed(() => {
+    if (!this.skillFormSubmitted()) return null;
+
+    const email = this.skilForm().email;
+
+    if (!email) return 'Email is required';
+    if (!email.includes('@')) return 'Invalid email';
+
+    return null;
+  });
+
+  skillsError = computed(() => {
+    if (!this.skillFormSubmitted()) return null;
+
+    return this.skilForm().skills.some(s => !s.name.trim())
+      ? 'All skills are required'
+      : null;
+  });
+  // form valid
+  isSkilFormValid = computed(() =>
+    !this.nameError1() &&
+    !this.emailError1() &&
+    !this.skillsError()
+  );
+
+  // =========================
+  // 🚀 SUBMIT
+  // =========================
+
+  skilFormSubmit(event: Event) {
+    event.preventDefault(); // 🔥 stop refresh
+
+    this.skillFormSubmitted.set(true);
+
+    if (!this.isSkilFormValid()) return;
+
+    console.log('Form Data:', this.skilForm());
+
+    // Optional reset
+    this.resetForm();
+  }
+
+   // =========================
+  // 🔄 RESET
+  // =========================
+
+  resetForm() {
+    this.skilForm.set({
+      name: '',
+      email: '',
+      skills: [{ name: '' }]
+    });
+
+    this.skillFormSubmitted.set(false);
+  }
+
 }
