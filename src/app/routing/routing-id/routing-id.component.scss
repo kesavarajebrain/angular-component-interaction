@@ -1,0 +1,41 @@
+.highlight-id {
+  animation: fadeBlue 4s ease;
+}
+
+.highlight-category {
+  animation: fadeGreen 4s ease;
+}
+
+.highlight-snapshot {
+  animation: fadePink 4s ease;
+}
+
+@keyframes fadeBlue {
+  0% {
+    background-color: #5320ec;
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes fadeGreen {
+  0% {
+    background-color: #39ed84;
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes fadePink {
+  0% {
+    background-color: #ea2fa9;
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}

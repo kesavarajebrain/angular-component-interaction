@@ -100,3 +100,108 @@ loginSuccess() &#123;
             👉 Simple string-based navigation</b>
     </p>
 </div>
+<div class="card container alert alert-success">
+    <h5>Route Params + ActivatedRoute</h5>
+    <div class="row">
+        <div class="col">
+            <pre>
+🧠 What are Route Params?
+👉 Definition: Dynamic values passed inside the URL
+
+📌 Example URL: /user/10
+👉 Here: 10 = route param
+    </pre>
+            <b>1. Define Route with Params</b>
+            <code>
+    <pre>
+&#123;
+    path: 'routing/:id',
+    loadComponent: () =>
+      import('./routing/routing-id/routing-id.component')
+        .then(c => c.RoutingIdComponent)
+&#125;
+</pre>
+</code>
+            <pre>
+🧠 Meaning:
+:userId → dynamic value
+
+👉 Can be:
+/user/1
+/user/25
+/user/999
+</pre>
+        </div>
+        <div class="col">
+            <b>2. Get Params using ActivatedRoute</b>
+            <pre>
+
+Import:
+   <b>import &#123; ActivatedRoute &#125; from '@angular/router';</b> 
+Inject:
+   <b>constructor(private route: ActivatedRoute) &#123;&#125;</b> 
+</pre>
+            <b>✅ Method 1: Snapshot (Simple)</b>
+            <pre>
+
+ngOnInit() &#123;
+    const id = this.route.snapshot.paramMap.get('id');
+    console.log(id);
+&#125;
+🧠 When to use:
+Value won’t change
+One-time read
+            </pre>
+            <b>✅ Method 2: Observable Way</b>
+            <pre>
+
+ngOnInit() &#123;
+  this.route.paramMap.subscribe(params => &#123;
+    const id = params.get('id');
+    console.log(id);
+  &#125;);
+&#125;
+            </pre>
+        </div>
+    </div>
+    <div class="card alert alert-light">
+        <h5>Routing with param (single) / (multiple) </h5>
+        <form #routeForm="ngForm" (ngSubmit)="onSubmit(routeForm)">
+            <div class="row">
+                <div class="col-2"></div>
+                <!-- INPUT -->
+                <div class="col-2">
+                      <label>Routing Id:</label>
+                    <input type="number" class="form-control" name="id" [(ngModel)]="model.id" #id="ngModel" required
+                        min="1" id />
+                    <!-- ERROR -->
+                    <span class="text-danger" *ngIf="id.invalid && (id.touched || routeForm.submitted)">
+                        Valid ID is required
+                    </span>
+                </div>
+                <div class="col-3">
+                      <label>Routing Category (Optional):</label>
+                    <select class="form-select" name="category" [(ngModel)]="model.category"  #category="ngModel" category aria-label="Default select example">
+                        {{category}}
+                        <option value="default">Default</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="furniture">Furniture</option>
+                         <option value="pluming">Pluming</option>
+                    </select>
+                </div>
+                <!-- BUTTON -->
+                <div class="col-2">
+                    <button type="submit" class="  mt-2 btn btn-sm btn-primary">
+                        Go
+                    </button>
+                </div>
+                <div class="col-2"></div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card container alert alert-secondary">
+    <pre>
+        {{tsCode}}
+    </pre>
+</div>

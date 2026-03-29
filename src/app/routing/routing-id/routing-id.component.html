@@ -1,0 +1,31 @@
+<div class="container mt-3">
+    <p routerLink="/routing">
+        <a class="pe-auto text-secondary text-decoration-none">&lt;-Back </a>
+    </p>
+    <h4>Routing with params</h4>
+    <div class="row">
+        <div class="col">
+            <b>Snapshot</b>
+            <ul>
+                <li> snapshot works when navigating from list → detail
+                </li>
+                <li>In our case : routing -> routing/:id</li>
+                <li>snapshot ❌ stays old</li>
+            </ul>
+            <p *ngIf="snapshotId"><b>Snapshot ID:</b> {{ snapshotId }}</p>
+        </div>
+        <div class="col">
+            <b>ParamsMap</b>
+            <ul>
+                <li>paramMap updates when ID changes inside same component</li>
+                <li>we can change ID without going back</li>
+                <li>paramMap ✅ updates</li>
+            </ul>
+            <p><b>Live ID (paramMap):</b> {{ liveId }}</p>
+            <p><b>Category (paramMap):</b> {{ category }}</p>
+            <button class="btn btn-sm btn-success" (click)="goToId('50')">Go with routing/:50</button> &nbsp;
+            <button class="btn btn-sm btn-primary" (click)="goWithMultipleParams('electricals','100')">Go with
+                routing/:electricals:100</button>
+        </div>
+    </div>
+</div>

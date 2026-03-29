@@ -11,7 +11,7 @@ export const routes: Routes = [
     path: 'viewchild',
     loadComponent: () =>
       import('./view-child/view-child.component').then(a => a.ViewChildComponent),
-    
+
   },
   {
     path: 'input',
@@ -42,24 +42,8 @@ export const routes: Routes = [
   },
   {
     path: 'signal',
-    loadComponent: () =>
-      import('./signal/signal.component')
-        .then(c => c.SignalComponent),
-
-    children: [
-      {
-        path: 'advanced-signal',
-        loadComponent: () =>
-          import('./signal/advanced-signals/advanced-signals.component')
-            .then(c => c.AdvancedSignalsComponent),
-      },
-      {
-        path: 'signal-form',
-        loadComponent: () =>
-          import('./signal/signal-form/signal-form.component')
-            .then(c => c.SignalFormComponent),
-      }
-    ]
+    loadChildren: () =>
+      import('./routes/signal.routes').then(m => m.SIGNAL_ROUTES)
   },
   {
     path: 'dependency-injection',
@@ -126,16 +110,28 @@ export const routes: Routes = [
       import('./jwt/jwt.component')
         .then(c => c.JwtComponent)
   },
-   {
+  {
     path: 'lazy-load',
     loadComponent: () =>
       import('./lazy-load/lazy-load.component')
         .then(c => c.LazyLoadComponent)
   },
-   {
+  {
     path: 'routing',
     loadComponent: () =>
       import('./routing/routing.component')
         .then(c => c.RoutingComponent)
+  },
+   {
+    path: 'routing/:id',
+    loadComponent: () =>
+      import('./routing/routing-id/routing-id.component')
+        .then(c => c.RoutingIdComponent)
+  },
+  {
+    path: 'routing/:category/:id',
+    loadComponent: () =>
+      import('./routing/routing-id/routing-id.component')
+        .then(c => c.RoutingIdComponent)
   },
 ];
