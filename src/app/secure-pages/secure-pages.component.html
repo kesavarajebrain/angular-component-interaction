@@ -1,0 +1,14 @@
+<div class="container mt-3">
+    <p routerLink="/route-controls">
+        <a class="pe-auto text-secondary text-decoration-none">&lt;-Back </a>
+    </p>
+    <h4>Secure Page</h4>
+    <p>You will able see this page only AuthGuard permits you!!</p>
+
+    <div class="class alert alert-info">
+        <b>DATA from Resolver</b> <br>
+        @for(item of users;track item.id){
+            <p>{{item.id}} - {{item.name}} - {{item.website}}</p>
+        }
+    </div>
+</div>

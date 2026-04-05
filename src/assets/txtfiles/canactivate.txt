@@ -1,0 +1,96 @@
+<------------------------------HTML--------------------------------->
+
+<button class="btn btn-sm btn-success" routerLink="/secure-page">Enter Secure Page</button> <br> <br>
+<button class="btn btn-sm btn-primary" (click)="login()">Login</button> &nbsp;
+<button class="btn btn-sm btn-dark" (click)="logOutExistingSesssion()">Logout</button>
+
+<---------------------------TS---------------------------->
+
+import { Component, OnInit } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { AuthService } from "../../service/auth/auth.service";
+import { HttpClient } from "@angular/common/http";
+
+@Component({
+  selector: "app-rounting-controls",
+  imports: [RouterModule],
+  templateUrl: "./rounting-controls.component.html",
+  styleUrls: ["./rounting-controls.component.scss"]
+})
+
+export class RountingControlsComponent implements OnInit {
+
+  tsCode: any;
+  constructor(private auth: AuthService, private http: HttpClient) {
+
+  }
+
+  ngOnInit() {
+
+  }
+
+
+  logOutExistingSesssion() {
+    this.auth.logout().subscribe({
+      next: () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        alert("🚨 Logged OUT 🚨")
+      },
+      error: () => {
+      }
+    })
+  }
+
+  login() {
+    const email = 'test@test.com';
+    const password = '1234';
+    this.auth.login(email, password)
+      .subscribe(
+        {
+          next: (res) => {
+            this.auth.saveAccessToken(res.accessToken);
+            this.auth.saveRefreshToken(res.refreshToken);
+            alert('👉 Logged in Success ✅')
+          },
+          error: () => {
+          }
+        }
+      );
+  }
+
+  getTxtFile(fileName: string) {
+    this.http.get('../../../assets/txtfiles/' + fileName + '.txt', { responseType: 'text' })
+      .subscribe(code => this.tsCode = code);
+  }
+}
+
+<--------------------------------------GUARD.TS--------------------------------->
+
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+
+  const isLoggedIn = localStorage.getItem('access_token'); // replace with real logic
+
+  if (isLoggedIn) {
+    alert("✅ Good To Enter Secure Page -->>")
+    return true;
+  } else {
+    alert("🚫 Login Required 🚫 Take you back ❗")
+    router.navigate(['/routing']);
+    return false;
+  }
+};
+
+<----------------------------APP.ROUTE.TS-------------------------------->
+
+ {
+    path: 'secure-page',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./secure-pages/secure-pages.component')
+        .then(c => c.SecurePagesComponent)
+  },

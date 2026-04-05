@@ -1,21 +1,21 @@
 import { CommonModule } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 
 
 @Component({
-    selector: "app-template-driven",
-    templateUrl: "./template-driven.component.html",
-    styleUrls: ["./template-driven.component.scss"],
-    imports: [RouterModule, FormsModule, CommonModule]
+  selector: "app-template-driven",
+  templateUrl: "./template-driven.component.html",
+  styleUrls: ["./template-driven.component.scss"],
+  imports: [RouterModule, FormsModule, CommonModule]
 })
 
 export class TemplateDrivenComponent {
 
   public tsCode = '';
-
+  @ViewChild('form') form!: NgForm;
   constructor(private http: HttpClient) {
     this.http.get('../../../assets/txtfiles/template-driven.txt', { responseType: 'text' })
       .subscribe(code => this.tsCode = code);
@@ -78,5 +78,9 @@ export class TemplateDrivenComponent {
     }
     console.log("Form Values:", form.value);
     this.submitted1 = false;
+  }
+
+  hasUnsavedChanges() {
+    return this.form?.dirty;
   }
 }

@@ -1,0 +1,225 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Angular - How it works?</h4>
+</div>
+<div class="card container alert alert-info">
+    <h5>🔹 Step 1: main.ts – Entry Point</h5>
+    <code>
+        <b>main.ts</b>
+        <pre>
+import &#123; bootstrapApplication &#125; from '@angular/platform-browser';
+import &#123; appConfig &#125; from './app/app.config';
+import &#123; AppComponent &#125; from './app/app.component';
+
+bootstrapApplication(<b>AppComponent</b>, appConfig)
+  .catch((err) => console.error(err));
+
+</pre>
+    </code>
+    <div class="row">
+        <div class="col">
+            <b>Here Angular bootstraps the root component (AppComponent)</b>
+            <p class="alert alert-success"><b>bootstrapApplication(AppComponent, appConfig)</b> - <b
+                    class="text-success">NEW</b></p>
+        </div>
+        <div class="col">
+            <b>Here Angular bootstraps the root module: </b>
+            <p class="alert alert-danger"><b>platformBrowserDynamic().bootstrapModule(AppModule)</b> - <b
+                    class="text-danger">OLD</b></p>
+        </div>
+    </div>
+    <pre>
+👉 Meaning:
+Angular app starts here
+It loads AppComponent / AppModule
+   </pre>
+</div>
+<div class="card container alert alert-primary">
+    <h5>🏗️ 2. AppComponent (NEW) / AppModule (OLD) – Root Module</h5>
+    <div class="row">
+        <div class="col">
+            <p class="alert alert-success text-success fw-bold">NEW</p>
+            <b>AppComponent (Standalone)</b><br>
+            <b>Directly start from component</b>
+            <pre>
+
+&#64;Component(&#123;
+  standalone: true,
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  imports: [CommonModule, RouterModule]
+&#123;)
+export class AppComponent &#123;&#123;
+
+👉 இப்போ component தான் mini-module மாதிரி 🔥
+தனியா வேலை செய்யும்
+imports எல்லாம் இங்கவே define பண்ணுவோம்
+</pre>
+            <h5>Step 3 : App component.html</h5>
+            <pre>
+&#9664;router-outlet&#9654; &#9664;/router-outlet&#9654;
+
+👉 router-outlet = dynamic loading point for routed components
+</pre>
+            <h5>app.config.ts (Replacement of app.module)</h5>
+            <pre>
+import &#123; ApplicationConfig, isDevMode &#125; from '@angular/core';
+import &#123; provideRouter &#125; from '@angular/router';
+import &#123; routes &#125; from './app.routes';
+import &#123; provideStore &#125; from '@ngrx/store';
+import &#123; provideEffects &#125; from '@ngrx/effects';
+import &#123; provideStoreDevtools &#125; from '@ngrx/store-devtools';
+import &#123; programsReducer &#125; from './store/reducers/programs.reducer';
+import &#123; ProgramsEffects &#125; from './store/effects/programs.effects';
+import &#123; userReducer &#125; from './store/reducers/users.reducer';
+import &#123; UserEffects &#125; from './store/effects/users.effects';
+import &#123; provideHttpClient, withInterceptors &#125; from '@angular/common/http';
+import &#123; provideClientHydration &#125; from '@angular/platform-browser';
+import &#123; jwtInterceptor &#125; from './interceptor/jwt.interceptor';
+
+export const appConfig: ApplicationConfig = &#123;
+  providers: [provideRouter(routes), provideStore(
+    &#123;
+      programs: programsReducer,
+      users: userReducer,
+    &#125;
+  ), provideEffects(
+    [ProgramsEffects, UserEffects]
+  ), provideHttpClient(
+    withInterceptors([jwtInterceptor])
+  ), provideStoreDevtools(&#123; maxAge: 25, 
+  logOnly: !isDevMode() &#125;), provideClientHydration()]
+&#125;;
+
+👉 இது தான் AppModule replacement
+👉 AppModule இல்லாத இடத்தில்:
+👉 app.config.ts use ஆகுது
+
+providers இங்க define பண்ணுவோம்
+routing இங்க connect பண்ணுவோம்
+</pre>
+            <h5>Routing (app.routes.ts)</h5>
+            <pre>
+    export const routes: Routes = [
+  &#123; path: '', component: HomeComponent &#125;
+];
+
+👉 Routing separate fileல இருக்கும்
+👉 Routing logic:
+
+URL → Component mapping
+இது same தான் (old Angular மாதிரி)
+</pre>
+        </div>
+        <div class="col">
+            <p class="alert alert-danger text-danger fw-bold">OLD</p>
+            <b>Start from module</b>
+            <pre>
+
+&#64;NgModule(&#123;
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  bootstrap: [AppComponent]
+&#123;)
+export class AppModule &#123;&#125;
+            </pre>
+            <p>➡️ Angular tells: <br>
+                “Start UI from AppComponent”</p>
+            <pre>
+import &#123; Component &#125; from '@angular/core';
+import &#123; RouterOutlet &#125; from '@angular/router';
+@Component(&#123;
+    selector: 'app-root',
+    imports: [RouterOutlet],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
+&#125;)
+export class AppComponent &#123;
+&#125;</pre>
+            <h5>Step 3 : App component.html</h5>
+            <pre>
+&#9664;router-outlet&#9654; &#9664;/router-outlet&#9654;
+
+👉 router-outlet = dynamic loading point for routed components
+
+👉 Angular looks into:
+&#9664;app-root&#9654; &#9664;/app-root&#9654;
+
+inside index.html
+</pre>
+            <h5>Routing (app.routing.module.ts)</h5>
+            <pre>
+    export const routes: Routes = [
+  &#123; path: '', component: HomeComponent &#125;
+];
+
+👉 Routing separate fileல இருக்கும்
+</pre>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-success">
+    <h5>🔹 index.html</h5>
+    <div class="row">
+        <div class="col">
+            <p class="alert alert-light text-success fw-bold">NEW</p>
+
+            <pre>
+&#9664;body&#9654; 
+
+    &#9664;app-root&#9654; &#9664;/app-root&#9654;
+
+&#9664;/body&#9654;
+
+👉 Angular replaces  &#9664;app-root&#9654; with actual UI
+    </pre>
+            <ol>
+                <li> index.html load ஆகும்
+                </li>
+                <li>Angular start ஆகும் (main.ts)
+                </li>
+                <li>&#9664;app-root&#9654; replace ஆகும்
+                </li>
+                <li> AppComponent render ஆகும்</li>
+                <li>அதுல router-outlet இருக்கும்</li>
+                <li> URL check பண்ணும் (/home)</li>
+                <li> app.routes ல match பண்ணும்</li>
+                <li>அந்த component (HomeComponent) </li>
+                <li> router-outlet உள்ளே inject ஆகும்</li>
+            </ol>
+        </div>
+        <div class="col">
+            <p class="alert alert-danger text-danger fw-bold">OLD</p>
+            <pre>
+&#9664;body&#9654; 
+
+    &#9664;app-root&#9654; &#9664;/app-root&#9654;
+
+&#9664;/body&#9654;
+
+👉 Angular replaces  &#9664;app-root&#9654; with actual UI
+    </pre>
+            <ol>
+                <li> Browser loads index.html</li>
+                <li>Angular starts from main.ts
+                </li>
+                <li>bootstrapModule(AppModule)
+                </li>
+                <li>AppModule loads AppComponent
+                </li>
+                <li>Angular finds &#9664;app-root&#9654; in index.html
+                </li>
+                <li>AppComponent is injected there
+                </li>
+                <li>AppComponent contains &#9664;router-outlet&#9654;
+                </li>
+                <li>Router loads components inside it
+                </li>
+                <li>UI is displayed
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>

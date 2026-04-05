@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { canDeactivateGuard } from '../guards/canDeactivate/can-deactivate.guard';
 
 export const FORM_ROUTES: Routes = [
     {
@@ -11,7 +12,9 @@ export const FORM_ROUTES: Routes = [
         path: 'template-driven',
         loadComponent: () =>
             import('../forms/template-driven/template-driven.component')
-                .then(c => c.TemplateDrivenComponent)
+                .then(c => c.TemplateDrivenComponent),
+        canDeactivate: [canDeactivateGuard],
+
     },
     {
         path: 'reactive',

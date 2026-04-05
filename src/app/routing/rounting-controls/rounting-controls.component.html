@@ -1,0 +1,565 @@
+<div class="container mt-3">
+    <p routerLink="/routing">
+        <a class="pe-auto text-secondary text-decoration-none">&lt;-Back </a>
+    </p>
+    <h4>Routing Controls</h4>
+</div>
+<div class="container alert alert-warning">
+    <div class="row">
+        <div class="col alert alert-primary">
+            <b>🔐 1. AuthGuard (canActivate) </b>
+            <pre>
+
+🧠 Purpose:
+“Can user ENTER this route?”
+
+🟢 Real Scenario
+/login → /admin
+
+👉 If NOT logged in → block
+👉 If logged in → allow
+👉 login இல்லனா route உள்ளே போக விடாது
+            </pre>
+        </div>
+        <div class="col alert alert-success">
+            <b>👶 2. canActivateChild </b>
+            <pre>
+
+🧠 Purpose:
+Protect ALL child routes
+
+🧠 Why?
+👉 Instead of repeating guard everywhere
+            </pre>
+            <p>👉 parent routeக்கு guard போட்டா child எல்லாம் safe</p>
+        </div>
+        <div class="col alert alert-info">
+            <b>🚪 3. canDeactivate </b>
+            <pre>
+
+🧠 Purpose:
+“Can user LEAVE this page?”
+
+🟢 Real Scenario
+
+Form page:
+User typing → tries to leave → confirm popup
+            </pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <b>🚫 4. canMatch</b>
+            <pre>
+
+🧠 Purpose:
+Decide if route should EVEN LOAD
+            </pre>
+        </div>
+        <div class="col alert alert-secondary">
+            <b>⚙️ 5. runGuardsAndResolvers</b>
+            <pre>
+
+🧠 Purpose:
+When to re-run guards/resolvers
+            </pre>
+        </div>
+        <div class="col alert alert-danger">
+            <b>📦 6. resolve</b>
+            <pre>
+
+🧠 Purpose:
+Load data BEFORE component
+            </pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col alert alert-light">
+            <b>🔁 7. redirectTo</b>
+            <pre>
+
+🧠 Purpose:
+Redirect user
+
+Use:
+default page
+fallback route
+            </pre>
+        </div>
+        <div class="col alert alert-info">
+            <b>🏷️ 8. title</b>
+            <pre>
+
+🧠 Purpose:
+Show title in browser for the page
+            </pre>
+        </div>
+        <div class="col alert alert-primary">
+            <b>🧠 9. matcher</b>
+            <pre>
+
+🧠 Purpose:
+Custom route matching
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="container alert card alert-info">
+    <h5>🔐 1. AuthGuard (canActivate) </h5>
+    <p>
+        ⚙️ Step-by-Step <br>
+        ✅ Create Guard : <b>ng generate guard auth</b> <br>
+        <b>Note : This is related accessToken which is handled in JWT page</b> <br>
+        <button class="btn btn-sm btn-success" routerLink="/secure-page">Enter Secure Page</button> <br> <br>
+        <button class="btn btn-sm btn-primary" (click)="login()">Login</button> &nbsp;
+        <button class="btn btn-sm btn-dark" (click)="logOutExistingSesssion()">Logout</button>
+    </p>
+    <div class="row">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        (click)="getTxtFile('canactivate')" data-bs-target="#flush-collapseOne" aria-expanded="false"
+                        aria-controls="flush-collapseOne">
+                        Code breakup
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <pre>
+                            {{tsCode}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-primary">
+    <h5>👶 2. canActivateChild </h5>
+    <p>We can activate routes for the whole module, guard will work each component route</p>
+    <code>
+    <pre>
+&#123;
+  path: 'admin',
+  canActivateChild: [authGuard],
+  children: [
+    &#123; path: 'users', loadComponent: ... &#125;,
+    &#123; path: 'settings', loadComponent: ... &#125;
+  ]
+&#125;
+
+<b>Below is the our code example, since we added guard in common, inside the routes all are have the guard.</b>
+   &#123;
+    path: 'signal',
+    loadChildren: () =>
+      import('./routes/signal.routes').then(m => m.SIGNAL_ROUTES)
+   &#123;,
+    </pre>
+</code>
+</div>
+<div class="container card alert alert-success">
+    <h5>🚪 3. canDeactivate</h5>
+    <div class="row">
+        <div class="col">
+            <pre>
+👉 Angular form change track பண்ணாது
+👉 நாம தான் சொல்லணும்
+
+❌ Wrong thinking:
+form இருக்கா → guard automatically work ❌
+
+✅ Correct:
+form.dirty check பண்ணி → guardக்கு சொல்லணும் ✅
+    </pre>
+            <p><b>Note:</b></p>
+            <p class="alert alert-danger">Without forms also we can use this canDeactivate.</p>
+            <p><b>hasUnsavedChanges</b> - by using this method</p>
+        </div>
+        <div class="col">
+            <label>Enable / Disable </label>
+            <select class="form-select" name="status" [(ngModel)]="status" aria-label="Default select example"
+                (change)="hasUnsavedChanges()">
+                {{status}}
+                <option [ngValue]="true">Enable Deactivate</option>
+                <option [ngValue]="false">Disable Deactivate</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        (click)="getTxtFile('candeactivate')" data-bs-target="#flush-collapseTwo" aria-expanded="false"
+                        aria-controls="flush-collapseTwo">
+                        Code breakup
+                    </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
+                    data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <pre>
+                            {{tsCode}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-warning">
+    <h5>🚫 4. canMatch</h5>
+    <div class="row">
+        <div class="col">
+            <pre>
+
+<b>🔵 With canMatch</b>
+
+User → /admin
+   ↓
+Route matching starts
+   ↓
+canMatch runs
+   ↓
+false → STOP ❌
+   ↓
+Module NOT loaded
+                </pre>
+        </div>
+        <div class="col">
+            <pre>
+
+<b>🟢 With canActivate</b>
+
+User → /admin
+   ↓
+Route matched
+   ↓
+Module loaded 📦
+   ↓
+canActivate runs
+   ↓
+false → block ❌
+                </pre>
+        </div>
+        <div class="col">
+            <pre>
+                <b>
+canMatch → prevents loading
+canActivate → prevents entering</b>
+
+✅ Correct version of your thinking:
+
+canActivate and canMatch are similar in purpose (both guard routes),
+but different in timing.
+
+canMatch → gate security
+canActivate → door security
+            </pre>
+        </div>
+    </div>
+    <div class="row">
+        <code>
+        <pre>
+
+&#123;
+  path: 'admin',
+  canMatch: [roleGuard],       // 🚫 block early - say for example this guard check the roles
+  loadChildren: () => import('./admin.routes'),
+  canActivate: [authGuard]     // 🔐 extra safety
+&#125;
+        </pre></code>
+        <pre>
+🧠 Why both?
+canMatch → performance + early block
+canActivate → security + final check
+        </pre>
+    </div>
+</div>
+<div class="container card alert alert-secondary">
+    <h5>⚙️ 5. runGuardsAndResolvers</h5>
+    <div class="row">
+        <div class="col">
+            <p>🧠 What is runGuardsAndResolvers? <br>
+                Controls WHEN guards & resolvers should run again <br>
+                👉 By default, Angular tries to reuse the same component <br>
+                👉 So guards/resolvers may NOT run again</p>
+            <pre>
+⚠️ Problem (Real Scenario)
+🎯 Example: User Details Page 
+
+/user/1 → shows User 1
+/user/2 → should show User 2
+
+❌ Without runGuardsAndResolvers
+
+👉 Angular behavior:
+
+Same component reused
+↓
+Guard/Resolver NOT triggered again ❌
+↓
+Old data still shown 😱
+</pre>
+            <hr>
+            <pre>
+Scenario: Banking App 💰
+
+You have:
+
+/account/1001 → Account A
+/account/2002 → Account B
+
+<b>Without this config:</b>
+User switches account ID
+↓
+Component reused
+↓
+Old account data shown ❌
+</pre>
+        </div>
+        <div class="col">
+            <b>✅ Solution</b>
+            <pre>
+
+&#123;
+  path: 'user/:id',
+  loadComponent: () => import('./user.component'),
+  runGuardsAndResolvers: 'paramsChange'
+&#125;
+
+🧠 What this does
+When :id changes → run again
+
+👉 Now:
+/user/1 → /user/2
+↓
+Guard runs again ✅
+Resolver runs again ✅
+API call happens again ✅
+            </pre>
+            <hr>
+            <pre>
+<b>With this:</b>
+
+&#123;
+  path: 'account/:id',
+  resolve: &#123; account: accountResolver &#125;,
+  runGuardsAndResolvers: 'paramsChange'
+&#125;
+
+👉 Now:
+Account ID changes
+↓
+Resolver runs again
+↓
+New account data fetched ✅
+            </pre>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <h6>⚙️ Options (Important)</h6>
+        <div class="col">
+            <pre>
+1️⃣ 'paramsChange' (MOST USED)
+runGuardsAndResolvers: 'paramsChange'
+
+👉 Runs when:
+Route params change (/:id)
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+2️⃣ 'always'
+runGuardsAndResolvers: 'always'
+
+👉 Runs every time:
+Even same route click
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+3️⃣ 'pathParamsChange'
+
+👉 Only path params (rare usage)
+            </pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <code>
+                <b>Route.ts</b>
+                <pre>
+&#123;
+  path: 'user/:id',
+  loadComponent: () => import('./user.component'),
+  resolve: &#123; user: userResolver &#125;,
+  runGuardsAndResolvers: 'paramsChange'
+&#125;
+                </pre>
+            </code>
+        </div>
+        <div class="col">
+            <code>
+                <b>Resolver</b>
+                <pre>
+export const userResolver = (route: ActivatedRouteSnapshot) => &#123;
+  const id = route.paramMap.get('id');
+  console.log('API CALL for ID:', id);
+  return fetchUser(id);
+&#125;;
+                </pre>
+            </code>
+        </div>
+    </div>
+</div>
+<div class="container card alert alert-info">
+    <h5>📦 6. resolve</h5>
+    <p>Resolver → Fetch data BEFORE component loads <br>
+        👉 So component opens only after data is ready <br>
+        👉 No loading spinner needed 😎</p>
+    <button class="btn btn-sm btn-success" routerLink="/secure-page">Enter Secure Page with data pre-load</button>
+    <div class="row">
+        <div class="accordion accordion-flush" id="1">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        (click)="getTxtFile('resolver')" data-bs-target="#flush-collapseThree" aria-expanded="false"
+                        aria-controls="flush-collapseThree">
+                        Code breakup
+                    </button>
+                </h2>
+                <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
+                    data-bs-parent="#1">
+                    <div class="accordion-body">
+                        <pre>
+                            {{tsCode}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-danger">
+    <h5>🔁 7. redirectTo</h5>
+    <h6>🔥 Real-World Use Cases</h6>
+    <div class="row">
+        <div class="col">
+            <pre>
+🟢 1. Default Page
+
+&#123;
+  path: '',
+  redirectTo: 'dashboard',
+  pathMatch: 'full'
+&#125;
+
+👉 App open → dashboard
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+🟢 2. Login Redirect
+
+&#123;
+  path: 'login',
+  loadComponent: LoginComponent
+&#125;,
+&#123;
+  path: '',
+  redirectTo: 'login',
+  pathMatch: 'full'
+&#125;
+
+👉 Default → login page
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+🟢 3. Old URL → New URL
+
+&#123;
+  path: 'old-home',
+  redirectTo: 'home'
+&#125;
+
+👉 /old-home → /home
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+ 🟢 4. Wildcard (404 Page)
+
+&#123;
+  path: '**',
+  redirectTo: 'home'
+&#125;
+
+👉 Unknown route → redirect
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-warning">
+    <h5>🏷️ 8. title</h5>
+    <code>
+        <pre>
+ &#123;
+    path: 'route-controls',
+    canDeactivate: [canDeactivateGuardGuard],
+    <b>title:'ROUTING CONCEPTS',</b>
+    loadComponent: () =>
+      import('./routing/rounting-controls/rounting-controls.component')
+        .then(c => c.RountingControlsComponent)
+&#125;,
+
+👉 Browser tab title set ஆகும்
+        </pre>
+    </code>
+</div>
+<div class="card container alert alert-primary">
+    <h5>🧠 9. matcher</h5>
+    <pre>
+🎯 Scenario: Dynamic URL Format
+
+You want to support:
+/profile-123
+/profile-456
+
+
+<b>// matcher.ts</b>
+
+import &#123; UrlSegment &#125; from '@angular/router';
+
+export function profileMatcher(url: UrlSegment[]) &#123;
+
+  if (url.length === 1 && url[0].path.startsWith('profile-')) &#123;
+
+    const id = url[0].path.split('-')[1];
+
+    return &#123;
+      consumed: url,
+      posParams: &#123;
+        id: new UrlSegment(id, &#123;&#125;)
+      &#125;
+    &#125;;
+  &#125;
+
+  return null;
+&#125;
+
+<b>Route.ts</b>
+
+&#125;
+  matcher: profileMatcher,
+  loadComponent: () => import('./profile.component')
+&#125;
+
+🧠 Result
+/profile-123 → id = 123 ✅
+    </pre>
+</div>

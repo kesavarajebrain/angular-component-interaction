@@ -4,7 +4,8 @@
     </p>
     <h4>Routing</h4>
     <p>Routing is not just navigation anymore:</p>
-    <b>Route = Navigation + Security + Data + Control + UX</b>
+    <b>Route = Navigation + Security + Data + Control + UX</b> <br>
+    <button class="btn btn-sm btn-success" routerLink="/route-controls">Routing Controls</button> <br>
 </div>
 <div class="card mt-2 container alert alert-secondary">
     <h5>1. Navigation from HTML (Template)</h5>
@@ -171,7 +172,7 @@ ngOnInit() &#123;
                 <div class="col-2"></div>
                 <!-- INPUT -->
                 <div class="col-2">
-                      <label>Routing Id:</label>
+                    <label>Routing Id:</label>
                     <input type="number" class="form-control" name="id" [(ngModel)]="model.id" #id="ngModel" required
                         min="1" id />
                     <!-- ERROR -->
@@ -180,13 +181,14 @@ ngOnInit() &#123;
                     </span>
                 </div>
                 <div class="col-3">
-                      <label>Routing Category (Optional):</label>
-                    <select class="form-select" name="category" [(ngModel)]="model.category"  #category="ngModel" category aria-label="Default select example">
+                    <label>Routing Category (Optional):</label>
+                    <select class="form-select" name="category" [(ngModel)]="model.category" #category="ngModel"
+                        category aria-label="Default select example">
                         {{category}}
                         <option value="default">Default</option>
                         <option value="electronics">Electronics</option>
                         <option value="furniture">Furniture</option>
-                         <option value="pluming">Pluming</option>
+                        <option value="pluming">Pluming</option>
                     </select>
                 </div>
                 <!-- BUTTON -->
