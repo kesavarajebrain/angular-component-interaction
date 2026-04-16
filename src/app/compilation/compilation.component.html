@@ -1,0 +1,330 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Compilation</h4>
+    <p>Angular converts your HTML + TypeScript into efficient JavaScript code that the browser can run.</p>
+    <p>Before going to angular compilation, first we need to understand normal webpage renders on browser.</p>
+</div>
+<div class="container alert alert-info card">
+    <h5>How Browser renders a webpage?</h5>
+    <b>Browser = HTML parser + CSS engine + JS engine (like V8) working together</b>
+    <div class="row">
+        <div class="col">
+            <br>
+            <b>🚀 Step 1 — You Enter a URL
+            </b>
+            <pre>
+
+Example: https://example.com
+
+What happens:
+DNS lookup → finds server IP
+Browser sends HTTP request
+Server returns:
+index.html
+    </pre>
+        </div>
+        <div class="col">
+            <br>
+            <b>📄 Step 2 — HTML Starts Loading (Parsing Begins)
+            </b>
+            <p>Imagine index.html its starts to render</p>
+            <pre>
+1. HTML → DOM Tree
+
+Browser reads HTML top to bottom
+👉 Converts into DOM (Document Object Model)
+
+html
+ ├── head
+ └── body
+      ├── h1
+      └── button
+            </pre>
+        </div>
+        <div class="col">
+            <br>
+            <b> 🎨 Step 3 — CSS Loading
+            </b>
+            <pre>
+
+Browser sees:
+&#11164;link rel="stylesheet" href="style.css"&#11166;
+
+👉 It:
+Downloads CSS
+Builds CSSOM (CSS Object Model)
+</pre>
+        </div>
+    </div>
+    <div class="row">
+        <b> 🧠 Step 4 <br> Combine DOM + CSSOM → Render Tree
+        </b>
+        <div class="col">
+            <pre>
+👉 Browser creates:
+  Render Tree = What actually needs to be shown
+</pre>
+        </div>
+        <div class="col">
+            <b> ⚠️ Important — JavaScript is a BLOCKER
+            </b>
+            <pre>
+
+When browser sees:
+
+&#11164;script src="app.js"&#11166;&#11164;/script&#11166;
+👉 It stops HTML parsing ❗
+
+Why?
+Because JS can modify HTML.
+</pre>
+        </div>
+        <div class="col">
+            <b> ⚙️ Step 5 — JavaScript Execution (Core Part)
+            </b>
+            <pre>
+Now enters:
+
+👉 V8
+
+🔥 What V8 actually does:
+
+1. Parse JS → AST (Abstract Syntax Tree)
+let a = 10;
+Converted into internal structure
+
+2. Compile → Machine Code
+V8 uses:
+Interpreter + JIT compiler (TurboFan)
+
+3. Execute
+Now JS runs.
+</pre>
+        </div>
+    </div>
+    <div class="row alert card container alert-warning">
+        <p><b>Machine code </b>= binary instructions (0s and 1s) that CPU understands directly</p>
+        <p><b>JIT (Just-In-Time) compiler</b> = converts code into machine code during execution (runtime)</p>
+        <pre>
+🚫 JIT is NOT for local build (like Angular build)
+
+JIT is:
+Inside browser
+Happens automatically
+Happens during runtime
+</pre>
+    </div>
+</div>
+<div class="card container alert alert-primary">
+    <h5>🧩 Example — Real Flow</h5>
+    <code>
+        <pre>
+document.getElementById('btn').addEventListener('click', () => &#123;
+  alert('Clicked');
+&#125;);
+        </pre>
+    </code>
+    <div class="row">
+        <div class="col">
+            <pre>
+What happens:
+
+JS runs
+Finds button in DOM
+Registers event listener
+Does NOT execute immediately
+
+👉 It waits for user action
+            </pre>
+        </div>
+        <div class="col">
+            <b>🖱️ Step 6 — User Interaction (Event System)
+            </b>
+            <pre>
+
+When user clicks:
+👉 Browser sends event to: <b>🔄 EVENT LOOP</b> 
+
+Event Flow:
+Click happens
+Event goes to Event Queue
+JS Engine checks Call Stack
+Executes callback
+            </pre>
+        </div>
+        <div class="col">
+            <b> 🧠 Step 7 — DOM Updates
+            </b>
+            <pre>
+Inside your function:
+
+document.body.innerHTML = "Hi";
+
+👉 Now:
+DOM changes
+Browser re-renders UI
+</pre>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-secondary">
+    <b>🔥 Critical Understanding <br>
+        Browser has 3 main engines:</b>
+    <div class="row">
+        <div class="col">
+            <pre>
+
+| Engine         | Role           |
+| -------------- | -------------- |
+| HTML Parser    | Builds DOM     |
+| CSS Engine     | Styles         |
+| JS Engine (V8) | Executes logic |
+    </pre>
+        </div>
+        <div class="col">
+            <pre>
+⚡ Where TypeScript Comes In
+
+👉 Important:
+Browser DOES NOT understand TypeScript
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+So what happens?
+
+You write:
+let a: number = 10;
+
+👉 Build tools (like Angular/React/Webpack) convert it into:
+let a = 10;
+
+👉 THEN browser executes it via V8
+            </pre>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-info">
+    <div class="row">
+        <div class="col">
+            <h5>1️⃣ JIT — Just-In-Time Compilation</h5>
+            <p>💡 Idea: <br>
+                Compile inside the browser at runtime</p>
+            <pre>
+🔄 Flow (Step-by-step)
+
+You write:
+
+TypeScript
+HTML template
+Browser loads your app
+Angular compiler runs in browser
+Templates → converted to JS
+App starts
+
+📦 What gets shipped?
+Your code
+Angular compiler ❗
+
+⚠️ Problems with JIT
+Slower startup (compilation happens in browser)
+Bigger bundle (compiler included)
+Errors show at runtime 😬
+
+🧪 Example Scenario
+
+You write:
+&#11164;div&#11166;user.name&#11164;/div&#11166;
+
+But user is <b>undefined</b>
+
+👉 In JIT:
+App loads
+Then crashes in browser
+
+JIT is mostly used for:
+development
+debugging
+</pre>
+        </div>
+        <div class="col">
+            <h5>2️⃣ AOT — Ahead-Of-Time Compilation</h5>
+            <p>💡 Idea: <br>
+                Compile before the app reaches the browser</p>
+            <pre>
+🔄 Flow (Step-by-step)
+
+You write:
+TypeScript
+HTML
+
+During build (ng build):
+Angular compiler runs on your machine
+
+Templates → converted into JS
+Final bundle is already compiled
+Browser just executes it
+
+📦 What gets shipped?
+Only optimized JS
+❌ No Angular compiler
+
+🚀 Advantages
+Faster startup ⚡
+Smaller bundle 📦
+Errors caught during build 🧠
+
+🧪 Same Example
+&#11164;div&#11166;user.name&#11164;/div&#11166;
+
+👉 In AOT:
+Build will FAIL ❌
+You fix before deployment
+
+👉 In Angular (latest versions):
+AOT is default
+
+<b>Why AOT improves performance?</b>
+
+Because:
+No runtime parsing of templates
+No runtime compiler
+Pre-generated instructions
+
+👉 Browser directly executes optimized JS
+</pre>
+        </div>
+    </div>
+</div>
+<div class="card container alert alert-dark">
+    <div class="row">
+        <div class="col">
+                <pre>
+
+| Concept                  | JIT        | AOT           |
+| ------------------------ | ---------- | ------------- |
+| When compilation happens | Browser    | Build time    |
+| Who does it              | Client     | Build system  |
+| Performance              | Slower     | Faster        |
+| Bundle size              | Bigger     | Smaller       |
+| Error detection          | Runtime 😬 | Build time 😎 |
+    </pre>
+        </div>
+        <div class="col">
+            <pre>
+🧑‍🍳 JIT = Cooking after customer orders
+Customer comes → you start cooking
+Takes time
+Mistakes happen live
+
+****************
+🍱 AOT = Meal prep before opening restaurant
+Everything ready before customer arrives
+Fast serving
+Errors already fixed
+            </pre>
+        </div>
+    </div>
+</div>
