@@ -194,4 +194,11 @@ export const routes: Routes = [
       import('./compilation/compilation.component')
         .then(c => c.CompilationComponent)
   },
+   {
+    path: 'upgradation',
+    title: title,
+    loadComponent: () =>
+      import('./upgradation/upgradation.component')
+        .then(c => c.UpgradationComponent)
+  },
 ];

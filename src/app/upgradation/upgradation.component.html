@@ -1,0 +1,213 @@
+<div class="container mt-3">
+    <p routerLink="/">
+        <a class="pe-auto text-secondary text-decoration-none"><-Back </a>
+    </p>
+    <h4>Upgradation</h4>
+    <p>Angular CLI vs Angular Version</p>
+    <div class="row">
+        <div class="col">
+            <pre>
+🧰 1. Angular CLI (Command Line Interface)
+👉 Think of it as a tool you use to work with Angular
+
+<b>What it does:</b>
+Create projects → ng new
+Generate components → ng generate component
+Run app → ng serve
+Build app → ng build
+👉 It’s basically a developer assistant
+            </pre>
+        </div>
+        <div class="col">
+            <pre>
+🧱 2. Angular Version (Framework Version)
+👉 This is the actual Angular framework your app is built with
+
+Example:
+Angular 14
+Angular 15
+Angular 16
+Angular 17+
+
+👉 It defines:
+Features available
+Syntax support
+Performance improvements
+            </pre>
+        </div>
+    </div>
+</div>
+
+<div class="card container alert alert-warning">
+    <div class="row">
+        <pre>
+⚠️ Important: They can be different
+
+You can have:
+CLI version → 17
+Angular project → 15
+👉 That’s totally possible
+            </pre>
+        <p><b>🔍 Check versions</b></p>
+        <div class="col">
+            <p>CLI version: <b>ng version</b></p>
+            <img src="../../assets/img/screenshots/cli-1.png" alt="cli" height="500px" width="500px">
+        </div>
+        <div class="col">
+            <p>Angular version:</p>
+            <img src="../../assets/img/screenshots/cli-2.png" alt="cli" height="300px" width="500px">
+        </div>
+    </div>
+</div>
+
+<div class="card container alert alert-info">
+    <div class="row">
+        <h5>Upgrade Steps:</h5>
+        <div class="col">
+            <p>Previous configurations :</p>
+            <code>
+            <pre>
+Angular CLI: 17.3.11
+Node: 20.12.2
+Package Manager: npm 10.5.0
+OS: win32 x64 
+
+Angular: 17.3.12
+            </pre>
+            </code>
+            <hr>
+            <pre>
+New Angular versions require newer Node.
+Typical requirements:
+
+| Angular | Node         |
+| ------- | ------------ |
+| 17      | Node 18+     |
+| 18–19   | Node 18 / 20 |
+| 20+     | Node 20+     |
+            </pre>
+            <hr>
+            <b>STEP 1 - Update Angular CLI Globally,
+                open powershell run as adminstrator</b><br>
+            <code>npm install -g @angular/cli@latest</code>
+            <br>
+            Check again:
+            <code>ng version</code>
+            <pre>
+
+Now while checking the ng version,
+we can see below node issue :
+Node.js version v20.12.2 detected.
+The Angular CLI requires a minimum Node.js version of v20.19 or v22.12. 
+<b>(ITS A TIME TO UPGRADE NODEJS)</b>
+
+            </pre>
+            <hr>
+            <p>Install NVM : <br>
+                <b>Node Version Manager </b> It is a command-line tool that allows you to install and manage
+                multiple versions of Node.js on a single machine. This is particularly useful for developers working on
+                multiple projects that require different versions of Node.js to run correctly.
+            </p>
+            <pre>
+install nvm 
+<a href="https://github.com/coreybutler/nvm-windows/releases" target="_blank">https://github.com/coreybutler/nvm-windows/releases</a>
+
+Install nvm-setup.exe
+After installation open new terminal.
+            </pre>
+            <code>Check nvm : nvm version -> Running version 1.2.2.</code>
+            <hr>
+            <b>STEP 2 : Install Node.js 22</b> <br>
+            <code>nvm install 22</code> <br>
+            <b>STEP 3 : Use Node.js 22</b> <br>
+            Activate the installed version: <br> <code>nvm use 22</code> <br>
+            <b>STEP 4 : now check node version</b> <br>
+            Now its changed to node 22: <br> <code>node -v</code>
+            <pre>
+*-----------------------------*
+CHECK NODE IN TERMINAL
+PS C:\WINDOWS\system32> node
+Welcome to Node.js v22.22.1.
+Type ".help" for more information.
+> console.log("node working")
+node working
+undefined
+> .exit
+PS C:\WINDOWS\system32>
+*-----------------------------*
+</pre>
+        </div>
+        <div class="col alert alert-primary">
+            <b>NOW BACK TO ANGULAR UPGRADE STEPS </b> <br>
+
+            <b>Step 1 :</b> <br>
+            <code>npm install -g @angular/cli@latest
+</code>
+            <hr>
+            <pre>
+ Now : while check <b>ng v </b>on c folder
+
+Angular CLI       : 21.2.2
+Node.js           : 22.22.1
+Package Manager   : npm 10.9.4
+Operating System  : win32 x64
+</pre>
+            <hr>
+            <b>Step 2 :</b>
+            <p>Inside your project folder, run:</p>
+            <code>ng update @angular/core@latest @angular/cli@latest</code>
+            <p class="alert alert-danger">
+                Fetching dependency metadata from registry... <br>
+                Updating multiple major versions of '@angular/core' at once is not supported. Please migrate each major
+                version individually.
+                <b>HERE We need to upgrade version by version , not single upgrade to jump more versions</b>
+            </p>
+            <hr>
+            <b>Step 3 :</b>
+            <pre>version upgrade tree
+
+17 → 18
+18 → 19
+19 → 20
+So you may run:</pre>
+            <code>ng update @angular/core@18 @angular/cli@18</code>
+            <pre>
+
+<b>Now updated to 18</b>
+=================
+Angular CLI: 18.2.21
+Node: 22.22.1
+Package Manager: npm 10.9.4
+OS: win32 x64
+
+Angular: 18.2.14
+====================
+            </pre>
+            <hr>
+            <b>Next : </b> <br>
+            <code>ng update @angular/core@19 @angular/cli@19 </code>
+            <p>if any error : <code>ng update @angular/core@19 @angular/cli@19 --force
+</code></p>
+            <pre>
+=========================
+Angular CLI: 19.2.22
+Node: 22.22.1
+Package Manager: npm 10.9.4
+OS: win32 x64
+=========================
+            </pre>
+            <b>Next : </b> <br>
+            <code>ng update @angular/core@20 @angular/cli@20 --force</code>
+            <pre>
+==========================
+Angular CLI: 20.3.20
+Node: 22.22.1
+Package Manager: npm 10.9.4
+OS: win32 x64
+Angular: 20.3.18
+==========================
+            </pre>
+            <h5>NOW ANGULAR UPGRADED TO 17 -> 20</h5>
+        </div>
+    </div>
+</div>
